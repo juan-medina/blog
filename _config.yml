@@ -1,0 +1,38 @@
+# Site settings
+email:  "mail@juan-medina.com"
+baseurl: ""
+paginate: 5
+paginate_path: "/blog/page-:num"
+google_analytics: "UA-92250233-1"
+
+# SEO settings
+title: Juan Medina Personal Blog
+description: Personar blog from Juan Medina
+url: "http://juan-medina.com"
+twitter_username: jamedinatwit
+default_img:
+
+# Profile settings
+name: Juan Medina
+profile_img: "/assets/img/pp.jpg"
+profile: "<b>About Juan Medina</b><br/>
+I'm just a normal geek that code all kind of stuff, from complex corporate applications to games.<br/>
+<br/>
+Games, music, movies and traveling are my escape pods."
+social:
+  github: "https://github.com/cecile"
+  twitter: "https://twitter.com/jamedinatwit"
+  reddit: "https://www.reddit.com/user/LatokValdelius"
+
+# Build settings
+include: ["_categories"]
+exclude: ["_screenshots", "Gemfile", "Gemfile.lock", "LICENSE.txt", "README.md"]
+markdown: kramdown
+permalink: /:year/:month/:day/:title/
+
+# Sass
+sass:
+  style: compressed
+
+# Gems
+gems: [jekyll-paginate, jekyll-sitemap, octopress-autoprefixer]
