@@ -2,7 +2,7 @@
 layout: post
 title: Meat Loaf - I'd Do Anything For Love (But I Won't Do That)
 date: 2015-11-21 01:11
-author: latok
+author: Juan Medina
 comments: true
 categories: [Music]
 image: /assets/img/meat-loaf.jpg

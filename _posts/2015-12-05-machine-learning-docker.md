@@ -2,7 +2,7 @@
 layout: post
 title: Machine Learning Rest API in a Docker
 date: 2015-12-05 16:19
-author: latok
+author: Juan Medina
 comments: true
 categories: [Programming]
 image: /assets/img/docker.png

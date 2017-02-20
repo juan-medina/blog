@@ -2,7 +2,7 @@
 layout: post
 title: The Magic Numbers "Forever Lost" Live
 date: 2015-10-25 17:36
-author: latok
+author: Juan Medina
 comments: true
 categories: [Music]
 image: /assets/img/magicnumbers.jpg

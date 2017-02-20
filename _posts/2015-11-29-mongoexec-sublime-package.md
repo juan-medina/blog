@@ -2,7 +2,7 @@
 layout: post
 title: MongoExec (Sublime Package)
 date: 2015-11-29 13:33
-author: latok
+author: Juan Medina
 comments: true
 categories: [Programming]
 image: /assets/img/mongoexec.gif

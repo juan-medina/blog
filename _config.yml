@@ -1,4 +1,5 @@
 # Site settings
+encoding: utf-8
 email:  "mail@juan-medina.com"
 baseurl: ""
 paginate: 5

@@ -2,7 +2,7 @@
 layout: post
 title: OpenShift
 date: 2015-10-17 19:40
-author: latok
+author: Juan Medina
 comments: true
 categories: [Programming]
 image: /assets/img/rh_openshift_logo_rgb_black.png
