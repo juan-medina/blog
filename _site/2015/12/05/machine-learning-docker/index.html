@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Machine Learning Rest API in a Docker | Juan Medina Personal Blog</title>
+  <meta name="author" content="Juan Medina">
+  <meta name="description" content="Personar blog from Juan Medina">
+  <meta property="og:title" content="Machine Learning Rest API in a Docker | Juan Medina Personal Blog">
+  <meta property="og:url" content="http://juan-medina.com/2015/12/05/machine-learning-docker/">
+  <meta property="og:site_name" content="Juan Medina Personal Blog">
+  <meta property="og:description" content="Personar blog from Juan Medina">
+  <meta property="og:image" content="/assets/img/docker.png">
+  <meta property="og:type" content="blog">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:description" content="Personar blog from Juan Medina">
+  <meta name="twitter:title" content="Machine Learning Rest API in a Docker | Juan Medina Personal Blog">
+  <meta name="twitter:url" content="http://juan-medina.com/2015/12/05/machine-learning-docker/">
+  <meta name="twitter:site" content="Juan Medina Personal Blog">
+  <meta name="twitter:creator" content="@jamedinatwit">
+  <meta name="twitter:domain" content="http://juan-medina.com">
+  <meta property="twitter:image" content="/assets/img/docker.png">
+
+  <link type="application/atom+xml" rel="alternate" href="http://juan-medina.com/feed.xml" title="Juan Medina Personal Blog" />
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata|Lora|Space+Mono:700">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/syntax.css">
+
+  <link rel="alternate" type="application/rss+xml" title="Juan Medina Personal Blog" href="http://juan-medina.com/feed.xml">
+  <link rel="canonical" href="http://juan-medina.com/2015/12/05/machine-learning-docker/">
+
+  
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-92250233-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+  
+</head>
+
+
+  <body>
+
+    <main>
+      <article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="section-padding--lg mast rellax" data-rellax-speed="-4">
+    <a class="nav nav--white" href="/">
+      <i class="fa fa-lg fa-arrow-left"></i>
+      <span>Back to Posts</span>
+    </a>
+    <figure class="absolute-bg mast__img" style="background-image: url('/assets/img/docker.png');"></figure>
+    <div class="mast__container">
+      <span><time datetime="2015-12-05T16:19:00+00:00" itemprop="datePublished">Dec 5, 2015</time></span>
+      <h1 itemprop="name headline">Machine Learning Rest API in a Docker</h1>
+      
+        <span>Posted in 
+          
+            <a class="nav--white" href="/category/programming">Programming</a>
+          
+        </span>
+      
+      <span></span>
+    </div>
+  </header>
+
+  <section class="section-padding bg-grey" itemprop="articleBody">
+    <div class="post">
+      <p>I’ve been trying to learn how to create and use docker and I thought that could be a nice idea to create a machine learning docker as a starting example to have something running.</p>
+
+<p>But instead to use a existing docker image for machine learning I’ve try to create from scratch a full functional image that provide REST API machine learning services.</p>
+
+<p>But in any case the full sourced of this is available in this git:</p>
+
+<p><a href="https://github.com/cecile/docker-ml-api" target="_blank">https://github.com/cecile/docker-ml-api</a></p>
+
+<p>or download from Docker hub:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>docker pull jamedina/ml-api</code></pre></figure>
+
+<p>Before starting its worth mentioning that going through <a href="https://docs.docker.com/mac/started/" target="_blank">getting started with docker</a> is a excellent starting point for understanding many of the docker topics and will give you the tools required.</p>
+
+<p>First lets create a new folder for our docker image an the Dockerfile:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>mkdir ml-api
+<span class="gp">$ </span><span class="nb">cd </span>ml-api
+<span class="gp">$ </span>touch Dockerfile</code></pre></figure>
+
+<p>Now we add the initial lines to our docker file:</p>
+
+<figure class="highlight"><pre><code class="language-dockerfile" data-lang="dockerfile">FROM ubuntu:14.04
+MAINTAINER Juan Medina &lt;jamedina@gmail.com&gt;
+ENV DEBIAN_FRONTEND noninteractive</code></pre></figure>
+
+<p>Lets build our docker, initial build will take a while:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>docker build -t ml-api .</code></pre></figure>
+
+<p>And them run the docker in iterative way since there is nothing there yet.</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>docker run -i ml-api</code></pre></figure>
+
+<p>In the iterative shell we could just try to list files and exit:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>ls
+<span class="gp">$ </span><span class="nb">exit</span></code></pre></figure>
+
+<p>Lets add now python and pip to the docker image adding to the Dockerfile:</p>
+
+<figure class="highlight"><pre><code class="language-dockerfile" data-lang="dockerfile">RUN apt-get update
+RUN apt-get -y install python-pip python-dev
+
+CMD ["/usr/bin/python","--version"]</code></pre></figure>
+
+<p>Now we could just rebuild and run:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>docker build -t ml-api .
+<span class="gp">$ </span>docker run ml-api</code></pre></figure>
+
+<p>Something like this will be output:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">Python 2.7.6</code></pre></figure>
+
+<p>Now lets create a folder for our python app:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>mkdir python-app</code></pre></figure>
+
+<p>Lets create a small test python program in /python-app/test.py:</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"hello from a python docker"</span><span class="p">)</span></code></pre></figure>
+
+<p>Modify the Dockerfile to call our python program:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">FROM ubuntu:14.04
+MAINTAINER Juan Medina &lt;jamedina@gmail.com&gt;
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get update
+RUN apt-get -y install python-pip python-dev
+copy python-app /var/python-app
+CMD <span class="o">[</span><span class="s2">"/usr/bin/python"</span>,<span class="s2">"/var/python-app/test.py"</span><span class="o">]</span></code></pre></figure>
+
+<p>Rebuild and run the docker will produce:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">hello from a python docker</code></pre></figure>
+
+<p>Sometimes we like to clean our docker system, if we do this we could see the containers:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>docker ps -a</code></pre></figure>
+
+<p>To stop and remove our containers we could do:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>docker stop <span class="sb">`</span>docker ps -qa<span class="sb">`</span>
+<span class="gp">$ </span>docker rm <span class="sb">`</span>docker ps -qa<span class="sb">`</span></code></pre></figure>
+
+<p>Now we are going to change our python installation to be a machine learning installation, edit the Dockerfile and change the apt-install to be:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">RUN apt-get -y install python-pip python-numpy python-scipy python-matplotlib ipython ipython-notebook python-pandas python-sympy python-nose python-sklearn python-nltk</code></pre></figure>
+
+<p>Now we could modify our test program /python-app/test.py:</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">nltk</span> <span class="kn">import</span> <span class="n">word_tokenize</span>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="s">"hello from a python docker, now with tokens using nltk"</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">word_tokenize</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="p">)</span></code></pre></figure>
+
+<p>And this will be the output:</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="p">[</span><span class="s">'hello'</span><span class="p">,</span> <span class="s">'from'</span><span class="p">,</span> <span class="s">'a'</span><span class="p">,</span> <span class="s">'python'</span><span class="p">,</span> <span class="s">'docker'</span><span class="p">,</span> <span class="s">','</span><span class="p">,</span> <span class="s">'now'</span><span class="p">,</span> <span class="s">'with'</span><span class="p">,</span> <span class="s">'tokens'</span><span class="p">,</span> <span class="s">'using'</span><span class="p">,</span> <span class="s">'nltk'</span><span class="p">]</span></code></pre></figure>
+
+<p>Is time to do a simple sentiment analysis using TextBlob
+Now we are going to create a folder for our configuration:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>mkdir cfg</code></pre></figure>
+
+<p>We will add this file for set python dependencies in /cfg/python-deps.txt</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">textblob</code></pre></figure>
+
+<p>We are going to modify the Dockerfile to copy the config, and invoke pip to install dependencies, them we will download the corpus data for TextBlob:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">FROM ubuntu:14.04
+
+MAINTAINER Juan Medina &lt;jamedina@gmail.com&gt;
+
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN apt-get update
+RUN apt-get -y install python-pip python-numpy python-scipy python-matplotlib ipython ipython-notebook python-pandas python-sympy python-nose python-sklearn python-nltk
+
+copy python-app /var/python-app
+copy cfg /etc/cfg
+
+RUN pip install -r /etc/cfg/python-deps.txt
+RUN python -m textblob.download_corpora
+
+CMD <span class="o">[</span><span class="s2">"/usr/bin/python"</span>,<span class="s2">"/var/python-app/test.py"</span><span class="o">]</span></code></pre></figure>
+
+<p>So lets add some sentiment analysis to our test program:</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">textblob</span> <span class="kn">import</span> <span class="n">TextBlob</span>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="s">"Python is great"</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">TextBlob</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">sentiment</span><span class="p">)</span></code></pre></figure>
+
+<p>This will be the output:</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">Sentiment</span><span class="p">(</span><span class="n">polarity</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">subjectivity</span><span class="o">=</span><span class="mf">0.75</span><span class="p">)</span></code></pre></figure>
+
+<p>Now lets configure the flask web app.</p>
+
+<p>First add to /cfg/python-deps.txt:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">flask</code></pre></figure>
+
+<p>Modify Dockerfile to export a port and set and environment variable:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">FROM ubuntu:14.04
+MAINTAINER Juan Medina &lt;jamedina@gmail.com&gt;
+
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN apt-get update
+RUN apt-get -y install python-pip python-numpy python-scipy python-matplotlib ipython ipython-notebook python-pandas python-sympy python-nose python-sklearn python-nltk
+
+copy python-app /var/python-app
+
+copy cfg /etc/cfg
+
+RUN pip install -r /etc/cfg/python-deps.txt
+RUN python -m textblob.download_corpora
+
+ENV FLASK_PORT 8080
+
+EXPOSE <span class="nv">$FLASK_PORT</span>
+
+CMD <span class="o">[</span><span class="s2">"/usr/bin/python"</span>,<span class="s2">"/var/python-app/flask-web.py"</span><span class="o">]</span></code></pre></figure>
+
+<p>And finally lets sketch a simple test service in python-app/flask-web.py:</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">jsonify</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">'/api/test'</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">test</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">result</span> <span class="o">=</span> <span class="s">"ok"</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
+    <span class="n">port</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">'FLASK_PORT'</span><span class="p">]</span>
+    <span class="p">;</span><span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s">'0.0.0.0'</span><span class="p">,</span><span class="n">port</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">port</span><span class="p">))</span></code></pre></figure>
+
+<p>Now to run our docker in daemon and map the expose port to port 80:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>docker run -d -p 80:8080 ml-api</code></pre></figure>
+
+<p>Remember that the docker could be stop with:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>docker stop <span class="o">[</span>container]&lt;/code&gt;</code></pre></figure>
+
+<p>We need to know the IP of our container, if we are using docker machine and we haven’t change the default VM we could use:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>docker-machine ip default</code></pre></figure>
+
+<p>Them we could test using the url : http://IP/api/test</p>
+
+<p>We should see this:</p>
+
+<figure class="highlight"><pre><code class="language-json" data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nt">"result"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ok"</span><span class="w">
+</span><span class="p">}</span></code></pre></figure>
+
+<p>And we could see the log using :</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>docker logs <span class="o">[</span>container]</code></pre></figure>
+
+<p>This should output</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="k">*</span> Running on http://0.0.0.0:8080/ <span class="o">(</span>Press CTRL+C to quit<span class="o">)</span>
+192.168.99.1 - - <span class="o">[</span>05/Dec/2015 12:05:11] <span class="s2">"GET /api/test HTTP/1.1"</span> 200 -</code></pre></figure>
+
+<p>Now lets create a basic REST service that return the sentiment from an string, we will add some basic error handling to our flask service, just edit /python-app/flask-web.py:</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">jsonify</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">request</span>
+<span class="kn">from</span> <span class="nn">textblob</span> <span class="kn">import</span> <span class="n">TextBlob</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">'/api/sentiment/query'</span><span class="p">,</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">'POST'</span><span class="p">,</span><span class="s">'GET'</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">query_sentiment</span><span class="p">():</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">req_json</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">req_json</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+
+                <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span> <span class="n">error</span> <span class="o">=</span> <span class="s">'this service require A JSON request'</span> <span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="s">'text'</span> <span class="ow">in</span> <span class="n">req_json</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="nb">Exception</span><span class="p">(</span><span class="s">'Missing mandatory paramater "text"'</span><span class="p">)</span>
+
+            <span class="n">text</span> <span class="o">=</span> <span class="n">req_json</span><span class="p">[</span><span class="s">'text'</span><span class="p">]</span>
+            <span class="n">blob</span> <span class="o">=</span> <span class="n">TextBlob</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+            <span class="n">sentiment</span> <span class="o">=</span> <span class="n">blob</span><span class="o">.</span><span class="n">sentiment</span>
+
+            <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">polarity</span> <span class="o">=</span> <span class="n">sentiment</span><span class="o">.</span><span class="n">polarity</span><span class="p">,</span> <span class="n">subjectivity</span> <span class="o">=</span> <span class="n">sentiment</span><span class="o">.</span><span class="n">subjectivity</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="nb">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+       <span class="n">app</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">ex</span><span class="p">))</span>
+       <span class="n">app</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">ex</span><span class="o">.</span><span class="n">args</span><span class="p">)</span>
+       <span class="n">app</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
+       <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">error</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">))</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
+
+    <span class="n">LOG_FORMAT</span> <span class="o">=</span> <span class="s">"'</span><span class="si">%(asctime)</span><span class="s">s - </span><span class="si">%(name)</span><span class="s">s - </span><span class="si">%(levelname)</span><span class="s">s - </span><span class="si">%(message)</span><span class="s">s'"</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span><span class="n">format</span><span class="o">=</span><span class="n">LOG_FORMAT</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+    <span class="n">port</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">'FLASK_PORT'</span><span class="p">]</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s">'0.0.0.0'</span><span class="p">,</span><span class="n">port</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">port</span><span class="p">),</span><span class="n">debug</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span></code></pre></figure>
+
+<p>Them we could test our service:</p>
+
+<p><img src="/assets/img/ml_rest_output.png" alt="output" /></p>
+
+    </div>
+  </section>
+
+  <section class="profile">
+    <div class="profile__card">
+      <div class="profile__img">
+        <figure class="absolute-bg" style="background-image: url('/assets/img/pp.jpg');"></figure>
+      </div>
+      <div class="profile__container">
+        <p><b>About Juan Medina</b><br/> I'm just a normal geek that code all kind of stuff, from complex corporate applications to games.<br/> <br/> Games, music, movies and traveling are my escape pods.</p>
+        
+          <ul class="profile__social">
+            
+              <li><a class="fa fa-lg fa-envelope-o" href="mailto:mail@juan-medina.com"></a></li>
+            
+            
+              <li><a class="fa fa-lg fa-github" href="https://github.com/cecile" target="_blank"></a></li>
+            
+              <li><a class="fa fa-lg fa-twitter" href="https://twitter.com/jamedinatwit" target="_blank"></a></li>
+            
+              <li><a class="fa fa-lg fa-reddit" href="https://www.reddit.com/user/LatokValdelius" target="_blank"></a></li>
+            
+          </ul>
+        
+      </div>
+    </div>
+  </section>
+
+</article>
+
+
+  <section class="next">
+    <a class="next__link" href="/2015/11/29/mongoexec-sublime-package/" style="background-image: url('/assets/img/mongoexec.gif');">
+      <div class="next__container">
+        <span>Read Next</span>
+        <h2>MongoExec (Sublime Package)</h2>
+      </div>
+    </a>
+  </section>
+
+
+    </main>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/rellax/1.0.0/rellax.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+<script type="text/javascript" src="/assets/js/app.js"></script>
+
+
+  </body>
+
+</html>

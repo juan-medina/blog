@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>OpenShift | Juan Medina Personal Blog</title>
+  <meta name="author" content="Juan Medina">
+  <meta name="description" content="Personar blog from Juan Medina">
+  <meta property="og:title" content="OpenShift | Juan Medina Personal Blog">
+  <meta property="og:url" content="http://juan-medina.com/2015/10/17/openshift/">
+  <meta property="og:site_name" content="Juan Medina Personal Blog">
+  <meta property="og:description" content="Personar blog from Juan Medina">
+  <meta property="og:image" content="/assets/img/rh_openshift_logo_rgb_black.png">
+  <meta property="og:type" content="blog">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:description" content="Personar blog from Juan Medina">
+  <meta name="twitter:title" content="OpenShift | Juan Medina Personal Blog">
+  <meta name="twitter:url" content="http://juan-medina.com/2015/10/17/openshift/">
+  <meta name="twitter:site" content="Juan Medina Personal Blog">
+  <meta name="twitter:creator" content="@jamedinatwit">
+  <meta name="twitter:domain" content="http://juan-medina.com">
+  <meta property="twitter:image" content="/assets/img/rh_openshift_logo_rgb_black.png">
+
+  <link type="application/atom+xml" rel="alternate" href="http://juan-medina.com/feed.xml" title="Juan Medina Personal Blog" />
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata|Lora|Space+Mono:700">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/syntax.css">
+
+  <link rel="alternate" type="application/rss+xml" title="Juan Medina Personal Blog" href="http://juan-medina.com/feed.xml">
+  <link rel="canonical" href="http://juan-medina.com/2015/10/17/openshift/">
+
+  
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-92250233-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+  
+</head>
+
+
+  <body>
+
+    <main>
+      <article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="section-padding--lg mast rellax" data-rellax-speed="-4">
+    <a class="nav nav--white" href="/">
+      <i class="fa fa-lg fa-arrow-left"></i>
+      <span>Back to Posts</span>
+    </a>
+    <figure class="absolute-bg mast__img" style="background-image: url('/assets/img/rh_openshift_logo_rgb_black.png');"></figure>
+    <div class="mast__container">
+      <span><time datetime="2015-10-17T19:40:00+01:00" itemprop="datePublished">Oct 17, 2015</time></span>
+      <h1 itemprop="name headline">OpenShift</h1>
+      
+        <span>Posted in 
+          
+            <a class="nav--white" href="/category/programming">Programming</a>
+          
+        </span>
+      
+      <span></span>
+    </div>
+  </header>
+
+  <section class="section-padding bg-grey" itemprop="articleBody">
+    <div class="post">
+      <p>There is a lot of movement in the <a href="https://en.wikipedia.org/wiki/Platform_as_a_service" target="_blank">PaaS</a> world, many companies are trying to showcase what is the best platform and to be honest I don’t really know.</p>
+
+<p>However I decided to try it out and I’ve choose <a href="https://www.openshift.com" target="_blank">Red Hat OpenShift</a>.</p>
+
+<p>Red Hat has done with OpenShift a great work, and any one could try it out with their free accounts.</p>
+
+<p>I’ve redo my <a href="https://github.com/cecile/meanexample">MEAN example</a> that I original create to run in <a href="https://aws.amazon.com">AWS example</a>.</p>
+
+<p>The results could be seen <a href="http://node-juanmedina.rhcloud.com">here</a>, and the code is available in this <a href="https://github.com/cecile/openshift">github repository</a>, the code includes a guide to clone this and get just a instance running of the same code.</p>
+
+<p>These are the step that I’ve follow to get this done:</p>
+
+<ul>
+  <li>Create an account in OpenShift</li>
+  <li>Download the client tools as is described in <a href="https://developers.openshift.com/en/getting-started-overview.html">this guide</a>, as prerequisite you need <a href="https://git-scm.com/">Git</a> and <a href="https://www.ruby-lang.org/">Ruby</a></li>
+  <li>Create a folder and then set-up the tool</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>rhc setup</code></pre></figure>
+
+<p>The set-up will create the domain for the apps and it will create &amp; store a SSH certificate that identify the account.</p>
+
+<ul>
+  <li>Create an application, it could be done as part of the set-up as well. I’ve choose NodeJS and MongoDB cartridge</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>rhc app create &lt;app name&gt; nodejs-0.10 mongodb-2.4</code></pre></figure>
+
+<ul>
+  <li>Edit <em>package.json</em> to edit the modules, I’ve add <em>mongoose</em> and <em>bower</em>, <em>express</em> was already there.</li>
+  <li>Modify server.js code to connect to mongo using mongoose. They are environment variables already defined as its a cartridge in the app:</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nv">$OPENSHIFT_MONGODB_DB_HOST</span>
+<span class="nv">$OPENSHIFT_MONGODB_DB_PORT</span>
+<span class="nv">$OPENSHIFT_MONGODB_DB_USERNAME</span>
+<span class="nv">$OPENSHIFT_MONGODB_DB_PASSWORD</span></code></pre></figure>
+
+<ul>
+  <li>Add your front side scripts dependencies using <em>bower.json</em>, like <em>AngularJS</em>.</li>
+  <li>I’ve add and extra script step in package.json to launch bower when the app its build.</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-json" data-lang="json"><span class="p">{</span><span class="w">
+</span><span class="nt">"postinstall"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HOME=$OPENSHIFT_REPO_DIR bower install || bower install"</span><span class="w">
+</span><span class="p">}</span></code></pre></figure>
+
+<ul>
+  <li>Now to build the app.</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>git add
+<span class="gp">$ </span>git commit
+<span class="gp">$ </span>git push origin master</code></pre></figure>
+
+<p>If something went wrong we could view our logs, to access them:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>rhc ssh
+<span class="gp">$ </span><span class="nb">cd</span> <span class="nv">$OPENSHIFT_LOG_DIR</span>
+<span class="gp">$ </span>tail/vi/cat.....</code></pre></figure>
+
+<p>Or use</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>rhc tail -a &lt;app name&gt;</code></pre></figure>
+
+<p>Each time that we do a <em>push</em> the application will be sent to OpenShift and build, including update bower scripts. Them in OpenShift we could any time switch between builds in the Git repository or scale our app automatically.</p>
+
+<p>We could choose to instead to do the bower step when we build, to do it in local and them upload to the repository the scripts dependencies, but the idea of a PaaS is that this is a standalone self contained app and it could be rebuild any time anywhere.</p>
+
+<p>Additional we could add our own repository, as github just adding another remote:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>git remote add github &lt;git hub repo url&gt;</code></pre></figure>
+
+<p>So we could push to github whenever we like to:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>git push github master</code></pre></figure>
+
+<p>Two prepare a local environment that we could use to build and test our app before sent to OpenShift we need to do some additional steps:</p>
+<ul>
+  <li>Download and install NodeJS and MongoDB.</li>
+  <li>Since we are going to build locally add .gitnore to <em>node_module</em> and <em>bower_components</em> folders so we don’t upload them to OpenShift.</li>
+  <li>Configure MongoDB, including creating users and run the server.</li>
+  <li>Set-up enviroment variables as the ones in OpenShift</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nv">$OPENSHIFT_NODEJS_IP</span>
+<span class="nv">$OPENSHIFT_NODEJS_PORT</span>
+<span class="nv">$OPENSHIFT_MONGODB_DB_HOST</span>
+<span class="nv">$OPENSHIFT_MONGODB_DB_PORT</span>
+<span class="nv">$OPENSHIFT_MONGODB_DB_USERNAME</span>
+<span class="nv">$OPENSHIFT_MONGODB_DB_PASSWORD</span></code></pre></figure>
+
+<p>Now we could build and run locally using</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>npm install
+<span class="gp">$ </span>npm start</code></pre></figure>
+
+<p>And that is the basic idea.</p>
+
+<p>As I said I really like how OpenShift works and I’m looking forward to do more test with it.</p>
+
+    </div>
+  </section>
+
+  <section class="profile">
+    <div class="profile__card">
+      <div class="profile__img">
+        <figure class="absolute-bg" style="background-image: url('/assets/img/pp.jpg');"></figure>
+      </div>
+      <div class="profile__container">
+        <p><b>About Juan Medina</b><br/> I'm just a normal geek that code all kind of stuff, from complex corporate applications to games.<br/> <br/> Games, music, movies and traveling are my escape pods.</p>
+        
+          <ul class="profile__social">
+            
+              <li><a class="fa fa-lg fa-envelope-o" href="mailto:mail@juan-medina.com"></a></li>
+            
+            
+              <li><a class="fa fa-lg fa-github" href="https://github.com/cecile" target="_blank"></a></li>
+            
+              <li><a class="fa fa-lg fa-twitter" href="https://twitter.com/jamedinatwit" target="_blank"></a></li>
+            
+              <li><a class="fa fa-lg fa-reddit" href="https://www.reddit.com/user/LatokValdelius" target="_blank"></a></li>
+            
+          </ul>
+        
+      </div>
+    </div>
+  </section>
+
+</article>
+
+
+
+    </main>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/rellax/1.0.0/rellax.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+<script type="text/javascript" src="/assets/js/app.js"></script>
+
+
+  </body>
+
+</html>
