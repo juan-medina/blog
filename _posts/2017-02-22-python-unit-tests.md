@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Python Unit Tets
+title: Python Unit Tests
 date: 2017-02-22 23:41:11
 author: Juan Medina
 comments: true
