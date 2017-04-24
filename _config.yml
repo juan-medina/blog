@@ -21,9 +21,9 @@ I'm just a normal geek that code all kind of stuff, from complex corporate appli
 <br/>
 Games, music, movies and traveling are my escape pods."
 social:
-  github: "https://github.com/cecile"
+  github: "https://github.com/juan-medina"
   twitter: "https://twitter.com/jamedinatwit"
-  reddit: "https://www.reddit.com/user/LatokValdelius"
+  stack-overflow: "http://stackoverflow.com/users/7910403/juan-medina"
 
 # Build settings
 include: ["_categories"]

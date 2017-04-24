@@ -12,7 +12,7 @@ I've an strong believe that programming in different languages is something that
 
 Python is great for a lot of tasks, and I'm using it for tooling a lot, but I'm not doing much Unit Testing on it so I decide to improve and expand my tests.
 
-So here is what I learn so far, if you want to skip these and go directly to the code [here is the git repo](https://github.com/cecile/PythonUnitTests){:target="_blank"} with every example bellow.
+So here is what I learn so far, if you want to skip these and go directly to the code [here is the git repo](https://github.com/LearningByExample/PythonUnitTests){:target="_blank"} with every example bellow.
 
 I've decide to use [nose](http://nose.readthedocs.io/en/latest/){:target="_blank"} as test runner, and [PyHamcrest](https://pypi.python.org/pypi/PyHamcrest){:target="_blank"}  as the assertion framework, specially since I familiar with the popular [Java equivalent](https://code.google.com/archive/p/hamcrest/wikis/Tutorial.wiki){:target="_blank"}.
 
