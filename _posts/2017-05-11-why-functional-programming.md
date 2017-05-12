@@ -237,11 +237,11 @@ The we could do many different things with them:
 {% endhighlight %}
 
 As you could see these allow us to work with any type, any class/object and connect to functions, each of those functions is basically
-a pipe that has a simple input and a simple output but it could be complex and precise.
+a block, that has a simple input and a simple output but it could be complex and precise, and we pipe them together.
 
 These functions could be unit tested, they could be replace and combine with others in order to create more complex operations, they are really encapsulated.
 
-This as well force us to work with immutable objects since the pipe create new objects, even new wrappers.
+This as well force us to work with immutable objects since each block create new objects, even our pipes create new wrappers.
 
 Is this really something that we need to use? Not really but is similar to how many of the functional APIs works, including standard and reactive streams.
 
