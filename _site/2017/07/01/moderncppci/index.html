@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Modern C++ CI | Juan Medina Personal Blog</title>
+  <meta name="author" content="Juan Medina">
+  <meta name="description" content="Personar blog from Juan Medina">
+  <meta property="og:title" content="Modern C++ CI | Juan Medina Personal Blog">
+  <meta property="og:url" content="http://juan-medina.com/2017/07/01/moderncppci/">
+  <meta property="og:site_name" content="Juan Medina Personal Blog">
+  <meta property="og:description" content="Personar blog from Juan Medina">
+  <meta property="og:image" content="/assets/img/cpp_core_guidelines_logo.svg">
+  <meta property="og:type" content="blog">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:description" content="Personar blog from Juan Medina">
+  <meta name="twitter:title" content="Modern C++ CI | Juan Medina Personal Blog">
+  <meta name="twitter:url" content="http://juan-medina.com/2017/07/01/moderncppci/">
+  <meta name="twitter:site" content="Juan Medina Personal Blog">
+  <meta name="twitter:creator" content="@jamedinatwit">
+  <meta name="twitter:domain" content="http://juan-medina.com">
+  <meta property="twitter:image" content="/assets/img/cpp_core_guidelines_logo.svg">
+
+  <link type="application/atom+xml" rel="alternate" href="http://juan-medina.com/feed.xml" title="Juan Medina Personal Blog" />
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata|Lora|Space+Mono:700">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/syntax.css">
+
+  <link rel="alternate" type="application/rss+xml" title="Juan Medina Personal Blog" href="http://juan-medina.com/feed.xml">
+  <link rel="canonical" href="http://juan-medina.com/2017/07/01/moderncppci/">
+
+  
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-92250233-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+  
+</head>
+
+
+  <body>
+
+    <main>
+      <article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="section-padding--lg mast rellax" data-rellax-speed="-4">
+    <a class="nav nav--white" href="/">
+      <i class="fa fa-lg fa-arrow-left"></i>
+      <span>Back to Posts</span>
+    </a>
+    <figure class="absolute-bg mast__img" style="background-image: url('/assets/img/cpp_core_guidelines_logo.svg');"></figure>
+    <div class="mast__container">
+      <span><time datetime="2017-07-01T19:00:00+01:00" itemprop="datePublished">Jul 1, 2017</time></span>
+      <h1 itemprop="name headline">Modern C++ CI</h1>
+      
+        <span>Posted in
+          
+            <a class="nav--white" href="/category/programming">Programming</a>
+          
+        </span>
+      
+      <span></span>
+    </div>
+  </header>
+
+  <section class="section-padding bg-grey" itemprop="articleBody">
+    <div class="post">
+      <p>C++ is most active than ever, with the <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/n4661.html" target="_blank">C++17 standard ready</a>, a widely support on C++14 <a href="http://en.cppreference.com/w/cpp/compiler_support" target="_blank">from major compilers</a> and <a href="https://isocpp.org/std/status" target="_blank">C++20 planning on the way</a> there is a interesting <a href="https://www.youtube.com/watch?v=_wzc7a3McOs" target="_blank">future for the standard</a>.</p>
+
+<p>Modern C++ is great, some people are even <a href="http://cppdepend.com/blog/?p=171" target="_blank">calling it a new language</a>, but is not only the language what is evolving the tool-chain is getter better, so doing continuous integration for cross platform projects is simple and effective.</p>
+
+<p>I decide to do a simple project using some of the C++14 features and following the <a href="https://github.com/isocpp/CppCoreGuidelines" target="_blank">C++ Core Guidelines</a> whenever its possible. The result is available in this <em><a href="https://github.com/LearningByExample/ModernCppCI" target="_blank">repository</a></em>.</p>
+
+<p><strong>I set some goals to doing this project:</strong></p>
+
+<ul>
+  <li>Project is organized with a logical structure</li>
+  <li>Need to be a small C++14 project, but nothing really complicate.</li>
+  <li>Will have at least two modules, a library and a program that uses it.</li>
+  <li>Modern Unit Tests.</li>
+  <li>It should use some third party software.</li>
+  <li>CI will be triggered per commit and build using;
+    <ul>
+      <li>GCC &amp; CLang on Linux</li>
+      <li>XCode on OSX</li>
+      <li>Visual Studio on Windows</li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong>The initial project structure</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>  /lib
+    /src
+    /include
+    /test
+  /app
+    /src
+    /test
+  /third_party
+</code></pre>
+</div>
+
+<p>Nothing complicated, and easy to manage, with a clear meaning of each folder.</p>
+
+<p><strong>The simple program</strong></p>
+
+<figure class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="cp">#include "calc.h"
+#include "logger.h"
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+  <span class="k">using</span> <span class="k">namespace</span> <span class="n">ModernCppCI</span><span class="p">;</span>
+  <span class="n">Logger</span><span class="o">::</span><span class="n">level</span><span class="p">(</span><span class="n">LogLevel</span><span class="o">::</span><span class="n">info</span><span class="p">);</span>
+
+  <span class="n">Logger</span> <span class="n">log</span><span class="p">{</span><span class="n">__func__</span><span class="p">};</span>
+
+  <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"doing some calculation"</span><span class="p">);</span>
+  <span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="n">Calc</span><span class="p">{}</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="s">"+"</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span> <span class="o">&lt;&lt;</span> <span class="s">"*"</span> <span class="o">&lt;&lt;</span> <span class="mi">5</span> <span class="o">&lt;&lt;</span> <span class="s">"-"</span> <span class="o">&lt;&lt;</span> <span class="mi">3</span> <span class="o">&lt;&lt;</span> <span class="s">"/"</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>This program will output when run:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>[2017-07-01 11:09:22.766] [console] [info] [main] doing some calculation
+[2017-07-01 11:09:22.768] [console] [info] [main] 1 + 2 * 5 - 3 / 4 = 3
+</code></pre>
+</div>
+<p>This example use a couple of classes defined in the library, <em>Calc</em> and <em>Logger</em> to display a simple calculation.</p>
+
+<p><strong>Doing Unit Tests</strong></p>
+
+<p>I decide to use the wonderful <a href="https://github.com/philsquared/Catch" target="_blank">Catch</a> for doing the unit test, as an example:</p>
+
+<figure class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="n">TEST_CASE</span><span class="p">(</span><span class="s">"chain operations will work"</span><span class="p">,</span> <span class="s">"[calc]"</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">auto</span> <span class="n">calc</span> <span class="o">=</span> <span class="n">Calc</span><span class="p">{}</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="s">"+"</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span> <span class="o">&lt;&lt;</span> <span class="s">"*"</span> <span class="o">&lt;&lt;</span> <span class="mi">5</span> <span class="o">&lt;&lt;</span> <span class="s">"-"</span> <span class="o">&lt;&lt;</span> <span class="mi">3</span> <span class="o">&lt;&lt;</span> <span class="s">"/"</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">;</span>
+
+  <span class="n">REQUIRE</span><span class="p">(</span><span class="n">calc</span><span class="p">.</span><span class="n">result</span><span class="p">()</span> <span class="o">==</span> <span class="mi">3</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">TEST_CASE</span><span class="p">(</span><span class="s">"we could stream results"</span><span class="p">,</span> <span class="s">"[calc]"</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">ostringstream</span> <span class="n">string_stream</span><span class="p">{};</span>
+
+  <span class="n">string_stream</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">Calc</span><span class="p">{}</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="s">"+"</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="p">);</span>
+
+  <span class="n">REQUIRE</span><span class="p">(</span><span class="n">string_stream</span><span class="p">.</span><span class="n">str</span><span class="p">()</span> <span class="o">==</span> <span class="s">"1 + 2 = 3"</span><span class="p">);</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>We are not going into the detail in the implementation of the classes or the test, the <em><a href="https://github.com/LearningByExample/ModernCppCI" target="_blank">repository</a></em> has all the details about it, lest focus now on the CI.</p>
+
+<p><strong>Build and test in all platform</strong></p>
+
+<p>We are going to use <a href="https://cmake.org/" target="_blank">CMake</a> and <a href="https://cmake.org/Wiki/CTest:FAQ" target="_blank">CTest</a> for creating our build so we start with the main <em>CMakeLists.txt</em> on the root of the project.</p>
+
+<figure class="highlight"><pre><code class="language-cmake" data-lang="cmake"><span class="c1"># CMake build : global project</span>
+
+<span class="nb">cmake_minimum_required</span> <span class="p">(</span>VERSION 3.3<span class="p">)</span>
+
+<span class="nb">project</span> <span class="p">(</span>ModernCppCI<span class="p">)</span>
+
+<span class="nb">set_property</span> <span class="p">(</span>GLOBAL PROPERTY USE_FOLDERS ON<span class="p">)</span>
+
+<span class="nb">set</span> <span class="p">(</span>CMAKE_CXX_STANDARD 14<span class="p">)</span>
+<span class="nb">set</span> <span class="p">(</span>CMAKE_CXX_STANDARD_REQUIRED ON<span class="p">)</span>
+
+<span class="nb">set</span> <span class="p">(</span>THREADS_PREFER_PTHREAD_FLAG ON<span class="p">)</span>
+<span class="nb">find_package</span> <span class="p">(</span>Threads REQUIRED<span class="p">)</span>
+
+<span class="nb">add_subdirectory</span> <span class="p">(</span>third_party EXCLUDE_FROM_ALL<span class="p">)</span>
+<span class="nb">add_subdirectory</span> <span class="p">(</span>lib<span class="p">)</span>
+<span class="nb">add_subdirectory</span> <span class="p">(</span>app<span class="p">)</span>
+
+<span class="nb">enable_testing</span> <span class="p">()</span></code></pre></figure>
+
+<p>First we just set some settings, as that we are going to we require C++14, we will find the Thread library for any tool-chain, we include our directories, but we exlude for the third party other build targets that our dependencies could bring, and finally we set that this CMake project will have tests.</p>
+
+<p><em>Preparing the third party software</em></p>
+
+<p>The third part software that we are going to use is:</p>
+
+<ul>
+  <li><a href="https://github.com/philsquared/Catch" target="_blank">Catch</a> for Unit Test.</li>
+  <li><a href="https://github.com/gabime/spdlog" target="_blank">spdlog</a> for a very fast C++ logging library.</li>
+</ul>
+
+<p>The third party software is cloned as submodules, so we use their original project structure.</p>
+
+<p>Now we prepare a new <em>CMakeLists.txt</em> under the /third_party folder:</p>
+
+<figure class="highlight"><pre><code class="language-cmake" data-lang="cmake"><span class="c1"># CMake build : third party</span>
+
+<span class="c1">#configure directories</span>
+<span class="nb">set</span> <span class="p">(</span>THIRD_PARTY_MODULE_PATH <span class="s2">"</span><span class="si">${</span><span class="nv">PROJECT_SOURCE_DIR</span><span class="si">}</span><span class="s2">/third_party"</span><span class="p">)</span>
+
+<span class="c1"># catch</span>
+
+<span class="c1">#configure directories</span>
+<span class="nb">set</span> <span class="p">(</span>CATCH_MODULE_PATH <span class="s2">"</span><span class="si">${</span><span class="nv">THIRD_PARTY_MODULE_PATH</span><span class="si">}</span><span class="s2">/Catch"</span><span class="p">)</span>
+<span class="nb">set</span> <span class="p">(</span>CATCH_INCLUDE_PATH <span class="s2">"</span><span class="si">${</span><span class="nv">CATCH_MODULE_PATH</span><span class="si">}</span><span class="s2">/include"</span><span class="p">)</span>
+
+<span class="c1">#include custom cmake function</span>
+<span class="nb">include</span> <span class="p">(</span> <span class="s2">"</span><span class="si">${</span><span class="nv">CATCH_MODULE_PATH</span><span class="si">}</span><span class="s2">/contrib/ParseAndAddCatchTests.cmake"</span><span class="p">)</span>
+
+<span class="c1"># spdlog</span>
+
+<span class="c1">#configure directories</span>
+<span class="nb">set</span> <span class="p">(</span>SPDLOG_MODULE_PATH <span class="s2">"</span><span class="si">${</span><span class="nv">THIRD_PARTY_MODULE_PATH</span><span class="si">}</span><span class="s2">/spdlog"</span><span class="p">)</span>
+<span class="nb">set</span> <span class="p">(</span>SPDLOG_INCLUDE_PATH <span class="s2">"</span><span class="si">${</span><span class="nv">SPDLOG_MODULE_PATH</span><span class="si">}</span><span class="s2">/include"</span><span class="p">)</span>
+
+<span class="c1">#set variables</span>
+<span class="nb">set</span> <span class="p">(</span>THIRD_PARTY_INCLUDE_PATH  <span class="si">${</span><span class="nv">SPDLOG_INCLUDE_PATH</span><span class="si">}</span><span class="p">)</span>
+
+<span class="c1">#set variables for tests</span>
+<span class="nb">set</span> <span class="p">(</span>TEST_THIRD_PARTY_INCLUDE_PATH  <span class="si">${</span><span class="nv">CATCH_INCLUDE_PATH</span><span class="si">}</span><span class="p">)</span>
+
+<span class="c1">#export vars</span>
+<span class="nb">set</span> <span class="p">(</span>THIRD_PARTY_INCLUDE_PATH  <span class="si">${</span><span class="nv">THIRD_PARTY_INCLUDE_PATH</span><span class="si">}</span> PARENT_SCOPE<span class="p">)</span>
+<span class="nb">set</span> <span class="p">(</span>TEST_THIRD_PARTY_INCLUDE_PATH  <span class="si">${</span><span class="nv">TEST_THIRD_PARTY_INCLUDE_PATH</span><span class="si">}</span> PARENT_SCOPE<span class="p">)</span></code></pre></figure>
+
+<p>The most import part here is that we export two variables that will have the corresponding directories to add to the include paths for our targets and we push them to the parent scope so we could use them. Additionally for Catch we include a custom function that will allow to auto discover tests.</p>
+
+<p><strong>Bulding the library</strong></p>
+
+<p>For creating our library we add a new <em>CMakeLists.txt</em> under the /lib folder:</p>
+
+<figure class="highlight"><pre><code class="language-cmake" data-lang="cmake"><span class="c1"># CMake build : library</span>
+
+<span class="c1">#configure variables</span>
+<span class="nb">set</span> <span class="p">(</span>LIB_NAME <span class="s2">"</span><span class="si">${</span><span class="nv">PROJECT_NAME</span><span class="si">}</span><span class="s2">Lib"</span><span class="p">)</span>
+
+<span class="c1">#configure directories</span>
+<span class="nb">set</span> <span class="p">(</span>LIBRARY_MODULE_PATH <span class="s2">"</span><span class="si">${</span><span class="nv">PROJECT_SOURCE_DIR</span><span class="si">}</span><span class="s2">/lib"</span><span class="p">)</span>
+<span class="nb">set</span> <span class="p">(</span>LIBRARY_SRC_PATH  <span class="s2">"</span><span class="si">${</span><span class="nv">LIBRARY_MODULE_PATH</span><span class="si">}</span><span class="s2">/src"</span> <span class="p">)</span>
+<span class="nb">set</span> <span class="p">(</span>LIBRARY_INCLUDE_PATH  <span class="s2">"</span><span class="si">${</span><span class="nv">LIBRARY_MODULE_PATH</span><span class="si">}</span><span class="s2">/include"</span><span class="p">)</span>
+
+<span class="c1">#set includes</span>
+<span class="nb">include_directories</span> <span class="p">(</span><span class="si">${</span><span class="nv">LIBRARY_INCLUDE_PATH</span><span class="si">}</span> <span class="si">${</span><span class="nv">THIRD_PARTY_INCLUDE_PATH</span><span class="si">}</span><span class="p">)</span>
+
+<span class="c1">#set sources</span>
+<span class="nb">file</span> <span class="p">(</span>GLOB LIB_HEADER_FILES <span class="s2">"</span><span class="si">${</span><span class="nv">LIBRARY_INCLUDE_PATH</span><span class="si">}</span><span class="s2">/*.h"</span><span class="p">)</span>
+<span class="nb">file</span> <span class="p">(</span>GLOB LIB_SOURCE_FILES <span class="s2">"</span><span class="si">${</span><span class="nv">LIBRARY_SRC_PATH</span><span class="si">}</span><span class="s2">/*.cpp"</span><span class="p">)</span>
+
+<span class="c1">#set library</span>
+<span class="nb">add_library</span> <span class="p">(</span><span class="si">${</span><span class="nv">LIB_NAME</span><span class="si">}</span> STATIC <span class="si">${</span><span class="nv">LIB_SOURCE_FILES</span><span class="si">}</span> <span class="si">${</span><span class="nv">LIB_HEADER_FILES</span><span class="si">}</span><span class="p">)</span>
+
+<span class="c1">#export vars</span>
+<span class="nb">set</span> <span class="p">(</span>LIBRARY_INCLUDE_PATH  <span class="si">${</span><span class="nv">LIBRARY_INCLUDE_PATH</span><span class="si">}</span> PARENT_SCOPE<span class="p">)</span>
+<span class="nb">set</span> <span class="p">(</span>LIB_NAME <span class="si">${</span><span class="nv">LIB_NAME</span><span class="si">}</span> PARENT_SCOPE<span class="p">)</span>
+
+<span class="c1">#test</span>
+<span class="nb">enable_testing</span> <span class="p">()</span>
+<span class="nb">add_subdirectory</span> <span class="p">(</span>test<span class="p">)</span></code></pre></figure>
+
+<p>Here we set the desired include directories and we built a list of sources and header files, them we create the library and export a couple of variable so we could use them in our application, finally we add the test directory so we build the test for this library.</p>
+
+<p><strong>Testing the library</strong></p>
+
+<p>No we create a new <em>CMakeLists.txt</em> under the /lib/test directory:</p>
+
+<figure class="highlight"><pre><code class="language-cmake" data-lang="cmake"><span class="c1"># CMake build : library tests</span>
+
+<span class="c1">#configure variables</span>
+<span class="nb">set</span> <span class="p">(</span>TEST_APP_NAME <span class="s2">"</span><span class="si">${</span><span class="nv">LIB_NAME</span><span class="si">}</span><span class="s2">Test"</span><span class="p">)</span>
+
+<span class="c1">#configure directories</span>
+<span class="nb">set</span> <span class="p">(</span>TEST_MODULE_PATH <span class="s2">"</span><span class="si">${</span><span class="nv">LIBRARY_MODULE_PATH</span><span class="si">}</span><span class="s2">/test"</span><span class="p">)</span>
+
+<span class="c1">#configure test directories</span>
+<span class="nb">set</span> <span class="p">(</span>TEST_SRC_PATH  <span class="s2">"</span><span class="si">${</span><span class="nv">TEST_MODULE_PATH</span><span class="si">}</span><span class="s2">/src"</span> <span class="p">)</span>
+
+<span class="c1">#set includes</span>
+<span class="nb">include_directories</span> <span class="p">(</span><span class="si">${</span><span class="nv">LIBRARY_INCLUDE_PATH</span><span class="si">}</span> <span class="si">${</span><span class="nv">TEST_THIRD_PARTY_INCLUDE_PATH</span><span class="si">}</span><span class="p">)</span>
+
+<span class="c1">#set test sources</span>
+<span class="nb">file</span> <span class="p">(</span>GLOB TEST_SOURCE_FILES <span class="s2">"</span><span class="si">${</span><span class="nv">TEST_SRC_PATH</span><span class="si">}</span><span class="s2">/*.cpp"</span><span class="p">)</span>
+
+<span class="c1">#set target executable</span>
+<span class="nb">add_executable</span> <span class="p">(</span><span class="si">${</span><span class="nv">TEST_APP_NAME</span><span class="si">}</span> <span class="si">${</span><span class="nv">TEST_SOURCE_FILES</span><span class="si">}</span><span class="p">)</span>
+
+<span class="c1">#add the library</span>
+<span class="nb">target_link_libraries</span> <span class="p">(</span><span class="si">${</span><span class="nv">TEST_APP_NAME</span><span class="si">}</span> <span class="si">${</span><span class="nv">LIB_NAME</span><span class="si">}</span> Threads::Threads<span class="p">)</span>
+
+<span class="c1"># Turn on CMake testing capabilities</span>
+<span class="nb">enable_testing</span><span class="p">()</span>
+
+<span class="c1">#parse catch tests</span>
+<span class="nf">ParseAndAddCatchTests</span> <span class="p">(</span><span class="si">${</span><span class="nv">TEST_APP_NAME</span><span class="si">}</span><span class="p">)</span></code></pre></figure>
+
+<p>We include the test sources and we link the test executable with our Library and the Threads library, finally we out discover the catch tests using the previously imported function in the third party modules.</p>
+
+<p><strong>Building the application</strong></p>
+
+<p>Building the application is now quite simple with a new <em>CMakeLists.txt</em> under the /app directory:</p>
+
+<figure class="highlight"><pre><code class="language-cmake" data-lang="cmake"><span class="c1"># CMake build : main application</span>
+
+<span class="c1">#configure variables</span>
+<span class="nb">set</span> <span class="p">(</span>APP_NAME <span class="s2">"</span><span class="si">${</span><span class="nv">PROJECT_NAME</span><span class="si">}</span><span class="s2">App"</span><span class="p">)</span>
+
+<span class="c1">#configure directories</span>
+<span class="nb">set</span> <span class="p">(</span>APP_MODULE_PATH <span class="s2">"</span><span class="si">${</span><span class="nv">PROJECT_SOURCE_DIR</span><span class="si">}</span><span class="s2">/app"</span><span class="p">)</span>
+<span class="nb">set</span> <span class="p">(</span>APP_SRC_PATH  <span class="s2">"</span><span class="si">${</span><span class="nv">APP_MODULE_PATH</span><span class="si">}</span><span class="s2">/src"</span> <span class="p">)</span>
+
+<span class="c1">#set includes</span>
+<span class="nb">include_directories</span> <span class="p">(</span><span class="si">${</span><span class="nv">LIBRARY_INCLUDE_PATH</span><span class="si">}</span> <span class="si">${</span><span class="nv">THIRD_PARTY_INCLUDE_PATH</span><span class="si">}</span><span class="p">)</span>
+
+<span class="c1">#set sources</span>
+<span class="nb">file</span> <span class="p">(</span>GLOB APP_SOURCE_FILES <span class="s2">"</span><span class="si">${</span><span class="nv">APP_SRC_PATH</span><span class="si">}</span><span class="s2">/*.cpp"</span><span class="p">)</span>
+
+<span class="c1">#set target executable</span>
+<span class="nb">add_executable</span> <span class="p">(</span><span class="si">${</span><span class="nv">APP_NAME</span><span class="si">}</span> <span class="si">${</span><span class="nv">APP_SOURCE_FILES</span><span class="si">}</span><span class="p">)</span>
+
+<span class="c1">#add the library</span>
+<span class="nb">target_link_libraries</span> <span class="p">(</span><span class="si">${</span><span class="nv">APP_NAME</span><span class="si">}</span> <span class="si">${</span><span class="nv">LIB_NAME</span><span class="si">}</span> Threads::Threads<span class="p">)</span>
+
+<span class="c1">#test</span>
+<span class="nb">enable_testing</span> <span class="p">()</span>
+<span class="nb">add_subdirectory</span> <span class="p">(</span>test<span class="p">)</span></code></pre></figure>
+
+<p>We just include the sources for the app, link with the libraries and include the test folder.</p>
+
+<p><strong>Doing a simple test on the application</strong></p>
+
+<p>For the application itself we are just going to running and check that end successfully, so we create a new <em>CMakeLists.txt</em> under the /app/test directory:</p>
+
+<figure class="highlight"><pre><code class="language-cmake" data-lang="cmake"><span class="c1"># CMake build : main application test</span>
+
+<span class="c1">#configure variables</span>
+<span class="nb">set</span> <span class="p">(</span>APP_NAME <span class="s2">"</span><span class="si">${</span><span class="nv">PROJECT_NAME</span><span class="si">}</span><span class="s2">App"</span><span class="p">)</span>
+<span class="nb">set</span> <span class="p">(</span>TEST_NAME <span class="s2">"</span><span class="si">${</span><span class="nv">APP_NAME</span><span class="si">}</span><span class="s2">Test"</span><span class="p">)</span>
+
+<span class="nb">enable_testing</span> <span class="p">()</span>
+<span class="nb">add_test</span> <span class="p">(</span>NAME <span class="si">${</span><span class="nv">TEST_NAME</span><span class="si">}</span> COMMAND <span class="si">${</span><span class="nv">APP_NAME</span><span class="si">}</span> <span class="p">)</span></code></pre></figure>
+
+<p>Here we simply run the application and we use the CTest command add_test to run it, if the application fails this test will fail.</p>
+
+<p><strong>CMake will handle it</strong></p>
+
+<p>With this CMake will create our targets and link them together so if we change our lib their test will be build, so the application. If we run the test all required target will be build include the library and the application.</p>
+
+<p><strong>Using CMake to create a project for our tool-chain</strong></p>
+
+<p>To generate the projects, auto discovering everything, including what compiler we are going to use we could just:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  cmake -H. -BBuild</code></pre></figure>
+
+<p>If you like to set a implicit compiler set the variable CXX=${COMPILER}, for example COMPILER could be gcc, clang and so on.</p>
+
+<p>Auto detect in Windows usually generate a Visual Studio project since msbuild require it, but in OSX does not generate and XCode project, since is not required for compiling using XCode clang.</p>
+
+<p>Specify build type debug/release</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="c"># generate a debug project</span>
+  cmake -H. -BBuild -DCMAKE_BUILD_TYPE<span class="o">=</span>Debug
+  <span class="c"># generate a release project</span>
+  cmake -H. -BBuild -DCMAKE_BUILD_TYPE<span class="o">=</span>Release</code></pre></figure>
+
+<p>Specify architecture</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="c"># 64 bits architecture</span>
+  cmake -H. -BBuild -Ax64
+  <span class="c"># ARM architecture</span>
+  cmake -H. -BBuild -AARM
+  <span class="c"># Windows 32 bits architecture</span>
+  cmake -H. -BBuild -AxWin32</code></pre></figure>
+
+<p>Generate different project types</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="c"># MinGW makefiles</span>
+  cmake -H. -BBuild -G <span class="s2">"MinGW Makefiles"</span>
+  <span class="c"># XCode project</span>
+  cmake -H. -BBuild -G <span class="s2">"XCode"</span>
+  <span class="c"># Visual Studio 15 2017 solution</span>
+  cmake -H. -BBuild -G <span class="s2">"Visual Studio 15 2017"</span></code></pre></figure>
+
+<p><strong>Build the project</strong></p>
+
+<p>From the Build folder</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="c"># build the default build type (in multi build types usually debug)</span>
+  cmake --build .
+  <span class="c"># build a specific build type</span>
+  cmake --build . --config Release</code></pre></figure>
+
+<p><strong>Run tests</strong></p>
+
+<p>From the Build folder</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="c"># run all test using the default build type</span>
+  ctest -V
+  <span class="c"># run all test in Release build type</span>
+  ctest -V -C Release</code></pre></figure>
+
+<p>This will run all our test and given stats about how long will take, which one fail and so on.</p>
+
+<p><strong>Adding Travis CI</strong></p>
+
+<p>No that we have our project ready we could building in travis for Linux and OSX. We will add this .travis.yml to our project:</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">language</span><span class="pi">:</span> <span class="s">cpp</span>
+<span class="s">sudo</span><span class="pi">:</span> <span class="s">true</span>
+
+<span class="s">matrix</span><span class="pi">:</span>
+  <span class="s">include</span><span class="pi">:</span>
+
+    <span class="c1"># Linux C++14 GCC builds</span>
+    <span class="pi">-</span> <span class="s">os</span><span class="pi">:</span> <span class="s">linux</span>
+      <span class="s">compiler</span><span class="pi">:</span> <span class="s">gcc</span>
+      <span class="s">addons</span><span class="pi">:</span> <span class="nl">&amp;gcc6</span>
+        <span class="s">apt</span><span class="pi">:</span>
+          <span class="s">sources</span><span class="pi">:</span> <span class="pi">[</span><span class="s1">'</span><span class="s">ubuntu-toolchain-r-test'</span><span class="pi">]</span>
+          <span class="s">packages</span><span class="pi">:</span> <span class="pi">[</span><span class="s1">'</span><span class="s">g++-6'</span><span class="pi">]</span>
+      <span class="s">env</span><span class="pi">:</span> <span class="s">COMPILER='g++-6' BUILD_TYPE='Release'</span>
+
+    <span class="pi">-</span> <span class="s">os</span><span class="pi">:</span> <span class="s">linux</span>
+      <span class="s">compiler</span><span class="pi">:</span> <span class="s">gcc</span>
+      <span class="s">addons</span><span class="pi">:</span> <span class="nv">*gcc6</span>
+      <span class="s">env</span><span class="pi">:</span> <span class="s">COMPILER='g++-6' BUILD_TYPE='Debug'</span>
+
+    <span class="c1"># Linux C++14 Clang builds</span>
+    <span class="pi">-</span> <span class="s">os</span><span class="pi">:</span> <span class="s">linux</span>
+      <span class="s">compiler</span><span class="pi">:</span> <span class="s">clang</span>
+      <span class="s">addons</span><span class="pi">:</span> <span class="nl">&amp;clang38</span>
+        <span class="s">apt</span><span class="pi">:</span>
+          <span class="s">sources</span><span class="pi">:</span> <span class="pi">[</span><span class="s1">'</span><span class="s">llvm-toolchain-precise-3.8'</span><span class="pi">,</span> <span class="s1">'</span><span class="s">ubuntu-toolchain-r-test'</span><span class="pi">]</span>
+          <span class="s">packages</span><span class="pi">:</span> <span class="pi">[</span><span class="s1">'</span><span class="s">clang-3.8'</span><span class="pi">]</span>
+      <span class="s">env</span><span class="pi">:</span> <span class="s">COMPILER='clang++-3.8' BUILD_TYPE='Release'</span>
+
+    <span class="pi">-</span> <span class="s">os</span><span class="pi">:</span> <span class="s">linux</span>
+      <span class="s">compiler</span><span class="pi">:</span> <span class="s">clang</span>
+      <span class="s">addons</span><span class="pi">:</span> <span class="nv">*clang38</span>
+      <span class="s">env</span><span class="pi">:</span> <span class="s">COMPILER='clang++-3.8' BUILD_TYPE='Debug'</span>
+
+    <span class="c1"># OSX C++14 Clang Builds</span>
+
+    <span class="pi">-</span> <span class="s">os</span><span class="pi">:</span> <span class="s">osx</span>
+      <span class="s">osx_image</span><span class="pi">:</span> <span class="s">xcode8.3</span>
+      <span class="s">compiler</span><span class="pi">:</span> <span class="s">clang</span>
+      <span class="s">env</span><span class="pi">:</span> <span class="s">COMPILER='clang++' BUILD_TYPE='Debug'</span>
+
+    <span class="pi">-</span> <span class="s">os</span><span class="pi">:</span> <span class="s">osx</span>
+      <span class="s">osx_image</span><span class="pi">:</span> <span class="s">xcode8.3</span>
+      <span class="s">compiler</span><span class="pi">:</span> <span class="s">clang</span>
+      <span class="s">env</span><span class="pi">:</span> <span class="s">COMPILER='clang++' BUILD_TYPE='Release'</span>
+
+
+<span class="s">install</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"</span>
+  <span class="pi">-</span> <span class="s">mkdir -p ${DEPS_DIR} &amp;&amp; cd ${DEPS_DIR}</span>
+  <span class="pi">-</span> <span class="pi">|</span>
+    <span class="no">if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then</span>
+      <span class="no">CMAKE_URL="http://www.cmake.org/files/v3.3/cmake-3.3.2-Linux-x86_64.tar.gz"</span>
+      <span class="no">mkdir cmake &amp;&amp; travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake</span>
+      <span class="no">export PATH=${DEPS_DIR}/cmake/bin:${PATH}</span>
+    <span class="no">elif [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then</span>
+      <span class="no">which cmake || brew install cmake</span>
+    <span class="no">fi</span>
+
+<span class="s">before_script</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">export CXX=${COMPILER}</span>
+  <span class="pi">-</span> <span class="s">cd ${TRAVIS_BUILD_DIR}</span>
+  <span class="pi">-</span> <span class="s">cmake -H. -BBuild -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -Wdev</span>
+  <span class="pi">-</span> <span class="s">cd Build</span>
+
+<span class="s">script</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">make -j 2</span>
+  <span class="pi">-</span> <span class="s">ctest -V -j 2</span></code></pre></figure>
+
+<p>This will use a buld matrix to generate the project, build it and do the test for Linux (clang38  / gcc6) and OSX (XCode 8.3 clang) for Debug and Release targets.</p>
+
+<p><strong>Adding Appveyor</strong></p>
+
+<p>Finally we will use Appveyor for Visual Studio on  Windows builds adding a appveyor.yml to our project:</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="c1"># version string format -- This will be overwritten later anyway</span>
+<span class="s">version</span><span class="pi">:</span> <span class="s2">"</span><span class="s">{build}"</span>
+
+<span class="s">os</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">Visual Studio 2017</span>
+  <span class="pi">-</span> <span class="s">Visual Studio 2015</span>
+
+<span class="s">init</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">git config --global core.autocrlf input</span>
+  <span class="c1"># Set build version to git commit-hash</span>
+  <span class="pi">-</span> <span class="s">ps</span><span class="pi">:</span> <span class="s">Update-AppveyorBuild -Version "$($env:APPVEYOR_REPO_BRANCH) - $($env:APPVEYOR_REPO_COMMIT)"</span>
+
+<span class="s">install</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">git submodule update --init --recursive</span>
+
+<span class="c1"># Win32 and x64 are CMake-compatible solution platform names.</span>
+<span class="c1"># This allows us to pass %PLATFORM% to CMake -A.</span>
+<span class="s">platform</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">Win32</span>
+  <span class="pi">-</span> <span class="s">x64</span>
+
+<span class="c1"># build Configurations, i.e. Debug, Release, etc.</span>
+<span class="s">configuration</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">Debug</span>
+  <span class="pi">-</span> <span class="s">Release</span>
+
+<span class="c1">#Cmake will autodetect the compiler, but we set the arch</span>
+<span class="s">before_build</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">cmake -H. -BBuild -A%PLATFORM%</span>
+
+<span class="c1"># build with MSBuild</span>
+<span class="s">build</span><span class="pi">:</span>
+  <span class="s">project</span><span class="pi">:</span> <span class="s">Build\ModernCppCI.sln</span>        <span class="c1"># path to Visual Studio solution or project</span>
+  <span class="s">parallel</span><span class="pi">:</span> <span class="s">true</span>                        <span class="c1"># enable MSBuild parallel builds</span>
+  <span class="s">verbosity</span><span class="pi">:</span> <span class="s">normal</span>                     <span class="c1"># MSBuild verbosity level {quiet|minimal|normal|detailed}</span>
+
+<span class="s">test_script</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">cd Build</span>
+  <span class="pi">-</span> <span class="s">ctest -V -j 2 -C %CONFIGURATION%</span></code></pre></figure>
+
+<p>In this case we are going to build using Visual Studio 2015 and 2017 with Win32 and x64 architecture and Debug and Release targets.</p>
+
+<p><strong>Summary</strong></p>
+
+<p>So probably this is a more complex setup that initially anticipated but when is done working with it is really simple.</p>
+
+<p>We could add new files just creating them in the right folders, work with our favorite IDE, run our tests and push to our git to get our CI reports.</p>
+
+<p>Some IDE as CLion have a runner for Catch that allow us to run individual test with a couple of clicks, however we could do the same just filtering test by tags in our favorite IDE adding to the arguments of our test application any of the <a href="https://github.com/philsquared/Catch/blob/master/docs/command-line.md" target="_blank">Catch supported command line parameters</a>.</p>
+
+<p>In fact we could even use <a href="https://wiki.jenkins.io/display/JENKINS/CMake+Plugin" target="_blank">this jenkins pluging</a> to get our CMake / CTest build, test and reported. But I’ll leave that for other day.</p>
+
+<p>Anyway I think this is something that I’ve really enjoy to learn and I’m sure that will continue to use in future C++ projects.</p>
+
+<p><strong>references</strong></p>
+
+<ul>
+  <li><a href="https://cmake.org/">https://cmake.org/</a></li>
+  <li><a href="https://docs.travis-ci.com/user/languages/cpp/">https://docs.travis-ci.com/user/languages/cpp/</a></li>
+  <li><a href="https://www.appveyor.com/docs/lang/cpp/">https://www.appveyor.com/docs/lang/cpp/</a></li>
+  <li><a href="https://github.com/isocpp/CppCoreGuidelines">https://github.com/isocpp/CppCoreGuidelines</a></li>
+  <li><a href="https://github.com/philsquared/Catch">https://github.com/philsquared/Catch</a></li>
+  <li><a href="https://github.com/gabime/spdlog">https://github.com/gabime/spdlog</a></li>
+  <li><a href="https://github.com/cognitivewaves/CMake-VisualStudio-Example">https://github.com/cognitivewaves/CMake-VisualStudio-Example</a></li>
+  <li><a href="http://derekmolloy.ie/hello-world-introductions-to-cmake/">http://derekmolloy.ie/hello-world-introductions-to-cmake/</a></li>
+  <li><a href="https://cmake.org/Wiki/CMake/Testing_With_CTest">https://cmake.org/Wiki/CMake/Testing_With_CTest</a></li>
+  <li><a href="https://www.appveyor.com/docs/lang/cpp/">https://www.appveyor.com/docs/lang/cpp/</a></li>
+  <li><a href="https://docs.travis-ci.com/user/languages/cpp/">https://docs.travis-ci.com/user/languages/cpp/</a></li>
+  <li><a href="https://github.com/philsquared/Catch/blob/master/docs/build-systems.md">https://github.com/philsquared/Catch/blob/master/docs/build-systems.md</a></li>
+  <li><a href="https://stackoverflow.com/questions/14446495/cmake-project-structure-with-unit-tests">https://stackoverflow.com/questions/14446495/cmake-project-structure-with-unit-tests</a></li>
+</ul>
+
+    
+
+    <div id="disqus_thread"></div>
+    <script>
+
+    /**
+    *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+    *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+
+    var disqus_config = function () {
+    this.page.url = "https://juan-medina.com/2017/07/01/moderncppci/";
+    this.page.identifier = "/2017/07/01/moderncppci/"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    this.page.title = "Modern C++ CI";
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = '//juan-medina-com.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+    
+
+    </div>
+  </section>
+
+  <section class="profile">
+    <div class="profile__card">
+      <div class="profile__img">
+        <figure class="absolute-bg" style="background-image: url('/assets/img/pp.jpg');"></figure>
+      </div>
+      <div class="profile__container">
+        <p><b>About Juan Medina</b><br/> I'm just a normal geek that code all kind of stuff, from complex corporate applications to games.<br/> <br/> Games, music, movies and traveling are my escape pods.</p>
+        
+          <ul class="profile__social">
+            
+              <li><a class="fa fa-lg fa-envelope-o" href="mailto:mail@juan-medina.com"></a></li>
+            
+            
+              <li><a class="fa fa-lg fa-github" href="https://github.com/juan-medina" target="_blank"></a></li>
+            
+              <li><a class="fa fa-lg fa-twitter" href="https://twitter.com/jamedinatwit" target="_blank"></a></li>
+            
+              <li><a class="fa fa-lg fa-stack-overflow" href="http://stackoverflow.com/users/7910403/juan-medina" target="_blank"></a></li>
+            
+          </ul>
+        
+      </div>
+    </div>
+  </section>
+
+</article>
+
+
+  <section class="next">
+    <a class="next__link" href="/2017/06/04/reactive-kotlin-vs-java/" style="background-image: url('/assets/img/reactor.jpg');">
+      <div class="next__container">
+        <span>Read Next</span>
+        <h2>Reactive Kotlin vs Java</h2>
+      </div>
+    </a>
+  </section>
+
+
+    </main>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/rellax/1.0.0/rellax.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+<script type="text/javascript" src="/assets/js/app.js"></script>
+
+
+  </body>
+
+</html>

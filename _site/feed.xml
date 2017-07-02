@@ -1,4 +1,481 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="http://jekyllrb.com" version="3.4.0">Jekyll</generator><link href="http://juan-medina.com/feed.xml" rel="self" type="application/atom+xml" /><link href="http://juan-medina.com/" rel="alternate" type="text/html" /><updated>2017-06-04T12:07:56+01:00</updated><id>http://juan-medina.com/</id><title type="html">Juan Medina Personal Blog</title><subtitle>Personar blog from Juan Medina</subtitle><entry><title type="html">Reactive Kotlin vs Java</title><link href="http://juan-medina.com/2017/06/04/reactive-kotlin-vs-java/" rel="alternate" type="text/html" title="Reactive Kotlin vs Java" /><published>2017-06-04T09:00:00+01:00</published><updated>2017-06-04T09:00:00+01:00</updated><id>http://juan-medina.com/2017/06/04/reactive-kotlin-vs-java</id><content type="html" xml:base="http://juan-medina.com/2017/06/04/reactive-kotlin-vs-java/">&lt;p&gt;For me the best way to &lt;a href=&quot;https://github.com/LearningByExample&quot; target=&quot;_blank&quot;&gt;learn something is by example&lt;/a&gt;, so instead to create &lt;a href=&quot;https://en.wikipedia.org/wiki/%22Hello,_World!%22_program&quot; target=&quot;_blank&quot;&gt;HelloWords&lt;/a&gt; I’ve been translating my &lt;a href=&quot;https://github.com/LearningByExample/reactive-ms-example&quot; target=&quot;_blank&quot;&gt;Java Reactive Spring 5 Webflux example&lt;/a&gt; into &lt;a href=&quot;https://github.com/LearningByExample/KotlinReactiveMS&quot; target=&quot;_blank&quot;&gt;Kotlin&lt;/a&gt;, and now that is done is time to analyze the results.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="http://jekyllrb.com" version="3.4.0">Jekyll</generator><link href="http://juan-medina.com/feed.xml" rel="self" type="application/atom+xml" /><link href="http://juan-medina.com/" rel="alternate" type="text/html" /><updated>2017-07-02T13:18:00+01:00</updated><id>http://juan-medina.com/</id><title type="html">Juan Medina Personal Blog</title><subtitle>Personar blog from Juan Medina</subtitle><entry><title type="html">Modern C++ CI</title><link href="http://juan-medina.com/2017/07/01/moderncppci/" rel="alternate" type="text/html" title="Modern C++ CI" /><published>2017-07-01T19:00:00+01:00</published><updated>2017-07-01T19:00:00+01:00</updated><id>http://juan-medina.com/2017/07/01/moderncppci</id><content type="html" xml:base="http://juan-medina.com/2017/07/01/moderncppci/">&lt;p&gt;C++ is most active than ever, with the &lt;a href=&quot;http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/n4661.html&quot; target=&quot;_blank&quot;&gt;C++17 standard ready&lt;/a&gt;, a widely support on C++14 &lt;a href=&quot;http://en.cppreference.com/w/cpp/compiler_support&quot; target=&quot;_blank&quot;&gt;from major compilers&lt;/a&gt; and &lt;a href=&quot;https://isocpp.org/std/status&quot; target=&quot;_blank&quot;&gt;C++20 planning on the way&lt;/a&gt; there is a interesting &lt;a href=&quot;https://www.youtube.com/watch?v=_wzc7a3McOs&quot; target=&quot;_blank&quot;&gt;future for the standard&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Modern C++ is great, some people are even &lt;a href=&quot;http://cppdepend.com/blog/?p=171&quot; target=&quot;_blank&quot;&gt;calling it a new language&lt;/a&gt;, but is not only the language what is evolving the tool-chain is getter better, so doing continuous integration for cross platform projects is simple and effective.&lt;/p&gt;
+
+&lt;p&gt;I decide to do a simple project using some of the C++14 features and following the &lt;a href=&quot;https://github.com/isocpp/CppCoreGuidelines&quot; target=&quot;_blank&quot;&gt;C++ Core Guidelines&lt;/a&gt; whenever its possible. The result is available in this &lt;em&gt;&lt;a href=&quot;https://github.com/LearningByExample/ModernCppCI&quot; target=&quot;_blank&quot;&gt;repository&lt;/a&gt;&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;I set some goals to doing this project:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Project is organized with a logical structure&lt;/li&gt;
+  &lt;li&gt;Need to be a small C++14 project, but nothing really complicate.&lt;/li&gt;
+  &lt;li&gt;Will have at least two modules, a library and a program that uses it.&lt;/li&gt;
+  &lt;li&gt;Modern Unit Tests.&lt;/li&gt;
+  &lt;li&gt;It should use some third party software.&lt;/li&gt;
+  &lt;li&gt;CI will be triggered per commit and build using;
+    &lt;ul&gt;
+      &lt;li&gt;GCC &amp;amp; CLang on Linux&lt;/li&gt;
+      &lt;li&gt;XCode on OSX&lt;/li&gt;
+      &lt;li&gt;Visual Studio on Windows&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;The initial project structure&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  /lib
+    /src
+    /include
+    /test
+  /app
+    /src
+    /test
+  /third_party
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Nothing complicated, and easy to manage, with a clear meaning of each folder.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;The simple program&lt;/strong&gt;&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c--&quot; data-lang=&quot;c++&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#include &quot;calc.h&quot;
+#include &quot;logger.h&quot;
+&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[])&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;namespace&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ModernCppCI&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;Logger&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;level&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;LogLevel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;Logger&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;__func__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;doing some calculation&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Calc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{}&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;+&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;*&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;-&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;/&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This program will output when run:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[2017-07-01 11:09:22.766] [console] [info] [main] doing some calculation
+[2017-07-01 11:09:22.768] [console] [info] [main] 1 + 2 * 5 - 3 / 4 = 3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;This example use a couple of classes defined in the library, &lt;em&gt;Calc&lt;/em&gt; and &lt;em&gt;Logger&lt;/em&gt; to display a simple calculation.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Doing Unit Tests&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;I decide to use the wonderful &lt;a href=&quot;https://github.com/philsquared/Catch&quot; target=&quot;_blank&quot;&gt;Catch&lt;/a&gt; for doing the unit test, as an example:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c--&quot; data-lang=&quot;c++&quot;&gt;&lt;span class=&quot;n&quot;&gt;TEST_CASE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;chain operations will work&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;[calc]&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;auto&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;calc&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Calc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{}&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;+&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;*&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;-&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;/&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;REQUIRE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;calc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;TEST_CASE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;we could stream results&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;[calc]&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ostringstream&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;string_stream&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{};&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;string_stream&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Calc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{}&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;+&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;REQUIRE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;string_stream&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;1 + 2 = 3&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We are not going into the detail in the implementation of the classes or the test, the &lt;em&gt;&lt;a href=&quot;https://github.com/LearningByExample/ModernCppCI&quot; target=&quot;_blank&quot;&gt;repository&lt;/a&gt;&lt;/em&gt; has all the details about it, lest focus now on the CI.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Build and test in all platform&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;We are going to use &lt;a href=&quot;https://cmake.org/&quot; target=&quot;_blank&quot;&gt;CMake&lt;/a&gt; and &lt;a href=&quot;https://cmake.org/Wiki/CTest:FAQ&quot; target=&quot;_blank&quot;&gt;CTest&lt;/a&gt; for creating our build so we start with the main &lt;em&gt;CMakeLists.txt&lt;/em&gt; on the root of the project.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# CMake build : global project&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;cmake_minimum_required&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;VERSION 3.3&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;project&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;ModernCppCI&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;set_property&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;GLOBAL PROPERTY USE_FOLDERS ON&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;CMAKE_CXX_STANDARD 14&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;CMAKE_CXX_STANDARD_REQUIRED ON&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;THREADS_PREFER_PTHREAD_FLAG ON&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;find_package&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;Threads REQUIRED&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;add_subdirectory&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;third_party EXCLUDE_FROM_ALL&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;add_subdirectory&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;lib&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;add_subdirectory&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;app&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;enable_testing&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;First we just set some settings, as that we are going to we require C++14, we will find the Thread library for any tool-chain, we include our directories, but we exlude for the third party other build targets that our dependencies could bring, and finally we set that this CMake project will have tests.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Preparing the third party software&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;The third part software that we are going to use is:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/philsquared/Catch&quot; target=&quot;_blank&quot;&gt;Catch&lt;/a&gt; for Unit Test.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/gabime/spdlog&quot; target=&quot;_blank&quot;&gt;spdlog&lt;/a&gt; for a very fast C++ logging library.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The third party software is cloned as submodules, so we use their original project structure.&lt;/p&gt;
+
+&lt;p&gt;Now we prepare a new &lt;em&gt;CMakeLists.txt&lt;/em&gt; under the /third_party folder:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# CMake build : third party&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#configure directories&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;THIRD_PARTY_MODULE_PATH &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PROJECT_SOURCE_DIR&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/third_party&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# catch&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#configure directories&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;CATCH_MODULE_PATH &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;THIRD_PARTY_MODULE_PATH&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/Catch&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;CATCH_INCLUDE_PATH &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;CATCH_MODULE_PATH&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/include&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#include custom cmake function&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;include&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;CATCH_MODULE_PATH&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/contrib/ParseAndAddCatchTests.cmake&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# spdlog&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#configure directories&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;SPDLOG_MODULE_PATH &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;THIRD_PARTY_MODULE_PATH&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/spdlog&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;SPDLOG_INCLUDE_PATH &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;SPDLOG_MODULE_PATH&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/include&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#set variables&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;THIRD_PARTY_INCLUDE_PATH  &lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;SPDLOG_INCLUDE_PATH&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#set variables for tests&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;TEST_THIRD_PARTY_INCLUDE_PATH  &lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;CATCH_INCLUDE_PATH&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#export vars&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;THIRD_PARTY_INCLUDE_PATH  &lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;THIRD_PARTY_INCLUDE_PATH&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt; PARENT_SCOPE&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;TEST_THIRD_PARTY_INCLUDE_PATH  &lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;TEST_THIRD_PARTY_INCLUDE_PATH&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt; PARENT_SCOPE&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The most import part here is that we export two variables that will have the corresponding directories to add to the include paths for our targets and we push them to the parent scope so we could use them. Additionally for Catch we include a custom function that will allow to auto discover tests.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Bulding the library&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;For creating our library we add a new &lt;em&gt;CMakeLists.txt&lt;/em&gt; under the /lib folder:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# CMake build : library&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#configure variables&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;LIB_NAME &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PROJECT_NAME&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;Lib&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#configure directories&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;LIBRARY_MODULE_PATH &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PROJECT_SOURCE_DIR&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/lib&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;LIBRARY_SRC_PATH  &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;LIBRARY_MODULE_PATH&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/src&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;LIBRARY_INCLUDE_PATH  &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;LIBRARY_MODULE_PATH&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/include&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#set includes&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;include_directories&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;LIBRARY_INCLUDE_PATH&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;THIRD_PARTY_INCLUDE_PATH&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#set sources&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;file&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;GLOB LIB_HEADER_FILES &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;LIBRARY_INCLUDE_PATH&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/*.h&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;file&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;GLOB LIB_SOURCE_FILES &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;LIBRARY_SRC_PATH&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/*.cpp&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#set library&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;add_library&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;LIB_NAME&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt; STATIC &lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;LIB_SOURCE_FILES&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;LIB_HEADER_FILES&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#export vars&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;LIBRARY_INCLUDE_PATH  &lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;LIBRARY_INCLUDE_PATH&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt; PARENT_SCOPE&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;LIB_NAME &lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;LIB_NAME&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt; PARENT_SCOPE&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#test&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;enable_testing&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;add_subdirectory&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;test&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Here we set the desired include directories and we built a list of sources and header files, them we create the library and export a couple of variable so we could use them in our application, finally we add the test directory so we build the test for this library.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Testing the library&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;No we create a new &lt;em&gt;CMakeLists.txt&lt;/em&gt; under the /lib/test directory:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# CMake build : library tests&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#configure variables&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;TEST_APP_NAME &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;LIB_NAME&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;Test&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#configure directories&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;TEST_MODULE_PATH &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;LIBRARY_MODULE_PATH&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/test&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#configure test directories&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;TEST_SRC_PATH  &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;TEST_MODULE_PATH&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/src&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#set includes&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;include_directories&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;LIBRARY_INCLUDE_PATH&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;TEST_THIRD_PARTY_INCLUDE_PATH&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#set test sources&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;file&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;GLOB TEST_SOURCE_FILES &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;TEST_SRC_PATH&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/*.cpp&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#set target executable&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;add_executable&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;TEST_APP_NAME&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;TEST_SOURCE_FILES&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#add the library&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;target_link_libraries&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;TEST_APP_NAME&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;LIB_NAME&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt; Threads::Threads&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# Turn on CMake testing capabilities&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;enable_testing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#parse catch tests&lt;/span&gt;
+&lt;span class=&quot;nf&quot;&gt;ParseAndAddCatchTests&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;TEST_APP_NAME&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We include the test sources and we link the test executable with our Library and the Threads library, finally we out discover the catch tests using the previously imported function in the third party modules.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Building the application&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Building the application is now quite simple with a new &lt;em&gt;CMakeLists.txt&lt;/em&gt; under the /app directory:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# CMake build : main application&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#configure variables&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;APP_NAME &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PROJECT_NAME&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;App&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#configure directories&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;APP_MODULE_PATH &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PROJECT_SOURCE_DIR&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/app&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;APP_SRC_PATH  &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;APP_MODULE_PATH&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/src&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#set includes&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;include_directories&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;LIBRARY_INCLUDE_PATH&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;THIRD_PARTY_INCLUDE_PATH&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#set sources&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;file&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;GLOB APP_SOURCE_FILES &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;APP_SRC_PATH&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/*.cpp&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#set target executable&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;add_executable&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;APP_NAME&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;APP_SOURCE_FILES&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#add the library&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;target_link_libraries&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;APP_NAME&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;LIB_NAME&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt; Threads::Threads&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#test&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;enable_testing&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;add_subdirectory&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;test&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We just include the sources for the app, link with the libraries and include the test folder.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Doing a simple test on the application&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;For the application itself we are just going to running and check that end successfully, so we create a new &lt;em&gt;CMakeLists.txt&lt;/em&gt; under the /app/test directory:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-cmake&quot; data-lang=&quot;cmake&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# CMake build : main application test&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#configure variables&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;APP_NAME &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PROJECT_NAME&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;App&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;TEST_NAME &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;APP_NAME&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;Test&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;enable_testing&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;add_test&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;NAME &lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;TEST_NAME&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt; COMMAND &lt;span class=&quot;si&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;APP_NAME&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Here we simply run the application and we use the CTest command add_test to run it, if the application fails this test will fail.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;CMake will handle it&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;With this CMake will create our targets and link them together so if we change our lib their test will be build, so the application. If we run the test all required target will be build include the library and the application.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Using CMake to create a project for our tool-chain&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;To generate the projects, auto discovering everything, including what compiler we are going to use we could just:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-shell&quot; data-lang=&quot;shell&quot;&gt;  cmake -H. -BBuild&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;If you like to set a implicit compiler set the variable CXX=${COMPILER}, for example COMPILER could be gcc, clang and so on.&lt;/p&gt;
+
+&lt;p&gt;Auto detect in Windows usually generate a Visual Studio project since msbuild require it, but in OSX does not generate and XCode project, since is not required for compiling using XCode clang.&lt;/p&gt;
+
+&lt;p&gt;Specify build type debug/release&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-shell&quot; data-lang=&quot;shell&quot;&gt;  &lt;span class=&quot;c&quot;&gt;# generate a debug project&lt;/span&gt;
+  cmake -H. -BBuild -DCMAKE_BUILD_TYPE&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;Debug
+  &lt;span class=&quot;c&quot;&gt;# generate a release project&lt;/span&gt;
+  cmake -H. -BBuild -DCMAKE_BUILD_TYPE&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;Release&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Specify architecture&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-shell&quot; data-lang=&quot;shell&quot;&gt;  &lt;span class=&quot;c&quot;&gt;# 64 bits architecture&lt;/span&gt;
+  cmake -H. -BBuild -Ax64
+  &lt;span class=&quot;c&quot;&gt;# ARM architecture&lt;/span&gt;
+  cmake -H. -BBuild -AARM
+  &lt;span class=&quot;c&quot;&gt;# Windows 32 bits architecture&lt;/span&gt;
+  cmake -H. -BBuild -AxWin32&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Generate different project types&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-shell&quot; data-lang=&quot;shell&quot;&gt;  &lt;span class=&quot;c&quot;&gt;# MinGW makefiles&lt;/span&gt;
+  cmake -H. -BBuild -G &lt;span class=&quot;s2&quot;&gt;&quot;MinGW Makefiles&quot;&lt;/span&gt;
+  &lt;span class=&quot;c&quot;&gt;# XCode project&lt;/span&gt;
+  cmake -H. -BBuild -G &lt;span class=&quot;s2&quot;&gt;&quot;XCode&quot;&lt;/span&gt;
+  &lt;span class=&quot;c&quot;&gt;# Visual Studio 15 2017 solution&lt;/span&gt;
+  cmake -H. -BBuild -G &lt;span class=&quot;s2&quot;&gt;&quot;Visual Studio 15 2017&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;Build the project&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;From the Build folder&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-shell&quot; data-lang=&quot;shell&quot;&gt;  &lt;span class=&quot;c&quot;&gt;# build the default build type (in multi build types usually debug)&lt;/span&gt;
+  cmake --build .
+  &lt;span class=&quot;c&quot;&gt;# build a specific build type&lt;/span&gt;
+  cmake --build . --config Release&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;Run tests&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;From the Build folder&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-shell&quot; data-lang=&quot;shell&quot;&gt;  &lt;span class=&quot;c&quot;&gt;# run all test using the default build type&lt;/span&gt;
+  ctest -V
+  &lt;span class=&quot;c&quot;&gt;# run all test in Release build type&lt;/span&gt;
+  ctest -V -C Release&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This will run all our test and given stats about how long will take, which one fail and so on.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Adding Travis CI&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;No that we have our project ready we could building in travis for Linux and OSX. We will add this .travis.yml to our project:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span class=&quot;s&quot;&gt;language&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;cpp&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;sudo&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;true&lt;/span&gt;
+
+&lt;span class=&quot;s&quot;&gt;matrix&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;include&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;# Linux C++14 GCC builds&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;linux&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;compiler&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;gcc&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;addons&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;&amp;amp;gcc6&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;apt&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+          &lt;span class=&quot;s&quot;&gt;sources&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;ubuntu-toolchain-r-test'&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;]&lt;/span&gt;
+          &lt;span class=&quot;s&quot;&gt;packages&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;g++-6'&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;]&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;COMPILER='g++-6' BUILD_TYPE='Release'&lt;/span&gt;
+
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;linux&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;compiler&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;gcc&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;addons&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;*gcc6&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;COMPILER='g++-6' BUILD_TYPE='Debug'&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;# Linux C++14 Clang builds&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;linux&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;compiler&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;clang&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;addons&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;&amp;amp;clang38&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;apt&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+          &lt;span class=&quot;s&quot;&gt;sources&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;llvm-toolchain-precise-3.8'&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;ubuntu-toolchain-r-test'&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;]&lt;/span&gt;
+          &lt;span class=&quot;s&quot;&gt;packages&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;clang-3.8'&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;]&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;COMPILER='clang++-3.8' BUILD_TYPE='Release'&lt;/span&gt;
+
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;linux&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;compiler&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;clang&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;addons&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;*clang38&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;COMPILER='clang++-3.8' BUILD_TYPE='Debug'&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;# OSX C++14 Clang Builds&lt;/span&gt;
+
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;osx&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;osx_image&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;xcode8.3&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;compiler&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;clang&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;COMPILER='clang++' BUILD_TYPE='Debug'&lt;/span&gt;
+
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;osx&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;osx_image&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;xcode8.3&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;compiler&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;clang&lt;/span&gt;
+      &lt;span class=&quot;s&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;COMPILER='clang++' BUILD_TYPE='Release'&lt;/span&gt;
+
+
+&lt;span class=&quot;s&quot;&gt;install&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;DEPS_DIR=&quot;${TRAVIS_BUILD_DIR}/deps&quot;&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;mkdir -p ${DEPS_DIR} &amp;amp;&amp;amp; cd ${DEPS_DIR}&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;|&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;if [[ &quot;${TRAVIS_OS_NAME}&quot; == &quot;linux&quot; ]]; then&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;CMAKE_URL=&quot;http://www.cmake.org/files/v3.3/cmake-3.3.2-Linux-x86_64.tar.gz&quot;&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;mkdir cmake &amp;amp;&amp;amp; travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;export PATH=${DEPS_DIR}/cmake/bin:${PATH}&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;elif [[ &quot;${TRAVIS_OS_NAME}&quot; == &quot;osx&quot; ]]; then&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;which cmake || brew install cmake&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;fi&lt;/span&gt;
+
+&lt;span class=&quot;s&quot;&gt;before_script&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;export CXX=${COMPILER}&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;cd ${TRAVIS_BUILD_DIR}&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;cmake -H. -BBuild -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -Wdev&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;cd Build&lt;/span&gt;
+
+&lt;span class=&quot;s&quot;&gt;script&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;make -j 2&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ctest -V -j 2&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This will use a buld matrix to generate the project, build it and do the test for Linux (clang38  / gcc6) and OSX (XCode 8.3 clang) for Debug and Release targets.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Adding Appveyor&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Finally we will use Appveyor for Visual Studio on  Windows builds adding a appveyor.yml to our project:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# version string format -- This will be overwritten later anyway&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;{build}&quot;&lt;/span&gt;
+
+&lt;span class=&quot;s&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Visual Studio 2017&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Visual Studio 2015&lt;/span&gt;
+
+&lt;span class=&quot;s&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;git config --global core.autocrlf input&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# Set build version to git commit-hash&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Update-AppveyorBuild -Version &quot;$($env:APPVEYOR_REPO_BRANCH) - $($env:APPVEYOR_REPO_COMMIT)&quot;&lt;/span&gt;
+
+&lt;span class=&quot;s&quot;&gt;install&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;git submodule update --init --recursive&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# Win32 and x64 are CMake-compatible solution platform names.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# This allows us to pass %PLATFORM% to CMake -A.&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;platform&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Win32&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;x64&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# build Configurations, i.e. Debug, Release, etc.&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;configuration&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Debug&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Release&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#Cmake will autodetect the compiler, but we set the arch&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;before_build&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;cmake -H. -BBuild -A%PLATFORM%&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# build with MSBuild&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;project&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Build\ModernCppCI.sln&lt;/span&gt;        &lt;span class=&quot;c1&quot;&gt;# path to Visual Studio solution or project&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;parallel&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;true&lt;/span&gt;                        &lt;span class=&quot;c1&quot;&gt;# enable MSBuild parallel builds&lt;/span&gt;
+  &lt;span class=&quot;s&quot;&gt;verbosity&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;normal&lt;/span&gt;                     &lt;span class=&quot;c1&quot;&gt;# MSBuild verbosity level {quiet|minimal|normal|detailed}&lt;/span&gt;
+
+&lt;span class=&quot;s&quot;&gt;test_script&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;cd Build&lt;/span&gt;
+  &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ctest -V -j 2 -C %CONFIGURATION%&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In this case we are going to build using Visual Studio 2015 and 2017 with Win32 and x64 architecture and Debug and Release targets.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Summary&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;So probably this is a more complex setup that initially anticipated but when is done working with it is really simple.&lt;/p&gt;
+
+&lt;p&gt;We could add new files just creating them in the right folders, work with our favorite IDE, run our tests and push to our git to get our CI reports.&lt;/p&gt;
+
+&lt;p&gt;Some IDE as CLion have a runner for Catch that allow us to run individual test with a couple of clicks, however we could do the same just filtering test by tags in our favorite IDE adding to the arguments of our test application any of the &lt;a href=&quot;https://github.com/philsquared/Catch/blob/master/docs/command-line.md&quot; target=&quot;_blank&quot;&gt;Catch supported command line parameters&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;In fact we could even use &lt;a href=&quot;https://wiki.jenkins.io/display/JENKINS/CMake+Plugin&quot; target=&quot;_blank&quot;&gt;this jenkins pluging&lt;/a&gt; to get our CMake / CTest build, test and reported. But I’ll leave that for other day.&lt;/p&gt;
+
+&lt;p&gt;Anyway I think this is something that I’ve really enjoy to learn and I’m sure that will continue to use in future C++ projects.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;references&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://cmake.org/&quot;&gt;https://cmake.org/&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://docs.travis-ci.com/user/languages/cpp/&quot;&gt;https://docs.travis-ci.com/user/languages/cpp/&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.appveyor.com/docs/lang/cpp/&quot;&gt;https://www.appveyor.com/docs/lang/cpp/&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/isocpp/CppCoreGuidelines&quot;&gt;https://github.com/isocpp/CppCoreGuidelines&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/philsquared/Catch&quot;&gt;https://github.com/philsquared/Catch&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/gabime/spdlog&quot;&gt;https://github.com/gabime/spdlog&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/cognitivewaves/CMake-VisualStudio-Example&quot;&gt;https://github.com/cognitivewaves/CMake-VisualStudio-Example&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://derekmolloy.ie/hello-world-introductions-to-cmake/&quot;&gt;http://derekmolloy.ie/hello-world-introductions-to-cmake/&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://cmake.org/Wiki/CMake/Testing_With_CTest&quot;&gt;https://cmake.org/Wiki/CMake/Testing_With_CTest&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.appveyor.com/docs/lang/cpp/&quot;&gt;https://www.appveyor.com/docs/lang/cpp/&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://docs.travis-ci.com/user/languages/cpp/&quot;&gt;https://docs.travis-ci.com/user/languages/cpp/&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/philsquared/Catch/blob/master/docs/build-systems.md&quot;&gt;https://github.com/philsquared/Catch/blob/master/docs/build-systems.md&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://stackoverflow.com/questions/14446495/cmake-project-structure-with-unit-tests&quot;&gt;https://stackoverflow.com/questions/14446495/cmake-project-structure-with-unit-tests&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Juan Medina</name></author><summary type="html">C++ is most active than ever, with the C++17 standard ready, a widely support on C++14 from major compilers and C++20 planning on the way there is a interesting future for the standard.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://juan-medina.com/assets/img/cpp_core_guidelines_logo.svg" /></entry><entry><title type="html">Reactive Kotlin vs Java</title><link href="http://juan-medina.com/2017/06/04/reactive-kotlin-vs-java/" rel="alternate" type="text/html" title="Reactive Kotlin vs Java" /><published>2017-06-04T09:00:00+01:00</published><updated>2017-06-04T09:00:00+01:00</updated><id>http://juan-medina.com/2017/06/04/reactive-kotlin-vs-java</id><content type="html" xml:base="http://juan-medina.com/2017/06/04/reactive-kotlin-vs-java/">&lt;p&gt;For me the best way to &lt;a href=&quot;https://github.com/LearningByExample&quot; target=&quot;_blank&quot;&gt;learn something is by example&lt;/a&gt;, so instead to create &lt;a href=&quot;https://en.wikipedia.org/wiki/%22Hello,_World!%22_program&quot; target=&quot;_blank&quot;&gt;HelloWords&lt;/a&gt; I’ve been translating my &lt;a href=&quot;https://github.com/LearningByExample/reactive-ms-example&quot; target=&quot;_blank&quot;&gt;Java Reactive Spring 5 Webflux example&lt;/a&gt; into &lt;a href=&quot;https://github.com/LearningByExample/KotlinReactiveMS&quot; target=&quot;_blank&quot;&gt;Kotlin&lt;/a&gt;, and now that is done is time to analyze the results.&lt;/p&gt;
 
 &lt;p&gt;&lt;em&gt;I’m not going to talk about performance here, I’ve done JMeter load tests on both services and they virtual identical, response times are just decimals apart. However sometimes Kotlin seams to perform better, I’ll not get into conclusions until I research more.&lt;/em&gt;&lt;/p&gt;
 
@@ -1212,12 +1689,4 @@ CMD &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&
 
 &lt;p&gt;Them we could test our service:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/img/ml_rest_output.png&quot; alt=&quot;output&quot; /&gt;&lt;/p&gt;</content><author><name>Juan Medina</name></author><summary type="html">I’ve been trying to learn how to create and use docker and I thought that could be a nice idea to create a machine learning docker as a starting example to have something running.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://juan-medina.com/assets/img/docker.png" /></entry><entry><title type="html">MongoExec (Sublime Package)</title><link href="http://juan-medina.com/2015/11/29/mongoexec-sublime-package/" rel="alternate" type="text/html" title="MongoExec (Sublime Package)" /><published>2015-11-29T13:33:00+00:00</published><updated>2015-11-29T13:33:00+00:00</updated><id>http://juan-medina.com/2015/11/29/mongoexec-sublime-package</id><content type="html" xml:base="http://juan-medina.com/2015/11/29/mongoexec-sublime-package/">&lt;p&gt;I found the other day a wonderful package for &lt;a href=&quot;http://www.sublimetext.com/3&quot; target=&quot;_blank&quot;&gt;Sublime Text&lt;/a&gt;, &lt;a href=&quot;https://packagecontrol.io/packages/MongoExec&quot; target=&quot;_blank&quot;&gt;MongoExec&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;Allows to execute MongoDB queries within sublime text and other stuff like browse database a collection.&lt;/p&gt;
-
-&lt;p&gt;In understand that there is available a lot of tools to browse a Mongo database but the got things of having this as a sublime package is that allow to do everything within sublime, so more productivity.&lt;/p&gt;
-
-&lt;p&gt;I like to copy fields and data within the same editor.&lt;/p&gt;
-
-&lt;p&gt;So far love it.&lt;/p&gt;</content><author><name>Juan Medina</name></author><summary type="html">I found the other day a wonderful package for Sublime Text, MongoExec.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://juan-medina.com/assets/img/mongoexec.gif" /></entry></feed>
+&lt;p&gt;&lt;img src=&quot;/assets/img/ml_rest_output.png&quot; alt=&quot;output&quot; /&gt;&lt;/p&gt;</content><author><name>Juan Medina</name></author><summary type="html">I’ve been trying to learn how to create and use docker and I thought that could be a nice idea to create a machine learning docker as a starting example to have something running.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://juan-medina.com/assets/img/docker.png" /></entry></feed>
