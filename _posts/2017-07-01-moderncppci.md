@@ -9,7 +9,7 @@ image: /assets/img/cpp_core_guidelines_logo.svg
 image-sm: /assets/img/cpp_core_guidelines_logo.svg
 ---
 
-C++ is most active than ever, with the [C++17 standard ready](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/n4661.html){:target="_blank"}, a widely support on C++14 [from major compilers](http://en.cppreference.com/w/cpp/compiler_support){:target="_blank"} and [C++20 planning on the way](https://isocpp.org/std/status){:target="_blank"} there is a interesting [future for the standard](https://www.youtube.com/watch?v=_wzc7a3McOs){:target="_blank"}.
+C++ is more active than ever, with the [C++17 standard ready](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/n4661.html){:target="_blank"}, a widely support on C++14 [from major compilers](http://en.cppreference.com/w/cpp/compiler_support){:target="_blank"} and [C++20 planning on the way](https://isocpp.org/std/status){:target="_blank"} there is a interesting [future for the standard](https://www.youtube.com/watch?v=_wzc7a3McOs){:target="_blank"}.
 
 Modern C++ is great, some people are even [calling it a new language](http://cppdepend.com/blog/?p=171){:target="_blank"}, but is not only the language what is evolving the tool-chain is getter better, so doing continuous integration for cross platform projects is simple and effective.
 
