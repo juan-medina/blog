@@ -1,4 +1,400 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="http://jekyllrb.com" version="3.4.0">Jekyll</generator><link href="http://juan-medina.com/feed.xml" rel="self" type="application/atom+xml" /><link href="http://juan-medina.com/" rel="alternate" type="text/html" /><updated>2017-07-25T07:49:55+01:00</updated><id>http://juan-medina.com/</id><title type="html">Juan Medina Personal Blog</title><subtitle>Personar blog from Juan Medina</subtitle><entry><title type="html">Serverless Kotlin</title><link href="http://juan-medina.com/2017/07/21/kotlin-serverless/" rel="alternate" type="text/html" title="Serverless Kotlin" /><published>2017-07-21T22:00:00+01:00</published><updated>2017-07-21T22:00:00+01:00</updated><id>http://juan-medina.com/2017/07/21/kotlin-serverless</id><content type="html" xml:base="http://juan-medina.com/2017/07/21/kotlin-serverless/">&lt;p&gt;Right now there is a lot of traction on the Serverless architecture so I decide to give a try and do some examples using Kotlin.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="http://jekyllrb.com" version="3.4.0">Jekyll</generator><link href="http://juan-medina.com/feed.xml" rel="self" type="application/atom+xml" /><link href="http://juan-medina.com/" rel="alternate" type="text/html" /><updated>2017-07-30T12:42:53+01:00</updated><id>http://juan-medina.com/</id><title type="html">Juan Medina Personal Blog</title><subtitle>Personar blog from Juan Medina</subtitle><entry><title type="html">Native Serverless Kotlin</title><link href="http://juan-medina.com/2017/07/30/kotlin-native-serverless/" rel="alternate" type="text/html" title="Native Serverless Kotlin" /><published>2017-07-30T09:00:00+01:00</published><updated>2017-07-30T09:00:00+01:00</updated><id>http://juan-medina.com/2017/07/30/kotlin-native-serverless</id><content type="html" xml:base="http://juan-medina.com/2017/07/30/kotlin-native-serverless/">&lt;p&gt;Last week we do an &lt;a href=&quot;https://juan-medina.com/2017/07/21/kotlin-serverless/&quot; target=&quot;_blank&quot;&gt;example&lt;/a&gt; of a Kotlin Serverless Function using Apache OpenWhisk, however since we using Kotlin we could make our example a native application that will not run in the JVM.&lt;/p&gt;
+
+&lt;p&gt;You could find this complete example in &lt;a href=&quot;https://github.com/LearningByExample/KotlinNativeServerless&quot; target=&quot;_blank&quot;&gt;this repository&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;We will need as the week before to have OpenWhisk, and we will require again &lt;a href=&quot;http://vagrantup.com/&quot; target=&quot;_blank&quot;&gt;Vagrant&lt;/a&gt; and &lt;a href=&quot;https://www.virtualbox.org/wiki/Downloads&quot; target=&quot;_blank&quot;&gt;Virtual Box&lt;/a&gt;, so install those first.&lt;/p&gt;
+
+&lt;p&gt;To setup the environment just:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-shell&quot; data-lang=&quot;shell&quot;&gt;  &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git clone --depth&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1 https://github.com/apache/incubator-openwhisk.git openwhisk
+  &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;openwhisk/tools/vagrant
+  &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;./hello&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we could ssh to the machine with:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-shell&quot; data-lang=&quot;shell&quot;&gt;  &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;vagrant ssh&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;To test the action directly just using the docker that I’ve upload to &lt;a href=&quot;https://hub.docker.com/r/jamedina/kotlin-native-fibonacci/&quot; target=&quot;_blank&quot;&gt;docker hub&lt;/a&gt;:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-shell&quot; data-lang=&quot;shell&quot;&gt;  &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;wsk action create native-fibonacci --docker jamedina/kotlin-native-fibonacci&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;To test the new action just run:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-shell&quot; data-lang=&quot;shell&quot;&gt;  &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;wsk action invoke --result native-fibonacci --param numbers 5&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This will output something like:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-json&quot; data-lang=&quot;json&quot;&gt;&lt;span class=&quot;w&quot;&gt;  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;result&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;OpenWhisk allow us to use a docker that contain a binary that will be execute when an action is invoke, to do it so the binary will receive 1 argument with a JSON string and it need to return a JSON string in a single line.&lt;/p&gt;
+
+&lt;p&gt;So to create our function first we need to have &lt;a href=&quot;https://github.com/JetBrains/kotlin-native&quot; target=&quot;_blank&quot;&gt;kotlin-native&lt;/a&gt; installed and configured:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-shell&quot; data-lang=&quot;shell&quot;&gt;  &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git clone --depth 1 https://github.com/JetBrains/kotlin-native.git /kotlin-native
+  &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /kotlin-native
+  &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;./gradlew dependencies:update
+  &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;./gradlew dist
+  &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PATH&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;/kotlin-native/dist/bin:&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$PATH&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;kotlinc&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The last line will raise and error since we haven provide any parameters to the compiler but we just do that in order to download the compiler dependencies and toolchain.&lt;/p&gt;
+
+&lt;p&gt;Now we will create our project, kotlin native use a gradle plugin that we initial setup as:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-gradle&quot; data-lang=&quot;gradle&quot;&gt;  &lt;span class=&quot;k&quot;&gt;buildscript&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;repositories&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+          &lt;span class=&quot;n&quot;&gt;mavenCentral&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+          &lt;span class=&quot;n&quot;&gt;maven&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+              &lt;span class=&quot;n&quot;&gt;url&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;https://dl.bintray.com/jetbrains/kotlin-native-dependencies&quot;&lt;/span&gt;
+          &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+      &lt;span class=&quot;k&quot;&gt;dependencies&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+          &lt;span class=&quot;n&quot;&gt;classpath&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;org.jetbrains.kotlin:kotlin-native-gradle-plugin:+&quot;&lt;/span&gt;
+      &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;apply&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;plugin:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'konan'&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;konanArtifacts&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;fibonacci&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We need as well to specify where is kotlin-native installed using the gradle.properties:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ini&quot; data-lang=&quot;ini&quot;&gt;  &lt;span class=&quot;py&quot;&gt;konan.home&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;/kotlin-native/dist&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;now lets just create one simple main in the folder src/main.kt&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-kotlin&quot; data-lang=&quot;kotlin&quot;&gt;  &lt;span class=&quot;k&quot;&gt;fun&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;fibonacci&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;numbers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Long&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Long&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;numbers&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0L&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;arrayOf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0L&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;numbers&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1L&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;arrayOf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1L&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;previous&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1L&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;current&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1L&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;temp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Long&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;arrayOf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1L&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1L&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;..&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;numbers&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;map&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;temp&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;current&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;previous&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;previous&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;current&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;current&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;temp&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;current&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;toList&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;toTypedArray&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;fun&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fibonacci&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;forEach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now to compile simple :&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-shell&quot; data-lang=&quot;shell&quot;&gt;  &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;gradlew clean build&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We use clean because sometimes gradle will not compile the files even with the files changed.&lt;/p&gt;
+
+&lt;p&gt;Then we could run it with:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-shell&quot; data-lang=&quot;shell&quot;&gt;  &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;./build/konan/bin/fibonacci.kexe
+  1
+  1
+  2
+  3
+  5&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we need to use JSON but since we don’t have the JVM neither we could use any Java code we are just going to use a C JSON library, I’m choose &lt;a href=&quot;https://github.com/kgabis/parson&quot; target=&quot;_blank&quot;&gt;parson&lt;/a&gt; since is perfect for the task.&lt;/p&gt;
+
+&lt;p&gt;First clone it, or create a submodule in your git:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-shell&quot; data-lang=&quot;shell&quot;&gt;  &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;mkdir src/cpp
+  &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;src/cpp
+  &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git clone --depth 1 https://github.com/kgabis/parson.git&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;No I’ve create a shell script to compile the C code into a library that we could latter link:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;  &lt;span class=&quot;nv&quot;&gt;DEPS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;dirname &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt; -p konanc&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;/../dependencies
+
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; x&lt;span class=&quot;nv&quot;&gt;$TARGET&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; x &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;; &lt;span class=&quot;k&quot;&gt;then
+  case&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$OSTYPE&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in
+    &lt;/span&gt;darwin&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;nv&quot;&gt;TARGET&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;macbook &lt;span class=&quot;p&quot;&gt;;;&lt;/span&gt;
+    linux&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;   &lt;span class=&quot;nv&quot;&gt;TARGET&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;linux &lt;span class=&quot;p&quot;&gt;;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;        &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;unknown: &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$OSTYPE&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;exit &lt;/span&gt;1;;
+  &lt;span class=&quot;k&quot;&gt;esac
+  fi
+
+  &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;CLANG_linux&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$DEPS&lt;/span&gt;/clang-llvm-3.9.0-linux-x86-64/bin/clang++
+  &lt;span class=&quot;nv&quot;&gt;CLANG_macbook&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$DEPS&lt;/span&gt;/clang-llvm-3.9.0-darwin-macos/bin/clang++
+
+  &lt;span class=&quot;nv&quot;&gt;var&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;CLANG_&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;TARGET&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;CLANG&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;!var&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;
+
+  mkdir -p build/clang/
+
+  &lt;span class=&quot;nv&quot;&gt;$CLANG&lt;/span&gt; -x c -c src/main/cpp/parson/parson.c -o build/clang/parson.bc -emit-llvm &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;exit &lt;/span&gt;1&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This script will create a library in &lt;a href=&quot;https://llvm.org/&quot; target=&quot;_blank&quot;&gt;LLVM&lt;/a&gt; format, the architecture used by Kotlin Native.&lt;/p&gt;
+
+&lt;p&gt;Now we need to update our gradle script to compile the C code, and to link it to our program.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-gradle&quot; data-lang=&quot;gradle&quot;&gt;  &lt;span class=&quot;k&quot;&gt;buildscript&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;repositories&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+          &lt;span class=&quot;n&quot;&gt;mavenCentral&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+          &lt;span class=&quot;n&quot;&gt;maven&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+              &lt;span class=&quot;n&quot;&gt;url&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;https://dl.bintray.com/jetbrains/kotlin-native-dependencies&quot;&lt;/span&gt;
+          &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+      &lt;span class=&quot;k&quot;&gt;dependencies&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+          &lt;span class=&quot;n&quot;&gt;classpath&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;org.jetbrains.kotlin:kotlin-native-gradle-plugin:+&quot;&lt;/span&gt;
+      &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;apply&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;plugin:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'konan'&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;konanInterop&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;Parson&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+          &lt;span class=&quot;n&quot;&gt;includeDirs&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;${project.projectDir}/src/main/cpp/parson&quot;&lt;/span&gt;
+      &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;konanArtifacts&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;fibonacci&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+          &lt;span class=&quot;n&quot;&gt;useInterop&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Parson&quot;&lt;/span&gt;
+          &lt;span class=&quot;n&quot;&gt;nativeLibrary&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;${project.buildDir.canonicalPath}/clang/parson.bc&quot;&lt;/span&gt;
+      &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;task&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;compileCpp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;type:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Exec&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;dependsOn&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'genParsonInteropStubs'&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;workingDir&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;project&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getProjectDir&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;commandLine&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'./buildCpp.sh'&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;compileKonanFibonacci&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;dependsOn&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'compileCpp'&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Finally, we need to add a definition file for the C code so Kotlin could create and stub for it.&lt;/p&gt;
+
+&lt;p&gt;The file should be place in src/c_interop/Parson.def :&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ini&quot; data-lang=&quot;ini&quot;&gt;  &lt;span class=&quot;py&quot;&gt;headers&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;parson.h&lt;/span&gt;
+  &lt;span class=&quot;py&quot;&gt;headerFilter&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;parson.h&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we could just build as before to check that everything is ok:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-shell&quot; data-lang=&quot;shell&quot;&gt;  &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;gradlew clean build&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This should generate some files including:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;build/clang/parson.bc : The library that could be linked.&lt;/li&gt;
+  &lt;li&gt;build/konan/interopStubs/genParsonInteropStubs/Parson/Parson.kt : The Kotin Stub for calling the library.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;No we modify our program to use parson:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-shell&quot; data-lang=&quot;shell&quot;&gt;  import kotlinx.cinterop.&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;
+  import Parson.&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;
+
+  fun fibonacci&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;numbers: Long&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;: Array&amp;lt;Long&amp;gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;numbers &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; 0L&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;return &lt;/span&gt;arrayOf&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0L&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;numbers &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; 1L&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;return &lt;/span&gt;arrayOf&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1L&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+    var previous &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 1L
+    var current &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 1L
+    var temp: Long
+
+    &lt;span class=&quot;k&quot;&gt;return &lt;/span&gt;arrayOf&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1L, 1L&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; + &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1..&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;numbers - 2&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;.map &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+      temp &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; current + previous
+      previous &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; current
+      current &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; temp
+      current
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;.toList&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;.toTypedArray&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+  fun Array&amp;lt;String&amp;gt;.paramOrElse&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;name: String, elseValue: Long&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;: Long &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    var result &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; elseValue
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;this.size &amp;gt; 0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+      val json &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; this[0]
+      memScoped &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        val schema &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; json_parse_string&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;json&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;schema !&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; null&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+          val root &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; json_object&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;schema&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+          &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;root !&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; null&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;json_object_has_value&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;root, name&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; 1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+              result &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; json_object_get_number&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;root, name&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.toLong&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+          &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+          json_value_free&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;schema&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return &lt;/span&gt;result
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+  fun Long.throughFunction&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;operation: &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Long&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; -&amp;gt; Array&amp;lt;Long&amp;gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;: String &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    var result &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;{}&quot;&lt;/span&gt;
+    val elements &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; operation&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;this&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    memScoped &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+      val schema &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; json_value_init_object&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+      val root &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; json_value_get_object&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;schema&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+      json_object_set_value&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;root, &lt;span class=&quot;s2&quot;&gt;&quot;result&quot;&lt;/span&gt;, json_value_init_array&lt;span class=&quot;o&quot;&gt;())&lt;/span&gt;
+      val array &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; json_object_get_array&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;root, &lt;span class=&quot;s2&quot;&gt;&quot;result&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;;
+
+      elements.forEach &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        json_array_append_number&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;array, it.toDouble&lt;span class=&quot;o&quot;&gt;())&lt;/span&gt;
+      &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+      result &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; json_serialize_to_string&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;schema&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;?.toKString&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;!!
+      json_value_free&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;schema&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return &lt;/span&gt;result
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+  fun main&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;args: Array&amp;lt;String&amp;gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+
+    val result &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; args.paramOrElse&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;numbers&quot;&lt;/span&gt;, 10L&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.throughFunction&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;::fibonacci&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+    println&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;result&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We have create a couple of functions that uses the Kotlin/Native &lt;a href=&quot;https://github.com/JetBrains/kotlin-native/blob/master/INTEROP.md&quot; target=&quot;_blank&quot;&gt;interoperability&lt;/a&gt; so we could invoke Parson.&lt;/p&gt;
+
+&lt;p&gt;After building the program again we could just use it like this:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-shell&quot; data-lang=&quot;shell&quot;&gt;  &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;./build/konan/bin/Fibonacci.kexe &lt;span class=&quot;s2&quot;&gt;&quot;{ &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;numbers&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; : 5 }&quot;&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;result&quot;&lt;/span&gt;:[1,1,2,3,5]&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;No we need to create a docker for it, OpenWhisk have a docker base image that is based on alpine linux, I’ve not been able to make Kotlin-Native to work on alpine so I’ve create a base &lt;a href=&quot;https://hub.docker.com/r/jamedina/openwhisk-kotlin-native/&quot; target=&quot;_blank&quot;&gt;docker image&lt;/a&gt; that any one could use for making Kotlin Native Serverless functions.&lt;/p&gt;
+
+&lt;p&gt;The docker file for that image is:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-dockerfile&quot; data-lang=&quot;dockerfile&quot;&gt;  # Dockerfile for runing a openwishk Kotlin native action
+  FROM openjdk:8-jdk
+
+  #install kotlin native
+  RUN git clone --depth 1 https://github.com/JetBrains/kotlin-native.git
+  WORKDIR kotlin-native
+  RUN ./gradlew dependencies:update
+  RUN ./gradlew dist
+
+  ENV PATH /kotlin-native/dist/bin:$PATH
+
+  #install python
+  RUN apt-get update
+  RUN apt-get install python3-setuptools -y
+  RUN easy_install3 pip
+  RUN pip3 install --upgrade pip setuptools six
+  RUN pip3 install --no-cache-dir gevent==1.2.1 flask==0.12
+
+  #install c libraries
+  RUN apt-get update
+  RUN apt-get install libc-dev -y
+
+  #preparing the action proxy
+  ADD actionProxy/ /actionProxy
+  WORKDIR /actionProxy
+  ENV FLASK_PROXY_PORT 8080
+
+  CMD [&quot;/bin/bash&quot;]&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;I’ve use openjdk 8 since we are going to use gradle in our build and it use the actionProxy python3 script that is provide by OpenWhisk to create a flask server that will serve our action trough HTTP, our action should be place in the folder /action and be named exec.&lt;/p&gt;
+
+&lt;p&gt;So now we could create a docker image for our fibonacci function:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-dockerfile&quot; data-lang=&quot;dockerfile&quot;&gt;  # Dockerfile for runing a Kotlin native fibonacci action
+  FROM jamedina/openwhisk-kotlin-native
+
+  #add basic gradle files
+  ADD .gradle/ /temp-build/.gradle
+  ADD gradle/ /temp-build/gradle
+  ADD build.gradle /temp-build
+  ADD gradlew /temp-build
+  ADD gradle.properties /temp-build
+
+  #get the compiler
+  WORKDIR /temp-build
+  RUN ./gradlew
+
+  # add our action code
+  ADD src/ /temp-build/src
+  ADD buildCpp.sh /temp-build
+
+  #build our action
+  RUN ./gradlew build
+
+  #copy the action as the default OpenWhisk docker actions
+  RUN mkdir /action
+  RUN cp /temp-build/build/konan/bin/fibonacci.kexe /action/exec
+
+  #clean up
+  RUN rm -rf /temp-build
+  RUN rm -rf /kotlin-native
+
+  CMD [&quot;/bin/bash&quot;, &quot;-c&quot;, &quot;cd /actionProxy &amp;amp;&amp;amp; python3 -u actionproxy.py&quot;]&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Finally, I create a simple scripts to publish the images in docker hub, remember to login before.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;  &lt;span class=&quot;c&quot;&gt;#!/usr/bin/env bash&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;creating base image jamedina/openwhisk-kotlin-native&quot;&lt;/span&gt;
+  docker build -t jamedina/openwhisk-kotlin-native docker/
+
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$?&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; -eq &lt;span class=&quot;s2&quot;&gt;&quot;0&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;then
+    &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;pushing jamedina/openwhisk-kotlin-native&quot;&lt;/span&gt;
+    docker push jamedina/openwhisk-kotlin-native
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$?&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; -eq &lt;span class=&quot;s2&quot;&gt;&quot;0&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;then
+      &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;creating image jamedina/kotlin-native-fibonacci&quot;&lt;/span&gt;
+      docker build -t jamedina/kotlin-native-fibonacci .
+      &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$?&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; -eq &lt;span class=&quot;s2&quot;&gt;&quot;0&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;then
+        &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;pushing&quot;&lt;/span&gt;
+        docker push jamedina/kotlin-native-fibonacci
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$?&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; -eq &lt;span class=&quot;s2&quot;&gt;&quot;0&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;then
+          &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;done&quot;&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;else
+          &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;fail to push fibonacci docker&quot;&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;fi
+      else
+        &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;fail to build fibonacci docker&quot;&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;fi
+    else
+      &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;fail to push base docker&quot;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;fi
+  else
+    &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;fail to build base docker&quot;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In the way that the files are added to the docker we can just run that command to get update the image only doing the parts that actually change.&lt;/p&gt;
+
+&lt;p&gt;So now we could put all things together to do:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-shell&quot; data-lang=&quot;shell&quot;&gt;  &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;./build.sh
+  &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;wsk action create native-fibonacci --docker jamedina/kotlin-native-fibonacci
+  &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;wsk action invoke --result native-fibonacci --param numbers 5
+  &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;result&quot;&lt;/span&gt;: &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;
+        1,
+        1,
+        2,
+        3,
+        5
+    &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This has been a great example to learn Kotlin Native, so sure I’ll do more things with it in a future.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Note: Many things could be change in this example, for example I could create a builder image that generate the binary and use for creating another image that has only that binary, since we do not need the whole compiler infrastructure and the image could be much smaller, but for demonstration is just OK.&lt;/em&gt;&lt;/p&gt;</content><author><name>Juan Medina</name></author><summary type="html">Last week we do an example of a Kotlin Serverless Function using Apache OpenWhisk, however since we using Kotlin we could make our example a native application that will not run in the JVM.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://juan-medina.com/assets/img/kotlin_native.png" /></entry><entry><title type="html">Serverless Kotlin</title><link href="http://juan-medina.com/2017/07/21/kotlin-serverless/" rel="alternate" type="text/html" title="Serverless Kotlin" /><published>2017-07-21T22:00:00+01:00</published><updated>2017-07-21T22:00:00+01:00</updated><id>http://juan-medina.com/2017/07/21/kotlin-serverless</id><content type="html" xml:base="http://juan-medina.com/2017/07/21/kotlin-serverless/">&lt;p&gt;Right now there is a lot of traction on the Serverless architecture so I decide to give a try and do some examples using Kotlin.&lt;/p&gt;
 
 &lt;p&gt;The full source of this post it’s available in this &lt;a href=&quot;https://github.com/LearningByExample/KotlinServerless&quot; target=&quot;_blank&quot;&gt;repository&lt;/a&gt;.&lt;/p&gt;
 
@@ -1634,15 +2030,4 @@ OK&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://open.spotify.com/user/spotify/playlist/7MQd3rOe8kuP2KDjtuiynJ&quot; target=&quot;_blank&quot;&gt;This is David Bowie (Spotify)&lt;/a&gt;&lt;/p&gt;</content><author><name>Juan Medina</name></author><summary type="html"></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://juan-medina.com/assets/img/bowie-large.jpg" /></entry><entry><title type="html">Machine Learning in Games</title><link href="http://juan-medina.com/2015/12/27/machine-learning-in-games/" rel="alternate" type="text/html" title="Machine Learning in Games" /><published>2015-12-27T20:19:00+00:00</published><updated>2015-12-27T20:19:00+00:00</updated><id>http://juan-medina.com/2015/12/27/machine-learning-in-games</id><content type="html" xml:base="http://juan-medina.com/2015/12/27/machine-learning-in-games/">&lt;p&gt;I’ve create a new site that is kind of a experiment of using machine learning in the gaming world.&lt;/p&gt;
-
-&lt;p&gt;Currently I’ve implement kind of a recomendation system base on natural language processing in game reviews.&lt;/p&gt;
-
-&lt;style&gt;.embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; } .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }&lt;/style&gt;
-&lt;div class=&quot;embed-container&quot;&gt;    &lt;iframe title=&quot;YouTube video player&quot; width=&quot;640&quot; height=&quot;390&quot; src=&quot;//www.youtube.com/embed/N5yxbBx-sz4&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;p&gt;More details in the site!&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;http://dev.juan-medina.com&quot;&gt;http://dev.juan-medina.com&lt;/a&gt;&lt;/p&gt;</content><author><name>Juan Medina</name></author><summary type="html">I’ve create a new site that is kind of a experiment of using machine learning in the gaming world.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://juan-medina.com/assets/img/gamemsl.png" /></entry></feed>
+&lt;p&gt;&lt;a href=&quot;https://open.spotify.com/user/spotify/playlist/7MQd3rOe8kuP2KDjtuiynJ&quot; target=&quot;_blank&quot;&gt;This is David Bowie (Spotify)&lt;/a&gt;&lt;/p&gt;</content><author><name>Juan Medina</name></author><summary type="html"></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://juan-medina.com/assets/img/bowie-large.jpg" /></entry></feed>

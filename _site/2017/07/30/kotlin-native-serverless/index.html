@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Native Serverless Kotlin | Juan Medina Personal Blog</title>
+  <meta name="author" content="Juan Medina">
+  <meta name="description" content="Personar blog from Juan Medina">
+  <meta property="og:title" content="Native Serverless Kotlin | Juan Medina Personal Blog">
+  <meta property="og:url" content="http://juan-medina.com/2017/07/30/kotlin-native-serverless/">
+  <meta property="og:site_name" content="Juan Medina Personal Blog">
+  <meta property="og:description" content="Personar blog from Juan Medina">
+  <meta property="og:image" content="http://juan-medina.com/assets/img/kotlin_native.png">
+  <meta property="og:type" content="blog">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:description" content="Personar blog from Juan Medina">
+  <meta name="twitter:title" content="Native Serverless Kotlin | Juan Medina Personal Blog">
+  <meta name="twitter:url" content="http://juan-medina.com/2017/07/30/kotlin-native-serverless/">
+  <meta name="twitter:site" content="Juan Medina Personal Blog">
+  <meta name="twitter:creator" content="@jamedinatwit">
+  <meta name="twitter:domain" content="http://juan-medina.com">
+  <meta property="twitter:image" content="http://juan-medina.com/assets/img/kotlin_native.png">
+
+  <link type="application/atom+xml" rel="alternate" href="http://juan-medina.com/feed.xml" title="Juan Medina Personal Blog" />
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata|Lora|Space+Mono:700">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/syntax.css">
+
+  <link rel="alternate" type="application/rss+xml" title="Juan Medina Personal Blog" href="http://juan-medina.com/feed.xml">
+  <link rel="canonical" href="http://juan-medina.com/2017/07/30/kotlin-native-serverless/">
+
+  
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-71726617-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+  
+</head>
+
+
+  <body>
+
+    <main>
+      <article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="section-padding--lg mast rellax" data-rellax-speed="-4">
+    <a class="nav nav--white" href="/">
+      <i class="fa fa-lg fa-arrow-left"></i>
+      <span>Back to Posts</span>
+    </a>
+    <figure class="absolute-bg mast__img" style="background-image: url('/assets/img/kotlin_native.png');"></figure>
+    <div class="mast__container">
+      <span><time datetime="2017-07-30T09:00:00+01:00" itemprop="datePublished">Jul 30, 2017</time></span>
+      <h1 itemprop="name headline">Native Serverless Kotlin</h1>
+      
+        <span>Posted in
+          
+            <a class="nav--white" href="/category/programming">Programming</a>
+          
+        </span>
+      
+      <span></span>
+    </div>
+  </header>
+
+  <section class="section-padding bg-grey" itemprop="articleBody">
+    <div class="post">
+      <p>Last week we do an <a href="https://juan-medina.com/2017/07/21/kotlin-serverless/" target="_blank">example</a> of a Kotlin Serverless Function using Apache OpenWhisk, however since we using Kotlin we could make our example a native application that will not run in the JVM.</p>
+
+<p>You could find this complete example in <a href="https://github.com/LearningByExample/KotlinNativeServerless" target="_blank">this repository</a>.</p>
+
+<p>We will need as the week before to have OpenWhisk, and we will require again <a href="http://vagrantup.com/" target="_blank">Vagrant</a> and <a href="https://www.virtualbox.org/wiki/Downloads" target="_blank">Virtual Box</a>, so install those first.</p>
+
+<p>To setup the environment just:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="nv">$ </span>git clone --depth<span class="o">=</span>1 https://github.com/apache/incubator-openwhisk.git openwhisk
+  <span class="nv">$ </span><span class="nb">cd </span>openwhisk/tools/vagrant
+  <span class="nv">$ </span>./hello</code></pre></figure>
+
+<p>Now we could ssh to the machine with:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="nv">$ </span>vagrant ssh</code></pre></figure>
+
+<p>To test the action directly just using the docker that I’ve upload to <a href="https://hub.docker.com/r/jamedina/kotlin-native-fibonacci/" target="_blank">docker hub</a>:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="nv">$ </span>wsk action create native-fibonacci --docker jamedina/kotlin-native-fibonacci</code></pre></figure>
+
+<p>To test the new action just run:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="nv">$ </span>wsk action invoke --result native-fibonacci --param numbers 5</code></pre></figure>
+
+<p>This will output something like:</p>
+
+<figure class="highlight"><pre><code class="language-json" data-lang="json"><span class="w">  </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"result"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="mi">1</span><span class="p">,</span><span class="w">
+        </span><span class="mi">1</span><span class="p">,</span><span class="w">
+        </span><span class="mi">2</span><span class="p">,</span><span class="w">
+        </span><span class="mi">3</span><span class="p">,</span><span class="w">
+        </span><span class="mi">5</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+  </span><span class="p">}</span></code></pre></figure>
+
+<p>OpenWhisk allow us to use a docker that contain a binary that will be execute when an action is invoke, to do it so the binary will receive 1 argument with a JSON string and it need to return a JSON string in a single line.</p>
+
+<p>So to create our function first we need to have <a href="https://github.com/JetBrains/kotlin-native" target="_blank">kotlin-native</a> installed and configured:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="nv">$ </span>git clone --depth 1 https://github.com/JetBrains/kotlin-native.git /kotlin-native
+  <span class="nv">$ </span><span class="nb">cd</span> /kotlin-native
+  <span class="nv">$ </span>./gradlew dependencies:update
+  <span class="nv">$ </span>./gradlew dist
+  <span class="nv">$ </span><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">"/kotlin-native/dist/bin:</span><span class="nv">$PATH</span><span class="s2">"</span>
+  <span class="nv">$ </span>kotlinc</code></pre></figure>
+
+<p>The last line will raise and error since we haven provide any parameters to the compiler but we just do that in order to download the compiler dependencies and toolchain.</p>
+
+<p>Now we will create our project, kotlin native use a gradle plugin that we initial setup as:</p>
+
+<figure class="highlight"><pre><code class="language-gradle" data-lang="gradle">  <span class="k">buildscript</span> <span class="o">{</span>
+      <span class="k">repositories</span> <span class="o">{</span>
+          <span class="n">mavenCentral</span><span class="o">()</span>
+          <span class="n">maven</span> <span class="o">{</span>
+              <span class="n">url</span> <span class="s2">"https://dl.bintray.com/jetbrains/kotlin-native-dependencies"</span>
+          <span class="o">}</span>
+      <span class="o">}</span>
+
+      <span class="k">dependencies</span> <span class="o">{</span>
+          <span class="n">classpath</span> <span class="s2">"org.jetbrains.kotlin:kotlin-native-gradle-plugin:+"</span>
+      <span class="o">}</span>
+  <span class="o">}</span>
+
+  <span class="n">apply</span> <span class="nl">plugin:</span> <span class="s1">'konan'</span>
+
+  <span class="n">konanArtifacts</span> <span class="o">{</span>
+      <span class="n">fibonacci</span> <span class="o">{</span>
+      <span class="o">}</span>
+  <span class="o">}</span></code></pre></figure>
+
+<p>We need as well to specify where is kotlin-native installed using the gradle.properties:</p>
+
+<figure class="highlight"><pre><code class="language-ini" data-lang="ini">  <span class="py">konan.home</span><span class="p">=</span><span class="s">/kotlin-native/dist</span></code></pre></figure>
+
+<p>now lets just create one simple main in the folder src/main.kt</p>
+
+<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">fun</span> <span class="nf">fibonacci</span><span class="p">(</span><span class="n">numbers</span><span class="p">:</span> <span class="n">Long</span><span class="p">):</span> <span class="n">Array</span><span class="p">&lt;</span><span class="n">Long</span><span class="p">&gt;</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">numbers</span> <span class="p">==</span> <span class="m">0L</span><span class="p">)</span> <span class="k">return</span> <span class="n">arrayOf</span><span class="p">(</span><span class="m">0L</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">numbers</span> <span class="p">==</span> <span class="m">1L</span><span class="p">)</span> <span class="k">return</span> <span class="n">arrayOf</span><span class="p">(</span><span class="m">1L</span><span class="p">)</span>
+
+    <span class="kd">var</span> <span class="py">previous</span> <span class="p">=</span> <span class="m">1L</span>
+    <span class="kd">var</span> <span class="py">current</span> <span class="p">=</span> <span class="m">1L</span>
+    <span class="kd">var</span> <span class="py">temp</span><span class="p">:</span> <span class="n">Long</span>
+
+    <span class="k">return</span> <span class="n">arrayOf</span><span class="p">(</span><span class="m">1L</span><span class="p">,</span> <span class="m">1L</span><span class="p">)</span> <span class="p">+</span> <span class="p">(</span><span class="m">1</span><span class="o">..</span><span class="p">(</span><span class="n">numbers</span> <span class="p">-</span> <span class="m">2</span><span class="p">)).</span><span class="n">map</span> <span class="p">{</span>
+      <span class="n">temp</span> <span class="p">=</span> <span class="n">current</span> <span class="p">+</span> <span class="n">previous</span>
+      <span class="n">previous</span> <span class="p">=</span> <span class="n">current</span>
+      <span class="n">current</span> <span class="p">=</span> <span class="n">temp</span>
+      <span class="n">current</span>
+    <span class="p">}.</span><span class="n">toList</span><span class="p">().</span><span class="n">toTypedArray</span><span class="p">()</span>
+  <span class="p">}</span>
+
+  <span class="k">fun</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="n">Array</span><span class="p">&lt;</span><span class="n">String</span><span class="p">&gt;)</span> <span class="p">=</span> <span class="n">fibonacci</span><span class="p">(</span><span class="m">5</span><span class="p">).</span><span class="n">forEach</span><span class="p">(</span><span class="o">::</span><span class="n">println</span><span class="p">)</span></code></pre></figure>
+
+<p>Now to compile simple :</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="nv">$ </span>gradlew clean build</code></pre></figure>
+
+<p>We use clean because sometimes gradle will not compile the files even with the files changed.</p>
+
+<p>Then we could run it with:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="nv">$ </span>./build/konan/bin/fibonacci.kexe
+  1
+  1
+  2
+  3
+  5</code></pre></figure>
+
+<p>Now we need to use JSON but since we don’t have the JVM neither we could use any Java code we are just going to use a C JSON library, I’m choose <a href="https://github.com/kgabis/parson" target="_blank">parson</a> since is perfect for the task.</p>
+
+<p>First clone it, or create a submodule in your git:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="nv">$ </span>mkdir src/cpp
+  <span class="nv">$ </span><span class="nb">cd </span>src/cpp
+  <span class="nv">$ </span>git clone --depth 1 https://github.com/kgabis/parson.git</code></pre></figure>
+
+<p>No I’ve create a shell script to compile the C code into a library that we could latter link:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">  <span class="nv">DEPS</span><span class="o">=</span><span class="k">$(</span>dirname <span class="sb">`</span><span class="nb">type</span> -p konanc<span class="sb">`</span><span class="k">)</span>/../dependencies
+
+  <span class="k">if</span> <span class="o">[</span> x<span class="nv">$TARGET</span> <span class="o">==</span> x <span class="o">]</span>; <span class="k">then
+  case</span> <span class="s2">"</span><span class="nv">$OSTYPE</span><span class="s2">"</span> <span class="k">in
+    </span>darwin<span class="k">*</span><span class="p">)</span>  <span class="nv">TARGET</span><span class="o">=</span>macbook <span class="p">;;</span>
+    linux<span class="k">*</span><span class="p">)</span>   <span class="nv">TARGET</span><span class="o">=</span>linux <span class="p">;;</span>
+    <span class="k">*</span><span class="p">)</span>        <span class="nb">echo</span> <span class="s2">"unknown: </span><span class="nv">$OSTYPE</span><span class="s2">"</span> <span class="o">&amp;&amp;</span> <span class="nb">exit </span>1;;
+  <span class="k">esac
+  fi
+
+  </span><span class="nv">CLANG_linux</span><span class="o">=</span><span class="nv">$DEPS</span>/clang-llvm-3.9.0-linux-x86-64/bin/clang++
+  <span class="nv">CLANG_macbook</span><span class="o">=</span><span class="nv">$DEPS</span>/clang-llvm-3.9.0-darwin-macos/bin/clang++
+
+  <span class="nv">var</span><span class="o">=</span>CLANG_<span class="k">${</span><span class="nv">TARGET</span><span class="k">}</span>
+  <span class="nv">CLANG</span><span class="o">=</span><span class="k">${</span><span class="p">!var</span><span class="k">}</span>
+
+  mkdir -p build/clang/
+
+  <span class="nv">$CLANG</span> -x c -c src/main/cpp/parson/parson.c -o build/clang/parson.bc -emit-llvm <span class="o">||</span> <span class="nb">exit </span>1</code></pre></figure>
+
+<p>This script will create a library in <a href="https://llvm.org/" target="_blank">LLVM</a> format, the architecture used by Kotlin Native.</p>
+
+<p>Now we need to update our gradle script to compile the C code, and to link it to our program.</p>
+
+<figure class="highlight"><pre><code class="language-gradle" data-lang="gradle">  <span class="k">buildscript</span> <span class="o">{</span>
+      <span class="k">repositories</span> <span class="o">{</span>
+          <span class="n">mavenCentral</span><span class="o">()</span>
+          <span class="n">maven</span> <span class="o">{</span>
+              <span class="n">url</span> <span class="s2">"https://dl.bintray.com/jetbrains/kotlin-native-dependencies"</span>
+          <span class="o">}</span>
+      <span class="o">}</span>
+
+      <span class="k">dependencies</span> <span class="o">{</span>
+          <span class="n">classpath</span> <span class="s2">"org.jetbrains.kotlin:kotlin-native-gradle-plugin:+"</span>
+      <span class="o">}</span>
+  <span class="o">}</span>
+
+  <span class="n">apply</span> <span class="nl">plugin:</span> <span class="s1">'konan'</span>
+
+  <span class="n">konanInterop</span> <span class="o">{</span>
+      <span class="n">Parson</span> <span class="o">{</span>
+          <span class="n">includeDirs</span> <span class="s2">"${project.projectDir}/src/main/cpp/parson"</span>
+      <span class="o">}</span>
+  <span class="o">}</span>
+
+  <span class="n">konanArtifacts</span> <span class="o">{</span>
+      <span class="n">fibonacci</span> <span class="o">{</span>
+          <span class="n">useInterop</span> <span class="s2">"Parson"</span>
+          <span class="n">nativeLibrary</span> <span class="s2">"${project.buildDir.canonicalPath}/clang/parson.bc"</span>
+      <span class="o">}</span>
+  <span class="o">}</span>
+
+  <span class="n">task</span> <span class="nf">compileCpp</span><span class="o">(</span><span class="nl">type:</span> <span class="n">Exec</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">dependsOn</span> <span class="s1">'genParsonInteropStubs'</span>
+      <span class="n">workingDir</span> <span class="n">project</span><span class="o">.</span><span class="na">getProjectDir</span><span class="o">()</span>
+      <span class="n">commandLine</span> <span class="s1">'./buildCpp.sh'</span>
+  <span class="o">}</span>
+
+  <span class="n">compileKonanFibonacci</span> <span class="o">{</span>
+      <span class="n">dependsOn</span> <span class="s1">'compileCpp'</span>
+  <span class="o">}</span></code></pre></figure>
+
+<p>Finally, we need to add a definition file for the C code so Kotlin could create and stub for it.</p>
+
+<p>The file should be place in src/c_interop/Parson.def :</p>
+
+<figure class="highlight"><pre><code class="language-ini" data-lang="ini">  <span class="py">headers</span> <span class="p">=</span> <span class="s">parson.h</span>
+  <span class="py">headerFilter</span> <span class="p">=</span> <span class="s">parson.h</span></code></pre></figure>
+
+<p>Now we could just build as before to check that everything is ok:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="nv">$ </span>gradlew clean build</code></pre></figure>
+
+<p>This should generate some files including:</p>
+
+<ul>
+  <li>build/clang/parson.bc : The library that could be linked.</li>
+  <li>build/konan/interopStubs/genParsonInteropStubs/Parson/Parson.kt : The Kotin Stub for calling the library.</li>
+</ul>
+
+<p>No we modify our program to use parson:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  import kotlinx.cinterop.<span class="k">*</span>
+  import Parson.<span class="k">*</span>
+
+  fun fibonacci<span class="o">(</span>numbers: Long<span class="o">)</span>: Array&lt;Long&gt; <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span>numbers <span class="o">==</span> 0L<span class="o">)</span> <span class="k">return </span>arrayOf<span class="o">(</span>0L<span class="o">)</span>
+    <span class="k">if</span> <span class="o">(</span>numbers <span class="o">==</span> 1L<span class="o">)</span> <span class="k">return </span>arrayOf<span class="o">(</span>1L<span class="o">)</span>
+
+    var previous <span class="o">=</span> 1L
+    var current <span class="o">=</span> 1L
+    var temp: Long
+
+    <span class="k">return </span>arrayOf<span class="o">(</span>1L, 1L<span class="o">)</span> + <span class="o">(</span>1..<span class="o">(</span>numbers - 2<span class="o">))</span>.map <span class="o">{</span>
+      temp <span class="o">=</span> current + previous
+      previous <span class="o">=</span> current
+      current <span class="o">=</span> temp
+      current
+    <span class="o">}</span>.toList<span class="o">()</span>.toTypedArray<span class="o">()</span>
+  <span class="o">}</span>
+
+  fun Array&lt;String&gt;.paramOrElse<span class="o">(</span>name: String, elseValue: Long<span class="o">)</span>: Long <span class="o">{</span>
+    var result <span class="o">=</span> elseValue
+    <span class="k">if</span> <span class="o">(</span>this.size &gt; 0<span class="o">)</span> <span class="o">{</span>
+      val json <span class="o">=</span> this[0]
+      memScoped <span class="o">{</span>
+        val schema <span class="o">=</span> json_parse_string<span class="o">(</span>json<span class="o">)</span>
+        <span class="k">if</span> <span class="o">(</span>schema !<span class="o">=</span> null<span class="o">)</span> <span class="o">{</span>
+          val root <span class="o">=</span> json_object<span class="o">(</span>schema<span class="o">)</span>
+          <span class="k">if</span> <span class="o">(</span>root !<span class="o">=</span> null<span class="o">)</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span>json_object_has_value<span class="o">(</span>root, name<span class="o">)</span> <span class="o">==</span> 1<span class="o">)</span> <span class="o">{</span>
+              result <span class="o">=</span> json_object_get_number<span class="o">(</span>root, name<span class="o">)</span>.toLong<span class="o">()</span>
+            <span class="o">}</span>
+          <span class="o">}</span>
+          json_value_free<span class="o">(</span>schema<span class="o">)</span>
+        <span class="o">}</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="k">return </span>result
+  <span class="o">}</span>
+
+  fun Long.throughFunction<span class="o">(</span>operation: <span class="o">(</span>Long<span class="o">)</span> -&gt; Array&lt;Long&gt;<span class="o">)</span>: String <span class="o">{</span>
+    var result <span class="o">=</span> <span class="s2">"{}"</span>
+    val elements <span class="o">=</span> operation<span class="o">(</span>this<span class="o">)</span>
+    memScoped <span class="o">{</span>
+      val schema <span class="o">=</span> json_value_init_object<span class="o">()</span>
+      val root <span class="o">=</span> json_value_get_object<span class="o">(</span>schema<span class="o">)</span>
+
+      json_object_set_value<span class="o">(</span>root, <span class="s2">"result"</span>, json_value_init_array<span class="o">())</span>
+      val array <span class="o">=</span> json_object_get_array<span class="o">(</span>root, <span class="s2">"result"</span><span class="o">)</span>;
+
+      elements.forEach <span class="o">{</span>
+        json_array_append_number<span class="o">(</span>array, it.toDouble<span class="o">())</span>
+      <span class="o">}</span>
+
+      result <span class="o">=</span> json_serialize_to_string<span class="o">(</span>schema<span class="o">)</span>?.toKString<span class="o">()</span>!!
+      json_value_free<span class="o">(</span>schema<span class="o">)</span>
+    <span class="o">}</span>
+    <span class="k">return </span>result
+  <span class="o">}</span>
+
+  fun main<span class="o">(</span>args: Array&lt;String&gt;<span class="o">)</span> <span class="o">{</span>
+
+    val result <span class="o">=</span> args.paramOrElse<span class="o">(</span><span class="s2">"numbers"</span>, 10L<span class="o">)</span>.throughFunction<span class="o">(</span>::fibonacci<span class="o">)</span>
+
+    println<span class="o">(</span>result<span class="o">)</span>
+  <span class="o">}</span></code></pre></figure>
+
+<p>We have create a couple of functions that uses the Kotlin/Native <a href="https://github.com/JetBrains/kotlin-native/blob/master/INTEROP.md" target="_blank">interoperability</a> so we could invoke Parson.</p>
+
+<p>After building the program again we could just use it like this:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="nv">$ </span>./build/konan/bin/Fibonacci.kexe <span class="s2">"{ </span><span class="se">\"</span><span class="s2">numbers</span><span class="se">\"</span><span class="s2"> : 5 }"</span>
+  <span class="o">{</span><span class="s2">"result"</span>:[1,1,2,3,5]<span class="o">}</span></code></pre></figure>
+
+<p>No we need to create a docker for it, OpenWhisk have a docker base image that is based on alpine linux, I’ve not been able to make Kotlin-Native to work on alpine so I’ve create a base <a href="https://hub.docker.com/r/jamedina/openwhisk-kotlin-native/" target="_blank">docker image</a> that any one could use for making Kotlin Native Serverless functions.</p>
+
+<p>The docker file for that image is:</p>
+
+<figure class="highlight"><pre><code class="language-dockerfile" data-lang="dockerfile">  # Dockerfile for runing a openwishk Kotlin native action
+  FROM openjdk:8-jdk
+
+  #install kotlin native
+  RUN git clone --depth 1 https://github.com/JetBrains/kotlin-native.git
+  WORKDIR kotlin-native
+  RUN ./gradlew dependencies:update
+  RUN ./gradlew dist
+
+  ENV PATH /kotlin-native/dist/bin:$PATH
+
+  #install python
+  RUN apt-get update
+  RUN apt-get install python3-setuptools -y
+  RUN easy_install3 pip
+  RUN pip3 install --upgrade pip setuptools six
+  RUN pip3 install --no-cache-dir gevent==1.2.1 flask==0.12
+
+  #install c libraries
+  RUN apt-get update
+  RUN apt-get install libc-dev -y
+
+  #preparing the action proxy
+  ADD actionProxy/ /actionProxy
+  WORKDIR /actionProxy
+  ENV FLASK_PROXY_PORT 8080
+
+  CMD ["/bin/bash"]</code></pre></figure>
+
+<p>I’ve use openjdk 8 since we are going to use gradle in our build and it use the actionProxy python3 script that is provide by OpenWhisk to create a flask server that will serve our action trough HTTP, our action should be place in the folder /action and be named exec.</p>
+
+<p>So now we could create a docker image for our fibonacci function:</p>
+
+<figure class="highlight"><pre><code class="language-dockerfile" data-lang="dockerfile">  # Dockerfile for runing a Kotlin native fibonacci action
+  FROM jamedina/openwhisk-kotlin-native
+
+  #add basic gradle files
+  ADD .gradle/ /temp-build/.gradle
+  ADD gradle/ /temp-build/gradle
+  ADD build.gradle /temp-build
+  ADD gradlew /temp-build
+  ADD gradle.properties /temp-build
+
+  #get the compiler
+  WORKDIR /temp-build
+  RUN ./gradlew
+
+  # add our action code
+  ADD src/ /temp-build/src
+  ADD buildCpp.sh /temp-build
+
+  #build our action
+  RUN ./gradlew build
+
+  #copy the action as the default OpenWhisk docker actions
+  RUN mkdir /action
+  RUN cp /temp-build/build/konan/bin/fibonacci.kexe /action/exec
+
+  #clean up
+  RUN rm -rf /temp-build
+  RUN rm -rf /kotlin-native
+
+  CMD ["/bin/bash", "-c", "cd /actionProxy &amp;&amp; python3 -u actionproxy.py"]</code></pre></figure>
+
+<p>Finally, I create a simple scripts to publish the images in docker hub, remember to login before.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">  <span class="c">#!/usr/bin/env bash</span>
+  <span class="nb">echo</span> <span class="s2">"creating base image jamedina/openwhisk-kotlin-native"</span>
+  docker build -t jamedina/openwhisk-kotlin-native docker/
+
+  <span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$?</span><span class="s2">"</span> -eq <span class="s2">"0"</span> <span class="o">]</span>
+  <span class="k">then
+    </span><span class="nb">echo</span> <span class="s2">"pushing jamedina/openwhisk-kotlin-native"</span>
+    docker push jamedina/openwhisk-kotlin-native
+    <span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$?</span><span class="s2">"</span> -eq <span class="s2">"0"</span> <span class="o">]</span>
+    <span class="k">then
+      </span><span class="nb">echo</span> <span class="s2">"creating image jamedina/kotlin-native-fibonacci"</span>
+      docker build -t jamedina/kotlin-native-fibonacci .
+      <span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$?</span><span class="s2">"</span> -eq <span class="s2">"0"</span> <span class="o">]</span>
+      <span class="k">then
+        </span><span class="nb">echo</span> <span class="s2">"pushing"</span>
+        docker push jamedina/kotlin-native-fibonacci
+        <span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$?</span><span class="s2">"</span> -eq <span class="s2">"0"</span> <span class="o">]</span>
+        <span class="k">then
+          </span><span class="nb">echo</span> <span class="s2">"done"</span>
+        <span class="k">else
+          </span><span class="nb">echo</span> <span class="s2">"fail to push fibonacci docker"</span>
+        <span class="k">fi
+      else
+        </span><span class="nb">echo</span> <span class="s2">"fail to build fibonacci docker"</span>
+      <span class="k">fi
+    else
+      </span><span class="nb">echo</span> <span class="s2">"fail to push base docker"</span>
+    <span class="k">fi
+  else
+    </span><span class="nb">echo</span> <span class="s2">"fail to build base docker"</span>
+  <span class="k">fi</span></code></pre></figure>
+
+<p>In the way that the files are added to the docker we can just run that command to get update the image only doing the parts that actually change.</p>
+
+<p>So now we could put all things together to do:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="nv">$ </span>./build.sh
+  <span class="nv">$ </span>wsk action create native-fibonacci --docker jamedina/kotlin-native-fibonacci
+  <span class="nv">$ </span>wsk action invoke --result native-fibonacci --param numbers 5
+  <span class="o">{</span>
+    <span class="s2">"result"</span>: <span class="o">[</span>
+        1,
+        1,
+        2,
+        3,
+        5
+    <span class="o">]</span>
+  <span class="o">}</span></code></pre></figure>
+
+<p>This has been a great example to learn Kotlin Native, so sure I’ll do more things with it in a future.</p>
+
+<p><em>Note: Many things could be change in this example, for example I could create a builder image that generate the binary and use for creating another image that has only that binary, since we do not need the whole compiler infrastructure and the image could be much smaller, but for demonstration is just OK.</em></p>
+
+    
+
+    <div id="disqus_thread"></div>
+    <script>
+
+    /**
+    *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+    *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+
+    var disqus_config = function () {
+    this.page.url = "https://juan-medina.com/2017/07/30/kotlin-native-serverless/";
+    this.page.identifier = "/2017/07/30/kotlin-native-serverless/"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    this.page.title = "Native Serverless Kotlin";
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = '//juan-medina-com.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+    
+
+    </div>
+  </section>
+
+  <section class="profile">
+    <div class="profile__card">
+      <div class="profile__img">
+        <figure class="absolute-bg" style="background-image: url('/assets/img/pp.jpg');"></figure>
+      </div>
+      <div class="profile__container">
+        <p><b>About Juan Medina</b><br/> I'm just a normal geek that code all kind of stuff, from complex corporate applications to games.<br/> <br/> Games, music, movies and traveling are my escape pods.</p>
+        
+          <ul class="profile__social">
+            
+              <li><a class="fa fa-lg fa-envelope-o" href="mailto:mail@juan-medina.com"></a></li>
+            
+            
+              <li><a class="fa fa-lg fa-github" href="https://github.com/juan-medina" target="_blank"></a></li>
+            
+              <li><a class="fa fa-lg fa-twitter" href="https://twitter.com/jamedinatwit" target="_blank"></a></li>
+            
+              <li><a class="fa fa-lg fa-stack-overflow" href="http://stackoverflow.com/users/7910403/juan-medina" target="_blank"></a></li>
+            
+          </ul>
+        
+      </div>
+    </div>
+  </section>
+
+</article>
+
+
+  <section class="next">
+    <a class="next__link" href="/2017/07/21/kotlin-serverless/" style="background-image: url('/assets/img/openwhiskkotlin.png');">
+      <div class="next__container">
+        <span>Read Next</span>
+        <h2>Serverless Kotlin</h2>
+      </div>
+    </a>
+  </section>
+
+
+    </main>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/rellax/1.0.0/rellax.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+<script type="text/javascript" src="/assets/js/app.js"></script>
+
+
+  </body>
+
+</html>
