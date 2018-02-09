@@ -16,6 +16,10 @@ cyan      #2aa198  strings, numbers
 green     #859900  operators, other keywords
 */
 
+.highlight a { color: #586e75; }
+.highlight a:hover { color: #9f8f68; }
+.highlight a:active { color: #9f8f68; }
+.highlight a:focus { color: #9f8f68; }
 .highlight { background-color: #002b36; color: #93a1a1 }
 .highlight .lineno { color: #586e75 } /* Line Numbers */
 .highlight .c { color: #586e75 } /* Comment */
