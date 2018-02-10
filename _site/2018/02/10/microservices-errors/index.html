@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Microservices Error Handling | Juan Medina Personal Blog</title>
+  <meta name="author" content="Juan Medina">
+  <meta name="description" content="Personar blog from Juan Medina">
+  <meta property="og:title" content="Microservices Error Handling | Juan Medina Personal Blog">
+  <meta property="og:url" content="http://juan-medina.com/2018/02/10/microservices-errors/">
+  <meta property="og:site_name" content="Juan Medina Personal Blog">
+  <meta property="og:description" content="Personar blog from Juan Medina">
+  <meta property="og:image" content="http://juan-medina.com/assets/img/glass-1818065_1920.jpg">
+  <meta property="og:type" content="blog">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:description" content="Personar blog from Juan Medina">
+  <meta name="twitter:title" content="Microservices Error Handling | Juan Medina Personal Blog">
+  <meta name="twitter:url" content="http://juan-medina.com/2018/02/10/microservices-errors/">
+  <meta name="twitter:site" content="Juan Medina Personal Blog">
+  <meta name="twitter:creator" content="@jamedinatwit">
+  <meta name="twitter:domain" content="http://juan-medina.com">
+  <meta property="twitter:image" content="http://juan-medina.com/assets/img/glass-1818065_1920.jpg">
+
+  <link type="application/atom+xml" rel="alternate" href="http://juan-medina.com/feed.xml" title="Juan Medina Personal Blog" />
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata|Lora|Space+Mono:700">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/syntax.css">
+
+  <link rel="alternate" type="application/rss+xml" title="Juan Medina Personal Blog" href="http://juan-medina.com/feed.xml">
+  <link rel="canonical" href="http://juan-medina.com/2018/02/10/microservices-errors/">
+
+  
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-71726617-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+  
+</head>
+
+
+  <body>
+
+    <main>
+      <article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="section-padding--lg mast rellax" data-rellax-speed="-4">
+    <a class="nav nav--white" href="/">
+      <i class="fa fa-lg fa-arrow-left"></i>
+      <span>Back to Posts</span>
+    </a>
+    <figure class="absolute-bg mast__img" style="background-image: url('/assets/img/glass-1818065_1920.jpg');"></figure>
+    <div class="mast__container">
+      <span><time datetime="2018-02-10T00:00:00+00:00" itemprop="datePublished">Feb 10, 2018</time></span>
+      <h1 itemprop="name headline">Microservices Error Handling</h1>
+      
+        <span>Posted in
+          
+            <a class="nav--white" href="/category/programming">Programming</a>
+          
+        </span>
+      
+      <span></span>
+    </div>
+  </header>
+
+  <section class="section-padding bg-grey" itemprop="articleBody">
+    <div class="post">
+      <p>Some days ago I was discusing with my colleage <a href="https://twitter.com/juanantoniobm">Juan Antonio Breña</a> how you could end breaking your control flow when handling errors in a Microservice, specially relaying in mechanism such <a href="https://docs.spring.io/spring/docs/4.3.15.BUILD-SNAPSHOT/javadoc-api/org/springframework/web/bind/annotation/ControllerAdvice.html" target="_blank"><code class="highlighter-rouge">ControllerAdvice</code></a> and <a href="https://docs.spring.io/spring/docs/4.3.15.BUILD-SNAPSHOT/javadoc-api/org/springframework/web/bind/annotation/ExceptionHandler.html" target="_blank"><code class="highlighter-rouge">ExceptionHandler</code></a> when create Spring Boot Microservices in Java.</p>
+
+<p>I told Juan that we may need to handle this probllem differently, so I decide to create a new project in our <a href="https://github.com/LearningByExample" target="_blank">Learning By Example</a> GitHub meta group: <a href="https://github.com/LearningByExample/MicroservicesErrorHandling" target="_blank">Microservices Error Handling</a></p>
+
+<p>The idea behind that project is to check how we could avoid to use <a href="https://docs.spring.io/spring/docs/4.3.15.BUILD-SNAPSHOT/javadoc-api/org/springframework/web/bind/annotation/ControllerAdvice.html"><code class="highlighter-rouge">ControllerAdvice</code></a> and <a href="https://docs.spring.io/spring/docs/4.3.15.BUILD-SNAPSHOT/javadoc-api/org/springframework/web/bind/annotation/ExceptionHandler.html"><code class="highlighter-rouge">ExceptionHandler</code></a>, and even checked exceptions when handling errors in our Microservices.</p>
+
+<p>Checked exceptions some times could leak the implementation details of our components, and they could even break our control flow.</p>
+
+<p>Spring <a href="https://docs.spring.io/spring/docs/4.3.15.BUILD-SNAPSHOT/javadoc-api/org/springframework/web/bind/annotation/ControllerAdvice.html"><code class="highlighter-rouge">ControllerAdvice</code></a> or <a href="https://docs.spring.io/spring/docs/4.3.15.BUILD-SNAPSHOT/javadoc-api/org/springframework/web/bind/annotation/ExceptionHandler.html"><code class="highlighter-rouge">ExceptionHandler</code></a> could become the ultimate GOTOs, that some people my use to get errors and sent back to the consumers of the Microservice, jumping out on the execution of our business logic.</p>
+
+<p>The approach described in the example is to handle errors as part of our business logic, avoiding unnecessary lost of our control flow.</p>
+
+<p>This example is not about stop using <a href="https://docs.spring.io/spring/docs/4.3.15.BUILD-SNAPSHOT/javadoc-api/org/springframework/web/bind/annotation/ControllerAdvice.html"><code class="highlighter-rouge">ControllerAdvice</code></a>, we may need to still using it to handle unexpected Runtime Exceptions, however relaying on it for handling our business errors isn’t ideal.</p>
+
+<p>Approach like the one in this example may become a better way to do it, however this is not the unique, neither definitive, solution.</p>
+
+<p>We have created one wrapper class to support this concept named <code class="highlighter-rouge">Result&lt;type&gt;</code>, this class has two creation methods.</p>
+
+<ul>
+  <li><code class="highlighter-rouge">Result.create(object)</code> : That will create a wrapper containing the data to be returned.</li>
+  <li><code class="highlighter-rouge">Result.error(object)</code> : That will create a wrapper containing an error.</li>
+</ul>
+
+<p>How to use this class is simple, for example:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="kd">public</span> <span class="n">Result</span> <span class="nf">get</span><span class="o">(</span><span class="kt">int</span> <span class="n">id</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">id</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="k">return</span> <span class="n">Result</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="k">new</span> <span class="n">Customer</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="s">"super customer"</span><span class="o">));</span>
+    <span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="n">id</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="o">)</span>
+      <span class="k">return</span> <span class="n">Result</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="k">new</span> <span class="n">BadParameters</span><span class="o">(</span><span class="s">"bad parameters"</span><span class="o">));</span>
+    <span class="k">else</span>
+      <span class="k">return</span> <span class="n">Result</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="k">new</span> <span class="n">NotFound</span><span class="o">(</span><span class="s">"customer not found"</span><span class="o">));</span>
+  <span class="o">}</span></code></pre></figure>
+
+<p><code class="highlighter-rouge">BadParameters</code> and <code class="highlighter-rouge">NotFound</code> are entities for our business logic that contain the desired information for handling these responses.</p>
+
+<p>For handling the result we could just use the methods <code class="highlighter-rouge">isError()</code> and <code class="highlighter-rouge">getData()</code>.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="n">Result</span> <span class="n">result</span> <span class="o">=</span> <span class="n">operation</span><span class="o">();</span>
+
+  <span class="k">if</span><span class="o">(</span><span class="n">result</span><span class="o">.</span><span class="na">isError</span><span class="o">()){</span>
+    <span class="c1">//do something with the error</span>
+  <span class="o">}</span><span class="k">else</span><span class="o">{</span>
+    <span class="n">Customer</span> <span class="n">customer</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="na">getValue</span><span class="o">();</span>
+  <span class="o">}</span></code></pre></figure>
+
+<p>Finally we use in our mapping a generic ResponseEntity we could return the wrapper value without needing to understand what contains.</p>
+
+<p>For example:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="nd">@GetMapping</span><span class="o">(</span><span class="s">"/customer/{id}"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="n">ResponseEntity</span><span class="o">&lt;?&gt;</span> <span class="n">get</span><span class="o">(</span><span class="nd">@PathVariable</span><span class="o">()</span> <span class="kt">int</span> <span class="n">id</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kd">final</span> <span class="n">Result</span> <span class="n">result</span> <span class="o">=</span> <span class="n">customerService</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">id</span><span class="o">);</span>
+    <span class="kd">final</span> <span class="n">HttpStatus</span> <span class="n">status</span> <span class="o">=</span> <span class="n">getStatus</span><span class="o">(</span><span class="n">result</span><span class="o">);</span>
+
+    <span class="k">return</span> <span class="k">new</span> <span class="n">ResponseEntity</span><span class="o">&lt;&gt;(</span><span class="n">result</span><span class="o">.</span><span class="na">getValue</span><span class="o">(),</span> <span class="n">status</span><span class="o">);</span>
+  <span class="o">}</span></code></pre></figure>
+
+<p>Since we may like to return different HTTP status, based on the error contained, we could create a helper that use the type of the class held on the wrapper.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="kd">private</span> <span class="n">HttpStatus</span> <span class="nf">getStatus</span><span class="o">(</span><span class="kd">final</span> <span class="n">Result</span> <span class="n">result</span><span class="o">){</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">result</span><span class="o">.</span><span class="na">isError</span><span class="o">())</span> <span class="o">{</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">result</span><span class="o">.</span><span class="na">getValue</span><span class="o">()</span> <span class="k">instanceof</span> <span class="n">NotFound</span><span class="o">)</span>
+        <span class="k">return</span> <span class="n">HttpStatus</span><span class="o">.</span><span class="na">NOT_FOUND</span><span class="o">;</span>
+      <span class="k">else</span>
+        <span class="k">return</span> <span class="n">HttpStatus</span><span class="o">.</span><span class="na">BAD_REQUEST</span><span class="o">;</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="k">return</span> <span class="n">HttpStatus</span><span class="o">.</span><span class="na">OK</span><span class="o">;</span>
+  <span class="o">}</span></code></pre></figure>
+
+<p>To just run the example microservice you could just do from the command line:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">  <span class="nv">$ </span>mvnw spring-boot run</code></pre></figure>
+
+<p>To test the output when sending a correct customer id:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">  <span class="nv">$ </span>curl -i http://localhost:8080/customer/1
+  HTTP/1.1 200
+  X-Application-Context: application
+  Content-Type: application/json;charset<span class="o">=</span>UTF-8
+  Transfer-Encoding: chunked
+  Date: Wed, 31 Jan 2018 09:33:01 GMT
+
+  <span class="o">{</span>
+    <span class="s2">"data"</span> : <span class="s2">"super customer"</span>,
+    <span class="s2">"id"</span> : 1
+  <span class="o">}</span></code></pre></figure>
+
+<p>To test the output when sending a invalid customer id</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">  <span class="nv">$curl</span> -i http://localhost:8080/customer/-1
+  HTTP/1.1 400
+  X-Application-Context: application
+  Content-Type: application/json;charset<span class="o">=</span>UTF-8
+  Transfer-Encoding: chunked
+  Date: Wed, 31 Jan 2018 09:34:03 GMT
+  Connection: close
+
+  <span class="o">{</span>
+    <span class="s2">"message"</span> : <span class="s2">"bad parameters"</span>
+  <span class="o">}</span></code></pre></figure>
+
+<p>To test the output when sending a not found customer id</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">  <span class="nv">$ </span>curl -i http://localhost:8080/customer/2
+  HTTP/1.1 404
+  X-Application-Context: application
+  Content-Type: application/json;charset<span class="o">=</span>UTF-8
+  Transfer-Encoding: chunked
+  Date: Wed, 31 Jan 2018 09:34:48 GMT
+
+  <span class="o">{</span>
+    <span class="s2">"message"</span> : <span class="s2">"customer not found"</span>
+  <span class="o">}</span></code></pre></figure>
+
+<p>The full example could be found under this repository:</p>
+
+<p><a href="https://github.com/LearningByExample/MicroservicesErrorHandling" target="_blank">https://github.com/LearningByExample/MicroservicesErrorHandling</a></p>
+
+<p>I don’t know if we definetly will be using this approach however I think I may rewrite it in Kotlin in somepoint.</p>
+
+    
+
+    <div id="disqus_thread"></div>
+    <script>
+
+    /**
+    *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+    *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+
+    var disqus_config = function () {
+    this.page.url = "https://juan-medina.com/2018/02/10/microservices-errors/";
+    this.page.identifier = "/2018/02/10/microservices-errors/"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    this.page.title = "Microservices Error Handling";
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = '//juan-medina-com.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+    
+
+    </div>
+  </section>
+
+  <section class="profile">
+    <div class="profile__card">
+      <div class="profile__img">
+        <figure class="absolute-bg" style="background-image: url('/assets/img/pp.jpg');"></figure>
+      </div>
+      <div class="profile__container">
+        <p><b>About Juan Medina</b><br/> I'm just a normal geek that code all kind of stuff, from complex corporate applications to games.<br/> <br/> Games, music, movies and traveling are my escape pods.</p>
+        
+          <ul class="profile__social">
+            
+              <li><a class="fa fa-lg fa-envelope-o" href="mailto:mail@juan-medina.com"></a></li>
+            
+            
+              <li><a class="fa fa-lg fa-github" href="https://github.com/juan-medina" target="_blank"></a></li>
+            
+              <li><a class="fa fa-lg fa-twitter" href="https://twitter.com/JuanMedinaCode" target="_blank"></a></li>
+            
+              <li><a class="fa fa-lg fa-stack-overflow" href="http://stackoverflow.com/users/7910403/juan-medina" target="_blank"></a></li>
+            
+          </ul>
+        
+      </div>
+    </div>
+  </section>
+
+</article>
+
+
+  <section class="next">
+    <a class="next__link" href="/2018/02/09/book/" style="background-image: url('/assets/img/B08531_Cover_0.png');">
+      <div class="next__container">
+        <span>Read Next</span>
+        <h2>My First Book is Published</h2>
+      </div>
+    </a>
+  </section>
+
+
+    </main>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/rellax/1.0.0/rellax.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+<script type="text/javascript" src="/assets/js/app.js"></script>
+
+
+  </body>
+
+</html>
