@@ -1,4 +1,121 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="http://jekyllrb.com" version="3.4.0">Jekyll</generator><link href="http://juan-medina.com/feed.xml" rel="self" type="application/atom+xml" /><link href="http://juan-medina.com/" rel="alternate" type="text/html" /><updated>2018-02-09T22:49:00+00:00</updated><id>http://juan-medina.com/</id><title type="html">Juan Medina Personal Blog</title><subtitle>Personar blog from Juan Medina</subtitle><entry><title type="html">My First Book is Published</title><link href="http://juan-medina.com/2018/02/09/book/" rel="alternate" type="text/html" title="My First Book is Published" /><published>2018-02-09T08:00:00+00:00</published><updated>2018-02-09T08:00:00+00:00</updated><id>http://juan-medina.com/2018/02/09/book</id><content type="html" xml:base="http://juan-medina.com/2018/02/09/book/">&lt;p&gt;I’m very proud to announce that my first book, Hands-On Microservices with Kotlin,  have been published by &lt;a href=&quot;https://www.packtpub.com/web-development/microservices-kotlin&quot; target=&quot;_blank&quot;&gt;Packt&lt;/a&gt;.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="http://jekyllrb.com" version="3.4.0">Jekyll</generator><link href="http://juan-medina.com/feed.xml" rel="self" type="application/atom+xml" /><link href="http://juan-medina.com/" rel="alternate" type="text/html" /><updated>2018-02-10T00:44:10+00:00</updated><id>http://juan-medina.com/</id><title type="html">Juan Medina Personal Blog</title><subtitle>Personar blog from Juan Medina</subtitle><entry><title type="html">Microservices Error Handling</title><link href="http://juan-medina.com/2018/02/10/microservices-errors/" rel="alternate" type="text/html" title="Microservices Error Handling" /><published>2018-02-10T00:00:00+00:00</published><updated>2018-02-10T00:00:00+00:00</updated><id>http://juan-medina.com/2018/02/10/microservices-errors</id><content type="html" xml:base="http://juan-medina.com/2018/02/10/microservices-errors/">&lt;p&gt;Some days ago I was discusing with my colleage &lt;a href=&quot;https://twitter.com/juanantoniobm&quot;&gt;Juan Antonio Breña&lt;/a&gt; how you could end breaking your control flow when handling errors in a Microservice, specially relaying in mechanism such &lt;a href=&quot;https://docs.spring.io/spring/docs/4.3.15.BUILD-SNAPSHOT/javadoc-api/org/springframework/web/bind/annotation/ControllerAdvice.html&quot; target=&quot;_blank&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ControllerAdvice&lt;/code&gt;&lt;/a&gt; and &lt;a href=&quot;https://docs.spring.io/spring/docs/4.3.15.BUILD-SNAPSHOT/javadoc-api/org/springframework/web/bind/annotation/ExceptionHandler.html&quot; target=&quot;_blank&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ExceptionHandler&lt;/code&gt;&lt;/a&gt; when create Spring Boot Microservices in Java.&lt;/p&gt;
+
+&lt;p&gt;I told Juan that we may need to handle this probllem differently, so I decide to create a new project in our &lt;a href=&quot;https://github.com/LearningByExample&quot; target=&quot;_blank&quot;&gt;Learning By Example&lt;/a&gt; GitHub meta group: &lt;a href=&quot;https://github.com/LearningByExample/MicroservicesErrorHandling&quot; target=&quot;_blank&quot;&gt;Microservices Error Handling&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;The idea behind that project is to check how we could avoid to use &lt;a href=&quot;https://docs.spring.io/spring/docs/4.3.15.BUILD-SNAPSHOT/javadoc-api/org/springframework/web/bind/annotation/ControllerAdvice.html&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ControllerAdvice&lt;/code&gt;&lt;/a&gt; and &lt;a href=&quot;https://docs.spring.io/spring/docs/4.3.15.BUILD-SNAPSHOT/javadoc-api/org/springframework/web/bind/annotation/ExceptionHandler.html&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ExceptionHandler&lt;/code&gt;&lt;/a&gt;, and even checked exceptions when handling errors in our Microservices.&lt;/p&gt;
+
+&lt;p&gt;Checked exceptions some times could leak the implementation details of our components, and they could even break our control flow.&lt;/p&gt;
+
+&lt;p&gt;Spring &lt;a href=&quot;https://docs.spring.io/spring/docs/4.3.15.BUILD-SNAPSHOT/javadoc-api/org/springframework/web/bind/annotation/ControllerAdvice.html&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ControllerAdvice&lt;/code&gt;&lt;/a&gt; or &lt;a href=&quot;https://docs.spring.io/spring/docs/4.3.15.BUILD-SNAPSHOT/javadoc-api/org/springframework/web/bind/annotation/ExceptionHandler.html&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ExceptionHandler&lt;/code&gt;&lt;/a&gt; could become the ultimate GOTOs, that some people my use to get errors and sent back to the consumers of the Microservice, jumping out on the execution of our business logic.&lt;/p&gt;
+
+&lt;p&gt;The approach described in the example is to handle errors as part of our business logic, avoiding unnecessary lost of our control flow.&lt;/p&gt;
+
+&lt;p&gt;This example is not about stop using &lt;a href=&quot;https://docs.spring.io/spring/docs/4.3.15.BUILD-SNAPSHOT/javadoc-api/org/springframework/web/bind/annotation/ControllerAdvice.html&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ControllerAdvice&lt;/code&gt;&lt;/a&gt;, we may need to still using it to handle unexpected Runtime Exceptions, however relaying on it for handling our business errors isn’t ideal.&lt;/p&gt;
+
+&lt;p&gt;Approach like the one in this example may become a better way to do it, however this is not the unique, neither definitive, solution.&lt;/p&gt;
+
+&lt;p&gt;We have created one wrapper class to support this concept named &lt;code class=&quot;highlighter-rouge&quot;&gt;Result&amp;lt;type&amp;gt;&lt;/code&gt;, this class has two creation methods.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Result.create(object)&lt;/code&gt; : That will create a wrapper containing the data to be returned.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Result.error(object)&lt;/code&gt; : That will create a wrapper containing an error.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;How to use this class is simple, for example:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Result&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Result&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;create&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Customer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;super customer&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;));&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Result&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BadParameters&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;bad parameters&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;));&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Result&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NotFound&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;customer not found&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;));&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;BadParameters&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;NotFound&lt;/code&gt; are entities for our business logic that contain the desired information for handling these responses.&lt;/p&gt;
+
+&lt;p&gt;For handling the result we could just use the methods &lt;code class=&quot;highlighter-rouge&quot;&gt;isError()&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;getData()&lt;/code&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;  &lt;span class=&quot;n&quot;&gt;Result&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;operation&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;isError&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()){&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;//do something with the error&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;Customer&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;customer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getValue&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Finally we use in our mapping a generic ResponseEntity we could return the wrapper value without needing to understand what contains.&lt;/p&gt;
+
+&lt;p&gt;For example:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;  &lt;span class=&quot;nd&quot;&gt;@GetMapping&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/customer/{id}&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ResponseEntity&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;?&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nd&quot;&gt;@PathVariable&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Result&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;customerService&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HttpStatus&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;status&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;getStatus&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ResponseEntity&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getValue&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Since we may like to return different HTTP status, based on the error contained, we could create a helper that use the type of the class held on the wrapper.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;  &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HttpStatus&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getStatus&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Result&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;){&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;isError&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getValue&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;instanceof&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NotFound&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HttpStatus&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;NOT_FOUND&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HttpStatus&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;BAD_REQUEST&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HttpStatus&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;OK&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;To just run the example microservice you could just do from the command line:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;  &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;mvnw spring-boot run&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;To test the output when sending a correct customer id:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;  &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;curl -i http://localhost:8080/customer/1
+  HTTP/1.1 200
+  X-Application-Context: application
+  Content-Type: application/json;charset&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;UTF-8
+  Transfer-Encoding: chunked
+  Date: Wed, 31 Jan 2018 09:33:01 GMT
+
+  &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;data&quot;&lt;/span&gt; : &lt;span class=&quot;s2&quot;&gt;&quot;super customer&quot;&lt;/span&gt;,
+    &lt;span class=&quot;s2&quot;&gt;&quot;id&quot;&lt;/span&gt; : 1
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;To test the output when sending a invalid customer id&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;  &lt;span class=&quot;nv&quot;&gt;$curl&lt;/span&gt; -i http://localhost:8080/customer/-1
+  HTTP/1.1 400
+  X-Application-Context: application
+  Content-Type: application/json;charset&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;UTF-8
+  Transfer-Encoding: chunked
+  Date: Wed, 31 Jan 2018 09:34:03 GMT
+  Connection: close
+
+  &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;message&quot;&lt;/span&gt; : &lt;span class=&quot;s2&quot;&gt;&quot;bad parameters&quot;&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;To test the output when sending a not found customer id&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;  &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;curl -i http://localhost:8080/customer/2
+  HTTP/1.1 404
+  X-Application-Context: application
+  Content-Type: application/json;charset&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;UTF-8
+  Transfer-Encoding: chunked
+  Date: Wed, 31 Jan 2018 09:34:48 GMT
+
+  &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;message&quot;&lt;/span&gt; : &lt;span class=&quot;s2&quot;&gt;&quot;customer not found&quot;&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The full example could be found under this repository:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/LearningByExample/MicroservicesErrorHandling&quot; target=&quot;_blank&quot;&gt;https://github.com/LearningByExample/MicroservicesErrorHandling&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;I don’t know if we definetly will be using this approach however I think I may rewrite it in Kotlin in somepoint.&lt;/p&gt;</content><author><name>Juan Medina</name></author><summary type="html">Some days ago I was discusing with my colleage Juan Antonio Breña how you could end breaking your control flow when handling errors in a Microservice, specially relaying in mechanism such ControllerAdvice and ExceptionHandler when create Spring Boot Microservices in Java.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://juan-medina.com/assets/img/glass-1818065_1920.jpg" /></entry><entry><title type="html">My First Book is Published</title><link href="http://juan-medina.com/2018/02/09/book/" rel="alternate" type="text/html" title="My First Book is Published" /><published>2018-02-09T08:00:00+00:00</published><updated>2018-02-09T08:00:00+00:00</updated><id>http://juan-medina.com/2018/02/09/book</id><content type="html" xml:base="http://juan-medina.com/2018/02/09/book/">&lt;p&gt;I’m very proud to announce that my first book, Hands-On Microservices with Kotlin,  have been published by &lt;a href=&quot;https://www.packtpub.com/web-development/microservices-kotlin&quot; target=&quot;_blank&quot;&gt;Packt&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;A book where I try to explain how to design, build and deploy Microservices using Spring Framework 5.0 and Spring Boot 2.0.&lt;/p&gt;
 
@@ -2018,27 +2135,4 @@ OK&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;And finally I choose a &lt;a href=&quot;https://github.com/thomasvaeth/trophy-jekyll&quot; target=&quot;_blank&quot;&gt;wonderful theme&lt;/a&gt; that I like a lot and do a couple of tweaks for my needs.&lt;/p&gt;
 
-&lt;p&gt;But then I realized that I need a nice color scheme for the syntax highlight so &lt;a href=&quot;https://gist.github.com/qguv/7936275&quot; target=&quot;_blank&quot;&gt;I used this css&lt;/a&gt;.&lt;/p&gt;</content><author><name>Juan Medina</name></author><summary type="html">I’ve recreated my personal blog using Jekyll and so far I loving.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://juan-medina.com/assets/img/jekyll.png" /></entry><entry><title type="html">New Super Laydock</title><link href="http://juan-medina.com/2016/02/23/new-super-laydock/" rel="alternate" type="text/html" title="New Super Laydock" /><published>2016-02-23T21:19:00+00:00</published><updated>2016-02-23T21:19:00+00:00</updated><id>http://juan-medina.com/2016/02/23/new-super-laydock</id><content type="html" xml:base="http://juan-medina.com/2016/02/23/new-super-laydock/">&lt;p&gt;So today I’ve speak  with my graphics designer to start the new game development, and originally I was interested in to do a remake of Rune Master 2 for MSX2, here is a video for those who like to see it.&lt;/p&gt;
-
-&lt;style&gt;.embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; } .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }&lt;/style&gt;
-&lt;div class=&quot;embed-container&quot;&gt;    &lt;iframe title=&quot;YouTube video player&quot; width=&quot;640&quot; height=&quot;390&quot; src=&quot;//www.youtube.com/embed/KKQaPppOEZ8&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;&lt;/div&gt;
-
-&lt;p&gt;Basically is kind of a board game for 4 players that could be played on a single computer, it’s turn base and it loots of fun. Gameplays are usually quite fast and it has a random map generator that make playing another game not so repetitive.&lt;/p&gt;
-
-&lt;p&gt;He was happy about that, but I did realise that maybe is better to try something that he like to do instead, so he suggest Super Laydock For MSX1, here is a video as well:&lt;/p&gt;
-
-&lt;style&gt;.embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; } .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }&lt;/style&gt;
-&lt;div class=&quot;embed-container&quot;&gt;    &lt;iframe title=&quot;YouTube video player&quot; width=&quot;640&quot; height=&quot;390&quot; src=&quot;//www.youtube.com/embed/QEfbMoUK1rI&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;&lt;/div&gt;
-
-&lt;p&gt;This is a classical japanese shoot em up, the idea is to make it look retro, with scaling and so.&lt;/p&gt;
-
-&lt;p&gt;So I decide that yes, les try!&lt;/p&gt;
-
-&lt;p&gt;Nothing to loose here.&lt;/p&gt;
-
-&lt;p&gt;Here is the music of the game!&lt;/p&gt;
-
-&lt;style&gt;.embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; } .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }&lt;/style&gt;
-&lt;div class=&quot;embed-container&quot;&gt;    &lt;iframe title=&quot;YouTube video player&quot; width=&quot;640&quot; height=&quot;390&quot; src=&quot;//www.youtube.com/embed/HtqgxAfyZRE&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;&lt;/div&gt;
-
-&lt;p&gt; &lt;/p&gt;</content><author><name>Juan Medina</name></author><summary type="html">So today I’ve speak  with my graphics designer to start the new game development, and originally I was interested in to do a remake of Rune Master 2 for MSX2, here is a video for those who like to see it.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://juan-medina.com/assets/img/super-laydock.png" /></entry></feed>
+&lt;p&gt;But then I realized that I need a nice color scheme for the syntax highlight so &lt;a href=&quot;https://gist.github.com/qguv/7936275&quot; target=&quot;_blank&quot;&gt;I used this css&lt;/a&gt;.&lt;/p&gt;</content><author><name>Juan Medina</name></author><summary type="html">I’ve recreated my personal blog using Jekyll and so far I loving.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://juan-medina.com/assets/img/jekyll.png" /></entry></feed>
