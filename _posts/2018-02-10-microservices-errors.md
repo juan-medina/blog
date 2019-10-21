@@ -6,7 +6,7 @@ author: Juan Medina
 comments: true
 categories: [Programming]
 image: /assets/img/glass-1818065_1920.jpg
-image-sm: /assets/glass-1818065_1920.jpg
+image-sm: /assets/img/glass-1818065_1920.jpg
 ---
 
 Some days ago I was discusing with my colleage [Juan Antonio Breña](https://twitter.com/juanantoniobm) how you could end breaking your control flow when handling errors in a Microservice, specially relaying in mechanism such [`ControllerAdvice`](https://docs.spring.io/spring/docs/4.3.15.BUILD-SNAPSHOT/javadoc-api/org/springframework/web/bind/annotation/ControllerAdvice.html){:target="_blank"} and [`ExceptionHandler`](https://docs.spring.io/spring/docs/4.3.15.BUILD-SNAPSHOT/javadoc-api/org/springframework/web/bind/annotation/ExceptionHandler.html){:target="_blank"} when create Spring Boot Microservices in Java.
