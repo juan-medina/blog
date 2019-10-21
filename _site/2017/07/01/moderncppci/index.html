@@ -102,7 +102,7 @@
 
 <p><strong>The initial project structure</strong></p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>  /lib
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  /lib
     /src
     /include
     /test
@@ -110,8 +110,7 @@
     /src
     /test
   /third_party
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Nothing complicated, and easy to manage, with a clear meaning of each folder.</p>
 
@@ -134,10 +133,9 @@
 
 <p>This program will output when run:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>[2017-07-01 11:09:22.766] [console] [info] [main] doing some calculation
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[2017-07-01 11:09:22.766] [console] [info] [main] doing some calculation
 [2017-07-01 11:09:22.768] [console] [info] [main] 1 + 2 * 5 - 3 / 4 = 3
-</code></pre>
-</div>
+</code></pre></div></div>
 <p>This example use a couple of classes defined in the library, <em>Calc</em> and <em>Logger</em> to display a simple calculation.</p>
 
 <p><strong>Doing Unit Tests</strong></p>
@@ -354,7 +352,7 @@
 
 <p>To generate the projects, auto discovering everything, including what compiler we are going to use we could just:</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  cmake -H. -BBuild</code></pre></figure>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  cmake <span class="nt">-H</span><span class="nb">.</span> <span class="nt">-BBuild</span></code></pre></figure>
 
 <p>If you like to set a implicit compiler set the variable CXX=${COMPILER}, for example COMPILER could be gcc, clang and so on.</p>
 
@@ -363,45 +361,45 @@
 <p>Specify build type debug/release</p>
 
 <figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="c"># generate a debug project</span>
-  cmake -H. -BBuild -DCMAKE_BUILD_TYPE<span class="o">=</span>Debug
+  cmake <span class="nt">-H</span><span class="nb">.</span> <span class="nt">-BBuild</span> <span class="nt">-DCMAKE_BUILD_TYPE</span><span class="o">=</span>Debug
   <span class="c"># generate a release project</span>
-  cmake -H. -BBuild -DCMAKE_BUILD_TYPE<span class="o">=</span>Release</code></pre></figure>
+  cmake <span class="nt">-H</span><span class="nb">.</span> <span class="nt">-BBuild</span> <span class="nt">-DCMAKE_BUILD_TYPE</span><span class="o">=</span>Release</code></pre></figure>
 
 <p>Specify architecture</p>
 
 <figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="c"># 64 bits architecture</span>
-  cmake -H. -BBuild -Ax64
+  cmake <span class="nt">-H</span><span class="nb">.</span> <span class="nt">-BBuild</span> <span class="nt">-Ax64</span>
   <span class="c"># ARM architecture</span>
-  cmake -H. -BBuild -AARM
+  cmake <span class="nt">-H</span><span class="nb">.</span> <span class="nt">-BBuild</span> <span class="nt">-AARM</span>
   <span class="c"># Windows 32 bits architecture</span>
-  cmake -H. -BBuild -AxWin32</code></pre></figure>
+  cmake <span class="nt">-H</span><span class="nb">.</span> <span class="nt">-BBuild</span> <span class="nt">-AxWin32</span></code></pre></figure>
 
 <p>Generate different project types</p>
 
 <figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="c"># MinGW makefiles</span>
-  cmake -H. -BBuild -G <span class="s2">"MinGW Makefiles"</span>
+  cmake <span class="nt">-H</span><span class="nb">.</span> <span class="nt">-BBuild</span> <span class="nt">-G</span> <span class="s2">"MinGW Makefiles"</span>
   <span class="c"># XCode project</span>
-  cmake -H. -BBuild -G <span class="s2">"XCode"</span>
+  cmake <span class="nt">-H</span><span class="nb">.</span> <span class="nt">-BBuild</span> <span class="nt">-G</span> <span class="s2">"XCode"</span>
   <span class="c"># Visual Studio 15 2017 solution</span>
-  cmake -H. -BBuild -G <span class="s2">"Visual Studio 15 2017"</span></code></pre></figure>
+  cmake <span class="nt">-H</span><span class="nb">.</span> <span class="nt">-BBuild</span> <span class="nt">-G</span> <span class="s2">"Visual Studio 15 2017"</span></code></pre></figure>
 
 <p><strong>Build the project</strong></p>
 
 <p>From the Build folder</p>
 
 <figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="c"># build the default build type (in multi build types usually debug)</span>
-  cmake --build .
+  cmake <span class="nt">--build</span> <span class="nb">.</span>
   <span class="c"># build a specific build type</span>
-  cmake --build . --config Release</code></pre></figure>
+  cmake <span class="nt">--build</span> <span class="nb">.</span> <span class="nt">--config</span> Release</code></pre></figure>
 
 <p><strong>Run tests</strong></p>
 
 <p>From the Build folder</p>
 
 <figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="c"># run all test using the default build type</span>
-  ctest -V
+  ctest <span class="nt">-V</span>
   <span class="c"># run all test in Release build type</span>
-  ctest -V -C Release</code></pre></figure>
+  ctest <span class="nt">-V</span> <span class="nt">-C</span> Release</code></pre></figure>
 
 <p>This will run all our test and given stats about how long will take, which one fail and so on.</p>
 
@@ -409,73 +407,73 @@
 
 <p>No that we have our project ready we could building in travis for Linux and OSX. We will add this .travis.yml to our project:</p>
 
-<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">language</span><span class="pi">:</span> <span class="s">cpp</span>
-<span class="s">sudo</span><span class="pi">:</span> <span class="s">true</span>
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">language</span><span class="pi">:</span> <span class="s">cpp</span>
+<span class="na">sudo</span><span class="pi">:</span> <span class="no">true</span>
 
-<span class="s">matrix</span><span class="pi">:</span>
-  <span class="s">include</span><span class="pi">:</span>
+<span class="na">matrix</span><span class="pi">:</span>
+  <span class="na">include</span><span class="pi">:</span>
 
     <span class="c1"># Linux C++14 GCC builds</span>
-    <span class="pi">-</span> <span class="s">os</span><span class="pi">:</span> <span class="s">linux</span>
-      <span class="s">compiler</span><span class="pi">:</span> <span class="s">gcc</span>
-      <span class="s">addons</span><span class="pi">:</span> <span class="nl">&amp;gcc6</span>
-        <span class="s">apt</span><span class="pi">:</span>
-          <span class="s">sources</span><span class="pi">:</span> <span class="pi">[</span><span class="s1">'</span><span class="s">ubuntu-toolchain-r-test'</span><span class="pi">]</span>
-          <span class="s">packages</span><span class="pi">:</span> <span class="pi">[</span><span class="s1">'</span><span class="s">g++-6'</span><span class="pi">]</span>
-      <span class="s">env</span><span class="pi">:</span> <span class="s">COMPILER='g++-6' BUILD_TYPE='Release'</span>
+    <span class="pi">-</span> <span class="na">os</span><span class="pi">:</span> <span class="s">linux</span>
+      <span class="na">compiler</span><span class="pi">:</span> <span class="s">gcc</span>
+      <span class="na">addons</span><span class="pi">:</span> <span class="nl">&amp;gcc6</span>
+        <span class="na">apt</span><span class="pi">:</span>
+          <span class="na">sources</span><span class="pi">:</span> <span class="pi">[</span><span class="s1">'</span><span class="s">ubuntu-toolchain-r-test'</span><span class="pi">]</span>
+          <span class="na">packages</span><span class="pi">:</span> <span class="pi">[</span><span class="s1">'</span><span class="s">g++-6'</span><span class="pi">]</span>
+      <span class="na">env</span><span class="pi">:</span> <span class="s">COMPILER='g++-6' BUILD_TYPE='Release'</span>
 
-    <span class="pi">-</span> <span class="s">os</span><span class="pi">:</span> <span class="s">linux</span>
-      <span class="s">compiler</span><span class="pi">:</span> <span class="s">gcc</span>
-      <span class="s">addons</span><span class="pi">:</span> <span class="nv">*gcc6</span>
-      <span class="s">env</span><span class="pi">:</span> <span class="s">COMPILER='g++-6' BUILD_TYPE='Debug'</span>
+    <span class="pi">-</span> <span class="na">os</span><span class="pi">:</span> <span class="s">linux</span>
+      <span class="na">compiler</span><span class="pi">:</span> <span class="s">gcc</span>
+      <span class="na">addons</span><span class="pi">:</span> <span class="nv">*gcc6</span>
+      <span class="na">env</span><span class="pi">:</span> <span class="s">COMPILER='g++-6' BUILD_TYPE='Debug'</span>
 
     <span class="c1"># Linux C++14 Clang builds</span>
-    <span class="pi">-</span> <span class="s">os</span><span class="pi">:</span> <span class="s">linux</span>
-      <span class="s">compiler</span><span class="pi">:</span> <span class="s">clang</span>
-      <span class="s">addons</span><span class="pi">:</span> <span class="nl">&amp;clang38</span>
-        <span class="s">apt</span><span class="pi">:</span>
-          <span class="s">sources</span><span class="pi">:</span> <span class="pi">[</span><span class="s1">'</span><span class="s">llvm-toolchain-precise-3.8'</span><span class="pi">,</span> <span class="s1">'</span><span class="s">ubuntu-toolchain-r-test'</span><span class="pi">]</span>
-          <span class="s">packages</span><span class="pi">:</span> <span class="pi">[</span><span class="s1">'</span><span class="s">clang-3.8'</span><span class="pi">]</span>
-      <span class="s">env</span><span class="pi">:</span> <span class="s">COMPILER='clang++-3.8' BUILD_TYPE='Release'</span>
+    <span class="pi">-</span> <span class="na">os</span><span class="pi">:</span> <span class="s">linux</span>
+      <span class="na">compiler</span><span class="pi">:</span> <span class="s">clang</span>
+      <span class="na">addons</span><span class="pi">:</span> <span class="nl">&amp;clang38</span>
+        <span class="na">apt</span><span class="pi">:</span>
+          <span class="na">sources</span><span class="pi">:</span> <span class="pi">[</span><span class="s1">'</span><span class="s">llvm-toolchain-precise-3.8'</span><span class="pi">,</span> <span class="s1">'</span><span class="s">ubuntu-toolchain-r-test'</span><span class="pi">]</span>
+          <span class="na">packages</span><span class="pi">:</span> <span class="pi">[</span><span class="s1">'</span><span class="s">clang-3.8'</span><span class="pi">]</span>
+      <span class="na">env</span><span class="pi">:</span> <span class="s">COMPILER='clang++-3.8' BUILD_TYPE='Release'</span>
 
-    <span class="pi">-</span> <span class="s">os</span><span class="pi">:</span> <span class="s">linux</span>
-      <span class="s">compiler</span><span class="pi">:</span> <span class="s">clang</span>
-      <span class="s">addons</span><span class="pi">:</span> <span class="nv">*clang38</span>
-      <span class="s">env</span><span class="pi">:</span> <span class="s">COMPILER='clang++-3.8' BUILD_TYPE='Debug'</span>
+    <span class="pi">-</span> <span class="na">os</span><span class="pi">:</span> <span class="s">linux</span>
+      <span class="na">compiler</span><span class="pi">:</span> <span class="s">clang</span>
+      <span class="na">addons</span><span class="pi">:</span> <span class="nv">*clang38</span>
+      <span class="na">env</span><span class="pi">:</span> <span class="s">COMPILER='clang++-3.8' BUILD_TYPE='Debug'</span>
 
     <span class="c1"># OSX C++14 Clang Builds</span>
 
-    <span class="pi">-</span> <span class="s">os</span><span class="pi">:</span> <span class="s">osx</span>
-      <span class="s">osx_image</span><span class="pi">:</span> <span class="s">xcode8.3</span>
-      <span class="s">compiler</span><span class="pi">:</span> <span class="s">clang</span>
-      <span class="s">env</span><span class="pi">:</span> <span class="s">COMPILER='clang++' BUILD_TYPE='Debug'</span>
+    <span class="pi">-</span> <span class="na">os</span><span class="pi">:</span> <span class="s">osx</span>
+      <span class="na">osx_image</span><span class="pi">:</span> <span class="s">xcode8.3</span>
+      <span class="na">compiler</span><span class="pi">:</span> <span class="s">clang</span>
+      <span class="na">env</span><span class="pi">:</span> <span class="s">COMPILER='clang++' BUILD_TYPE='Debug'</span>
 
-    <span class="pi">-</span> <span class="s">os</span><span class="pi">:</span> <span class="s">osx</span>
-      <span class="s">osx_image</span><span class="pi">:</span> <span class="s">xcode8.3</span>
-      <span class="s">compiler</span><span class="pi">:</span> <span class="s">clang</span>
-      <span class="s">env</span><span class="pi">:</span> <span class="s">COMPILER='clang++' BUILD_TYPE='Release'</span>
+    <span class="pi">-</span> <span class="na">os</span><span class="pi">:</span> <span class="s">osx</span>
+      <span class="na">osx_image</span><span class="pi">:</span> <span class="s">xcode8.3</span>
+      <span class="na">compiler</span><span class="pi">:</span> <span class="s">clang</span>
+      <span class="na">env</span><span class="pi">:</span> <span class="s">COMPILER='clang++' BUILD_TYPE='Release'</span>
 
 
-<span class="s">install</span><span class="pi">:</span>
+<span class="na">install</span><span class="pi">:</span>
   <span class="pi">-</span> <span class="s">DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"</span>
   <span class="pi">-</span> <span class="s">mkdir -p ${DEPS_DIR} &amp;&amp; cd ${DEPS_DIR}</span>
   <span class="pi">-</span> <span class="pi">|</span>
-    <span class="no">if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then</span>
-      <span class="no">CMAKE_URL="http://www.cmake.org/files/v3.3/cmake-3.3.2-Linux-x86_64.tar.gz"</span>
-      <span class="no">mkdir cmake &amp;&amp; travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake</span>
-      <span class="no">export PATH=${DEPS_DIR}/cmake/bin:${PATH}</span>
-    <span class="no">elif [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then</span>
-      <span class="no">which cmake || brew install cmake</span>
-    <span class="no">fi</span>
+    <span class="s">if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then</span>
+      <span class="s">CMAKE_URL="http://www.cmake.org/files/v3.3/cmake-3.3.2-Linux-x86_64.tar.gz"</span>
+      <span class="s">mkdir cmake &amp;&amp; travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C cmake</span>
+      <span class="s">export PATH=${DEPS_DIR}/cmake/bin:${PATH}</span>
+    <span class="s">elif [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then</span>
+      <span class="s">which cmake || brew install cmake</span>
+    <span class="s">fi</span>
 
-<span class="s">before_script</span><span class="pi">:</span>
+<span class="na">before_script</span><span class="pi">:</span>
   <span class="pi">-</span> <span class="s">export CXX=${COMPILER}</span>
   <span class="pi">-</span> <span class="s">cd ${TRAVIS_BUILD_DIR}</span>
   <span class="pi">-</span> <span class="s">cmake -H. -BBuild -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -Wdev</span>
   <span class="pi">-</span> <span class="s">cd Build</span>
 
-<span class="s">script</span><span class="pi">:</span>
-  <span class="pi">-</span> <span class="s">make -j 2</span>
+<span class="na">script</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">make -j </span><span class="m">2</span>
   <span class="pi">-</span> <span class="s">ctest -V -j 2</span></code></pre></figure>
 
 <p>This will use a buld matrix to generate the project, build it and do the test for Linux (clang38  / gcc6) and OSX (XCode 8.3 clang) for Debug and Release targets.</p>
@@ -485,42 +483,42 @@
 <p>Finally we will use Appveyor for Visual Studio on  Windows builds adding a appveyor.yml to our project:</p>
 
 <figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="c1"># version string format -- This will be overwritten later anyway</span>
-<span class="s">version</span><span class="pi">:</span> <span class="s2">"</span><span class="s">{build}"</span>
+<span class="na">version</span><span class="pi">:</span> <span class="s2">"</span><span class="s">{build}"</span>
 
-<span class="s">os</span><span class="pi">:</span>
-  <span class="pi">-</span> <span class="s">Visual Studio 2017</span>
-  <span class="pi">-</span> <span class="s">Visual Studio 2015</span>
+<span class="na">os</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">Visual Studio </span><span class="m">2017</span>
+  <span class="pi">-</span> <span class="s">Visual Studio </span><span class="m">2015</span>
 
-<span class="s">init</span><span class="pi">:</span>
+<span class="na">init</span><span class="pi">:</span>
   <span class="pi">-</span> <span class="s">git config --global core.autocrlf input</span>
   <span class="c1"># Set build version to git commit-hash</span>
-  <span class="pi">-</span> <span class="s">ps</span><span class="pi">:</span> <span class="s">Update-AppveyorBuild -Version "$($env:APPVEYOR_REPO_BRANCH) - $($env:APPVEYOR_REPO_COMMIT)"</span>
+  <span class="pi">-</span> <span class="na">ps</span><span class="pi">:</span> <span class="s">Update-AppveyorBuild -Version "$($env:APPVEYOR_REPO_BRANCH) - $($env:APPVEYOR_REPO_COMMIT)"</span>
 
-<span class="s">install</span><span class="pi">:</span>
+<span class="na">install</span><span class="pi">:</span>
   <span class="pi">-</span> <span class="s">git submodule update --init --recursive</span>
 
 <span class="c1"># Win32 and x64 are CMake-compatible solution platform names.</span>
 <span class="c1"># This allows us to pass %PLATFORM% to CMake -A.</span>
-<span class="s">platform</span><span class="pi">:</span>
+<span class="na">platform</span><span class="pi">:</span>
   <span class="pi">-</span> <span class="s">Win32</span>
   <span class="pi">-</span> <span class="s">x64</span>
 
 <span class="c1"># build Configurations, i.e. Debug, Release, etc.</span>
-<span class="s">configuration</span><span class="pi">:</span>
+<span class="na">configuration</span><span class="pi">:</span>
   <span class="pi">-</span> <span class="s">Debug</span>
   <span class="pi">-</span> <span class="s">Release</span>
 
 <span class="c1">#Cmake will autodetect the compiler, but we set the arch</span>
-<span class="s">before_build</span><span class="pi">:</span>
+<span class="na">before_build</span><span class="pi">:</span>
   <span class="pi">-</span> <span class="s">cmake -H. -BBuild -A%PLATFORM%</span>
 
 <span class="c1"># build with MSBuild</span>
-<span class="s">build</span><span class="pi">:</span>
-  <span class="s">project</span><span class="pi">:</span> <span class="s">Build\ModernCppCI.sln</span>        <span class="c1"># path to Visual Studio solution or project</span>
-  <span class="s">parallel</span><span class="pi">:</span> <span class="s">true</span>                        <span class="c1"># enable MSBuild parallel builds</span>
-  <span class="s">verbosity</span><span class="pi">:</span> <span class="s">normal</span>                     <span class="c1"># MSBuild verbosity level {quiet|minimal|normal|detailed}</span>
+<span class="na">build</span><span class="pi">:</span>
+  <span class="na">project</span><span class="pi">:</span> <span class="s">Build\ModernCppCI.sln</span>        <span class="c1"># path to Visual Studio solution or project</span>
+  <span class="na">parallel</span><span class="pi">:</span> <span class="no">true</span>                        <span class="c1"># enable MSBuild parallel builds</span>
+  <span class="na">verbosity</span><span class="pi">:</span> <span class="s">normal</span>                     <span class="c1"># MSBuild verbosity level {quiet|minimal|normal|detailed}</span>
 
-<span class="s">test_script</span><span class="pi">:</span>
+<span class="na">test_script</span><span class="pi">:</span>
   <span class="pi">-</span> <span class="s">cd Build</span>
   <span class="pi">-</span> <span class="s">ctest -V -j 2 -C %CONFIGURATION%</span></code></pre></figure>
 

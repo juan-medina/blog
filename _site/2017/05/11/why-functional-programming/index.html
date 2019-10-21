@@ -91,16 +91,16 @@
 
 <p>Let’s create 3 simple Java methods</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="kd">private</span> <span class="n">String</span> <span class="nf">name</span><span class="o">()</span> <span class="o">{</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="kd">private</span> <span class="nc">String</span> <span class="nf">name</span><span class="o">()</span> <span class="o">{</span>
       <span class="k">return</span> <span class="s">"functional"</span><span class="o">;</span>
   <span class="o">}</span>
 
-  <span class="kd">private</span> <span class="n">String</span> <span class="nf">reverse</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+  <span class="kd">private</span> <span class="nc">String</span> <span class="nf">reverse</span><span class="o">(</span><span class="kd">final</span> <span class="nc">String</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
       <span class="k">return</span> <span class="k">new</span> <span class="nf">StringBuffer</span><span class="o">(</span><span class="n">value</span><span class="o">).</span><span class="na">reverse</span><span class="o">().</span><span class="na">toString</span><span class="o">();</span>
   <span class="o">}</span>
 
-  <span class="kd">private</span> <span class="kt">void</span> <span class="nf">print</span><span class="o">(</span><span class="kd">final</span> <span class="n">Object</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
-      <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">value</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+  <span class="kd">private</span> <span class="kt">void</span> <span class="nf">print</span><span class="o">(</span><span class="kd">final</span> <span class="nc">Object</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">value</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
   <span class="o">}</span></code></pre></figure>
 
 <p>Is clear what they do, and we could use it like this:</p>
@@ -110,22 +110,22 @@
 <p>We know how this work because we have learn that the most interior method, name, is execute first and print last.
 But of course no one programming things like this, most likely most people will change it to really reflect what we trying to do:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="kd">final</span> <span class="n">String</span> <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">();</span>
-  <span class="kd">final</span> <span class="n">String</span> <span class="n">reverseName</span> <span class="o">=</span> <span class="n">reverse</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="kd">final</span> <span class="nc">String</span> <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">();</span>
+  <span class="kd">final</span> <span class="nc">String</span> <span class="n">reverseName</span> <span class="o">=</span> <span class="n">reverse</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
   <span class="n">print</span><span class="o">(</span><span class="n">reverseName</span><span class="o">);</span></code></pre></figure>
 
 <p>We could just convert those functions to functional method using the Java 8 functions:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="kd">private</span> <span class="n">Supplier</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">name</span><span class="o">()</span> <span class="o">{</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="kd">private</span> <span class="nc">Supplier</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="nf">name</span><span class="o">()</span> <span class="o">{</span>
       <span class="k">return</span> <span class="o">()</span> <span class="o">-&gt;</span> <span class="s">"functional"</span><span class="o">;</span>
   <span class="o">}</span>
 
-  <span class="kd">private</span> <span class="n">Function</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">reverse</span><span class="o">()</span> <span class="o">{</span>
-      <span class="k">return</span> <span class="n">value</span> <span class="o">-&gt;</span> <span class="k">new</span> <span class="n">StringBuffer</span><span class="o">(</span><span class="n">value</span><span class="o">).</span><span class="na">reverse</span><span class="o">().</span><span class="na">toString</span><span class="o">();</span>
+  <span class="kd">private</span> <span class="nc">Function</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span><span class="nc">String</span><span class="o">&gt;</span> <span class="nf">reverse</span><span class="o">()</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="n">value</span> <span class="o">-&gt;</span> <span class="k">new</span> <span class="nc">StringBuffer</span><span class="o">(</span><span class="n">value</span><span class="o">).</span><span class="na">reverse</span><span class="o">().</span><span class="na">toString</span><span class="o">();</span>
   <span class="o">}</span>
 
-  <span class="kd">private</span> <span class="n">Consumer</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">print</span><span class="o">()</span> <span class="o">{</span>
-      <span class="k">return</span> <span class="n">value</span> <span class="o">-&gt;</span> <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">value</span><span class="o">);</span>
+  <span class="kd">private</span> <span class="nc">Consumer</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="nf">print</span><span class="o">()</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="n">value</span> <span class="o">-&gt;</span> <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">value</span><span class="o">);</span>
   <span class="o">}</span></code></pre></figure>
 
 <p>The our prints could be just:</p>
@@ -134,8 +134,8 @@ But of course no one programming things like this, most likely most people will 
 
 <p>Or most likely:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="kd">final</span> <span class="n">String</span> <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">().</span><span class="na">get</span><span class="o">();</span>
-  <span class="kd">final</span> <span class="n">String</span> <span class="n">reverseName</span> <span class="o">=</span> <span class="n">reverse</span><span class="o">().</span><span class="na">apply</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="kd">final</span> <span class="nc">String</span> <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">().</span><span class="na">get</span><span class="o">();</span>
+  <span class="kd">final</span> <span class="nc">String</span> <span class="n">reverseName</span> <span class="o">=</span> <span class="n">reverse</span><span class="o">().</span><span class="na">apply</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
   <span class="n">print</span><span class="o">().</span><span class="na">accept</span><span class="o">(</span><span class="n">reverseName</span><span class="o">);</span></code></pre></figure>
 
 <p>Seriously we don’t see many benefit to use functional interfaces there, just for the sake of use them. That syntax is correct, it uses functional interfaces, but by far is not something that we use to solve problems.</p>
@@ -143,38 +143,38 @@ But of course no one programming things like this, most likely most people will 
 <p>But wait here, we will get there eventually, now just check this class.</p>
 
 <figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Wrapper</span> <span class="o">{</span>
-      <span class="kd">private</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">value</span><span class="o">;</span>
+      <span class="kd">private</span> <span class="kd">final</span> <span class="nc">String</span> <span class="n">value</span><span class="o">;</span>
 
-      <span class="kd">private</span> <span class="nf">Wrapper</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+      <span class="kd">private</span> <span class="nf">Wrapper</span><span class="o">(</span><span class="kd">final</span> <span class="nc">String</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
           <span class="k">this</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">;</span>
       <span class="o">}</span>
 
-      <span class="kd">static</span> <span class="n">Wrapper</span> <span class="nf">From</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+      <span class="kd">static</span> <span class="nc">Wrapper</span> <span class="nf">From</span><span class="o">(</span><span class="kd">final</span> <span class="nc">String</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
           <span class="k">return</span> <span class="k">new</span> <span class="nf">Wrapper</span><span class="o">(</span><span class="n">value</span><span class="o">);</span>
       <span class="o">}</span>
 
-      <span class="kd">static</span> <span class="n">Wrapper</span> <span class="nf">From</span><span class="o">(</span><span class="kd">final</span> <span class="n">Supplier</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">supplier</span><span class="o">)</span> <span class="o">{</span>
+      <span class="kd">static</span> <span class="nc">Wrapper</span> <span class="nf">From</span><span class="o">(</span><span class="kd">final</span> <span class="nc">Supplier</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">supplier</span><span class="o">)</span> <span class="o">{</span>
           <span class="k">return</span> <span class="nf">From</span><span class="o">(</span><span class="n">supplier</span><span class="o">.</span><span class="na">get</span><span class="o">());</span>
       <span class="o">}</span>
 
-      <span class="n">Wrapper</span> <span class="nf">pipe</span><span class="o">(</span><span class="kd">final</span> <span class="n">Function</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">transformer</span><span class="o">)</span> <span class="o">{</span>
+      <span class="nc">Wrapper</span> <span class="nf">pipe</span><span class="o">(</span><span class="kd">final</span> <span class="nc">Function</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="n">transformer</span><span class="o">)</span> <span class="o">{</span>
           <span class="k">return</span> <span class="nf">From</span><span class="o">(</span><span class="n">transformer</span><span class="o">.</span><span class="na">apply</span><span class="o">(</span><span class="n">value</span><span class="o">));</span>
       <span class="o">}</span>
 
-      <span class="kt">void</span> <span class="nf">pipe</span><span class="o">(</span><span class="kd">final</span> <span class="n">Consumer</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">consumer</span><span class="o">)</span> <span class="o">{</span>
+      <span class="kt">void</span> <span class="nf">pipe</span><span class="o">(</span><span class="kd">final</span> <span class="nc">Consumer</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">consumer</span><span class="o">)</span> <span class="o">{</span>
           <span class="n">consumer</span><span class="o">.</span><span class="na">accept</span><span class="o">(</span><span class="n">value</span><span class="o">);</span>
       <span class="o">}</span>
     <span class="o">}</span></code></pre></figure>
 
 <p>Them we could combine it with our functions:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="n">From</span><span class="o">(</span><span class="n">name</span><span class="o">())</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="nc">From</span><span class="o">(</span><span class="n">name</span><span class="o">())</span>
       <span class="o">.</span><span class="na">pipe</span><span class="o">(</span><span class="n">reverse</span><span class="o">())</span>
       <span class="o">.</span><span class="na">pipe</span><span class="o">(</span><span class="n">print</span><span class="o">());</span></code></pre></figure>
 
 <p>Or even:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="n">From</span><span class="o">(</span><span class="s">"hello world"</span><span class="o">)</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="nc">From</span><span class="o">(</span><span class="s">"hello world"</span><span class="o">)</span>
       <span class="o">.</span><span class="na">pipe</span><span class="o">(</span><span class="n">reverse</span><span class="o">())</span>
       <span class="o">.</span><span class="na">pipe</span><span class="o">(</span><span class="n">reverse</span><span class="o">())</span>
       <span class="o">.</span><span class="na">pipe</span><span class="o">(</span><span class="n">print</span><span class="o">());</span></code></pre></figure>
@@ -186,27 +186,27 @@ get something in and them get something out.</p>
 
 <p>Firs we will change our functions as they where at the beginning:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="kd">private</span> <span class="n">String</span> <span class="nf">name</span><span class="o">()</span> <span class="o">{</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="kd">private</span> <span class="nc">String</span> <span class="nf">name</span><span class="o">()</span> <span class="o">{</span>
       <span class="k">return</span> <span class="s">"functional"</span><span class="o">;</span>
   <span class="o">}</span>
 
-  <span class="kd">private</span> <span class="n">String</span> <span class="nf">reverse</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+  <span class="kd">private</span> <span class="nc">String</span> <span class="nf">reverse</span><span class="o">(</span><span class="kd">final</span> <span class="nc">String</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
       <span class="k">return</span> <span class="k">new</span> <span class="nf">StringBuffer</span><span class="o">(</span><span class="n">value</span><span class="o">).</span><span class="na">reverse</span><span class="o">().</span><span class="na">toString</span><span class="o">();</span>
   <span class="o">}</span>
 
-  <span class="kd">private</span> <span class="kt">void</span> <span class="nf">print</span><span class="o">(</span><span class="kd">final</span> <span class="n">Object</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
-      <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">value</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+  <span class="kd">private</span> <span class="kt">void</span> <span class="nf">print</span><span class="o">(</span><span class="kd">final</span> <span class="nc">Object</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">value</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
   <span class="o">}</span></code></pre></figure>
 
 <p>Them we could call them like this:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="n">From</span><span class="o">(</span><span class="k">this</span><span class="o">::</span><span class="n">name</span><span class="o">)</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="nc">From</span><span class="o">(</span><span class="k">this</span><span class="o">::</span><span class="n">name</span><span class="o">)</span>
       <span class="o">.</span><span class="na">pipe</span><span class="o">(</span><span class="k">this</span><span class="o">::</span><span class="n">reverse</span><span class="o">)</span>
       <span class="o">.</span><span class="na">pipe</span><span class="o">(</span><span class="k">this</span><span class="o">::</span><span class="n">print</span><span class="o">);</span></code></pre></figure>
 
 <p>Or again:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="n">From</span><span class="o">(</span><span class="s">"hello world"</span><span class="o">)</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="nc">From</span><span class="o">(</span><span class="s">"hello world"</span><span class="o">)</span>
       <span class="o">.</span><span class="na">pipe</span><span class="o">(</span><span class="k">this</span><span class="o">::</span><span class="n">reverse</span><span class="o">)</span>
       <span class="o">.</span><span class="na">pipe</span><span class="o">(</span><span class="k">this</span><span class="o">::</span><span class="n">reverse</span><span class="o">)</span>
       <span class="o">.</span><span class="na">pipe</span><span class="o">(</span><span class="k">this</span><span class="o">::</span><span class="n">print</span><span class="o">);</span></code></pre></figure>
@@ -216,26 +216,26 @@ to work with standard functions for simplicity.</p>
 
 <p>But to go even further we could generalize our Wrapper like this:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="kd">class</span> <span class="nc">Wrapper</span><span class="o">&lt;</span><span class="n">Type</span><span class="o">&gt;</span> <span class="o">{</span>
-      <span class="kd">private</span> <span class="kd">final</span> <span class="n">Type</span> <span class="n">value</span><span class="o">;</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="kd">class</span> <span class="nc">Wrapper</span><span class="o">&lt;</span><span class="nc">Type</span><span class="o">&gt;</span> <span class="o">{</span>
+      <span class="kd">private</span> <span class="kd">final</span> <span class="nc">Type</span> <span class="n">value</span><span class="o">;</span>
 
-      <span class="kd">private</span> <span class="nf">Wrapper</span><span class="o">(</span><span class="kd">final</span> <span class="n">Type</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+      <span class="kd">private</span> <span class="nf">Wrapper</span><span class="o">(</span><span class="kd">final</span> <span class="nc">Type</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
           <span class="k">this</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">;</span>
       <span class="o">}</span>
 
-      <span class="kd">static</span> <span class="o">&lt;</span><span class="n">AnyType</span><span class="o">&gt;</span> <span class="n">Wrapper</span><span class="o">&lt;</span><span class="n">AnyType</span><span class="o">&gt;</span> <span class="nf">From</span><span class="o">(</span><span class="kd">final</span> <span class="n">AnyType</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
-          <span class="k">return</span> <span class="k">new</span> <span class="n">Wrapper</span><span class="o">&lt;&gt;(</span><span class="n">value</span><span class="o">);</span>
+      <span class="kd">static</span> <span class="o">&lt;</span><span class="nc">AnyType</span><span class="o">&gt;</span> <span class="nc">Wrapper</span><span class="o">&lt;</span><span class="nc">AnyType</span><span class="o">&gt;</span> <span class="nf">From</span><span class="o">(</span><span class="kd">final</span> <span class="nc">AnyType</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+          <span class="k">return</span> <span class="k">new</span> <span class="nc">Wrapper</span><span class="o">&lt;&gt;(</span><span class="n">value</span><span class="o">);</span>
       <span class="o">}</span>
 
-      <span class="kd">static</span> <span class="o">&lt;</span><span class="n">AnyType</span><span class="o">&gt;</span> <span class="n">Wrapper</span><span class="o">&lt;</span><span class="n">AnyType</span><span class="o">&gt;</span> <span class="nf">From</span><span class="o">(</span><span class="kd">final</span> <span class="n">Supplier</span><span class="o">&lt;</span><span class="n">AnyType</span><span class="o">&gt;</span> <span class="n">supplier</span><span class="o">)</span> <span class="o">{</span>
+      <span class="kd">static</span> <span class="o">&lt;</span><span class="nc">AnyType</span><span class="o">&gt;</span> <span class="nc">Wrapper</span><span class="o">&lt;</span><span class="nc">AnyType</span><span class="o">&gt;</span> <span class="nf">From</span><span class="o">(</span><span class="kd">final</span> <span class="nc">Supplier</span><span class="o">&lt;</span><span class="nc">AnyType</span><span class="o">&gt;</span> <span class="n">supplier</span><span class="o">)</span> <span class="o">{</span>
           <span class="k">return</span> <span class="nf">From</span><span class="o">(</span><span class="n">supplier</span><span class="o">.</span><span class="na">get</span><span class="o">());</span>
       <span class="o">}</span>
 
-      <span class="o">&lt;</span><span class="n">OtherType</span><span class="o">&gt;</span> <span class="n">Wrapper</span><span class="o">&lt;</span><span class="n">OtherType</span><span class="o">&gt;</span> <span class="nf">pipe</span><span class="o">(</span><span class="kd">final</span> <span class="n">Function</span><span class="o">&lt;</span><span class="n">Type</span><span class="o">,</span> <span class="n">OtherType</span><span class="o">&gt;</span> <span class="n">transformer</span><span class="o">)</span> <span class="o">{</span>
+      <span class="o">&lt;</span><span class="nc">OtherType</span><span class="o">&gt;</span> <span class="nc">Wrapper</span><span class="o">&lt;</span><span class="nc">OtherType</span><span class="o">&gt;</span> <span class="nf">pipe</span><span class="o">(</span><span class="kd">final</span> <span class="nc">Function</span><span class="o">&lt;</span><span class="nc">Type</span><span class="o">,</span> <span class="nc">OtherType</span><span class="o">&gt;</span> <span class="n">transformer</span><span class="o">)</span> <span class="o">{</span>
           <span class="k">return</span> <span class="nf">From</span><span class="o">(</span><span class="n">transformer</span><span class="o">.</span><span class="na">apply</span><span class="o">(</span><span class="n">value</span><span class="o">));</span>
       <span class="o">}</span>
 
-      <span class="kt">void</span> <span class="nf">pipe</span><span class="o">(</span><span class="kd">final</span> <span class="n">Consumer</span><span class="o">&lt;</span><span class="n">Type</span><span class="o">&gt;</span> <span class="n">consumer</span><span class="o">)</span> <span class="o">{</span>
+      <span class="kt">void</span> <span class="nf">pipe</span><span class="o">(</span><span class="kd">final</span> <span class="nc">Consumer</span><span class="o">&lt;</span><span class="nc">Type</span><span class="o">&gt;</span> <span class="n">consumer</span><span class="o">)</span> <span class="o">{</span>
           <span class="n">consumer</span><span class="o">.</span><span class="na">accept</span><span class="o">(</span><span class="n">value</span><span class="o">);</span>
       <span class="o">}</span>
   <span class="o">}</span></code></pre></figure>
@@ -243,37 +243,37 @@ to work with standard functions for simplicity.</p>
 <p>The functions that we are going to use now are:</p>
 
 <figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="kd">private</span> <span class="kt">int</span> <span class="nf">random</span><span class="o">()</span> <span class="o">{</span>
-      <span class="n">Random</span> <span class="n">rand</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Random</span><span class="o">();</span>
+      <span class="nc">Random</span> <span class="n">rand</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Random</span><span class="o">();</span>
 
       <span class="k">return</span> <span class="n">rand</span><span class="o">.</span><span class="na">nextInt</span><span class="o">();</span>
   <span class="o">}</span>
 
-  <span class="kd">private</span> <span class="n">String</span> <span class="nf">reverse</span><span class="o">(</span><span class="n">String</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+  <span class="kd">private</span> <span class="nc">String</span> <span class="nf">reverse</span><span class="o">(</span><span class="nc">String</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
       <span class="k">return</span> <span class="k">new</span> <span class="nf">StringBuffer</span><span class="o">(</span><span class="n">value</span><span class="o">).</span><span class="na">reverse</span><span class="o">().</span><span class="na">toString</span><span class="o">();</span>
   <span class="o">}</span>
 
-  <span class="kd">private</span> <span class="kt">void</span> <span class="nf">print</span><span class="o">(</span><span class="n">Object</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
-      <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">value</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+  <span class="kd">private</span> <span class="kt">void</span> <span class="nf">print</span><span class="o">(</span><span class="nc">Object</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">value</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
   <span class="o">}</span>
 
   <span class="kd">private</span> <span class="kt">int</span> <span class="nf">square</span><span class="o">(</span><span class="kd">final</span> <span class="kt">int</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
-      <span class="k">return</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="n">Math</span><span class="o">.</span><span class="na">pow</span><span class="o">(</span><span class="n">value</span><span class="o">,</span> <span class="mi">2</span><span class="o">);</span>
+      <span class="k">return</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="nc">Math</span><span class="o">.</span><span class="na">pow</span><span class="o">(</span><span class="n">value</span><span class="o">,</span> <span class="mi">2</span><span class="o">);</span>
   <span class="o">}</span>
 
-  <span class="kd">private</span> <span class="n">String</span> <span class="nf">text</span><span class="o">(</span><span class="kd">final</span> <span class="kt">int</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
-      <span class="k">return</span> <span class="n">Integer</span><span class="o">.</span><span class="na">toString</span><span class="o">(</span><span class="n">value</span><span class="o">);</span>
+  <span class="kd">private</span> <span class="nc">String</span> <span class="nf">text</span><span class="o">(</span><span class="kd">final</span> <span class="kt">int</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">toString</span><span class="o">(</span><span class="n">value</span><span class="o">);</span>
   <span class="o">}</span></code></pre></figure>
 
 <p>The we could do many different things with them:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="n">From</span><span class="o">(</span><span class="s">"hello world"</span><span class="o">)</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="nc">From</span><span class="o">(</span><span class="s">"hello world"</span><span class="o">)</span>
       <span class="o">.</span><span class="na">pipe</span><span class="o">(</span><span class="k">this</span><span class="o">::</span><span class="n">reverse</span><span class="o">)</span>
       <span class="o">.</span><span class="na">pipe</span><span class="o">(</span><span class="k">this</span><span class="o">::</span><span class="n">print</span><span class="o">);</span>
 
-  <span class="n">From</span><span class="o">(</span><span class="k">this</span><span class="o">::</span><span class="n">random</span><span class="o">)</span>
+  <span class="nc">From</span><span class="o">(</span><span class="k">this</span><span class="o">::</span><span class="n">random</span><span class="o">)</span>
       <span class="o">.</span><span class="na">pipe</span><span class="o">(</span><span class="k">this</span><span class="o">::</span><span class="n">print</span><span class="o">);</span>
 
-  <span class="n">From</span><span class="o">(</span><span class="mi">12545</span><span class="o">)</span>
+  <span class="nc">From</span><span class="o">(</span><span class="mi">12545</span><span class="o">)</span>
       <span class="o">.</span><span class="na">pipe</span><span class="o">(</span><span class="k">this</span><span class="o">::</span><span class="n">square</span><span class="o">)</span>
       <span class="o">.</span><span class="na">pipe</span><span class="o">(</span><span class="k">this</span><span class="o">::</span><span class="n">text</span><span class="o">)</span>
       <span class="o">.</span><span class="na">pipe</span><span class="o">(</span><span class="k">this</span><span class="o">::</span><span class="n">reverse</span><span class="o">)</span>

@@ -95,7 +95,7 @@
   <li>Create a folder and then set-up the tool</li>
 </ul>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>rhc setup</code></pre></figure>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nv">$ </span>rhc setup</code></pre></figure>
 
 <p>The set-up will create the domain for the apps and it will create &amp; store a SSH certificate that identify the account.</p>
 
@@ -103,7 +103,7 @@
   <li>Create an application, it could be done as part of the set-up as well. I’ve choose NodeJS and MongoDB cartridge</li>
 </ul>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>rhc app create &lt;app name&gt; nodejs-0.10 mongodb-2.4</code></pre></figure>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nv">$ </span>rhc app create &lt;app name&gt; nodejs-0.10 mongodb-2.4</code></pre></figure>
 
 <ul>
   <li>Edit <em>package.json</em> to edit the modules, I’ve add <em>mongoose</em> and <em>bower</em>, <em>express</em> was already there.</li>
@@ -121,26 +121,26 @@
 </ul>
 
 <figure class="highlight"><pre><code class="language-json" data-lang="json"><span class="p">{</span><span class="w">
-</span><span class="nt">"postinstall"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HOME=$OPENSHIFT_REPO_DIR bower install || bower install"</span><span class="w">
+</span><span class="nl">"postinstall"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HOME=$OPENSHIFT_REPO_DIR bower install || bower install"</span><span class="w">
 </span><span class="p">}</span></code></pre></figure>
 
 <ul>
   <li>Now to build the app.</li>
 </ul>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>git add
-<span class="gp">$ </span>git commit
-<span class="gp">$ </span>git push origin master</code></pre></figure>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nv">$ </span>git add
+<span class="nv">$ </span>git commit
+<span class="nv">$ </span>git push origin master</code></pre></figure>
 
 <p>If something went wrong we could view our logs, to access them:</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>rhc ssh
-<span class="gp">$ </span><span class="nb">cd</span> <span class="nv">$OPENSHIFT_LOG_DIR</span>
-<span class="gp">$ </span>tail/vi/cat.....</code></pre></figure>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nv">$ </span>rhc ssh
+<span class="nv">$ </span><span class="nb">cd</span> <span class="nv">$OPENSHIFT_LOG_DIR</span>
+<span class="nv">$ </span><span class="nb">tail</span>/vi/cat.....</code></pre></figure>
 
 <p>Or use</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>rhc tail -a &lt;app name&gt;</code></pre></figure>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nv">$ </span>rhc <span class="nb">tail</span> <span class="nt">-a</span> &lt;app name&gt;</code></pre></figure>
 
 <p>Each time that we do a <em>push</em> the application will be sent to OpenShift and build, including update bower scripts. Them in OpenShift we could any time switch between builds in the Git repository or scale our app automatically.</p>
 
@@ -148,11 +148,11 @@
 
 <p>Additional we could add our own repository, as github just adding another remote:</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>git remote add github &lt;git hub repo url&gt;</code></pre></figure>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nv">$ </span>git remote add github &lt;git hub repo url&gt;</code></pre></figure>
 
 <p>So we could push to github whenever we like to:</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>git push github master</code></pre></figure>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nv">$ </span>git push github master</code></pre></figure>
 
 <p>Two prepare a local environment that we could use to build and test our app before sent to OpenShift we need to do some additional steps:</p>
 <ul>
@@ -171,8 +171,8 @@
 
 <p>Now we could build and run locally using</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>npm install
-<span class="gp">$ </span>npm start</code></pre></figure>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nv">$ </span>npm <span class="nb">install</span>
+<span class="nv">$ </span>npm start</code></pre></figure>
 
 <p>And that is the basic idea.</p>
 

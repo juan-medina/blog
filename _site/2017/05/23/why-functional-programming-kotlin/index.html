@@ -88,26 +88,26 @@ learn Kotlin</a>, I like to update my previous entry with examples written in Ko
 
 <p>To simplify the code it will start from where we end in the previous post, with this Java class:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Wrapper</span><span class="o">&lt;</span><span class="n">Type</span><span class="o">&gt;</span> <span class="o">{</span>
-      <span class="kd">private</span> <span class="kd">final</span> <span class="n">Type</span> <span class="n">value</span><span class="o">;</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Wrapper</span><span class="o">&lt;</span><span class="nc">Type</span><span class="o">&gt;</span> <span class="o">{</span>
+      <span class="kd">private</span> <span class="kd">final</span> <span class="nc">Type</span> <span class="n">value</span><span class="o">;</span>
 
-      <span class="kd">private</span> <span class="nf">Wrapper</span><span class="o">(</span><span class="kd">final</span> <span class="n">Type</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+      <span class="kd">private</span> <span class="nf">Wrapper</span><span class="o">(</span><span class="kd">final</span> <span class="nc">Type</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
           <span class="k">this</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">;</span>
       <span class="o">}</span>
 
-      <span class="kd">static</span> <span class="o">&lt;</span><span class="n">AnyType</span><span class="o">&gt;</span> <span class="n">Wrapper</span><span class="o">&lt;</span><span class="n">AnyType</span><span class="o">&gt;</span> <span class="nf">From</span><span class="o">(</span><span class="kd">final</span> <span class="n">AnyType</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
-          <span class="k">return</span> <span class="k">new</span> <span class="n">Wrapper</span><span class="o">&lt;&gt;(</span><span class="n">value</span><span class="o">);</span>
+      <span class="kd">static</span> <span class="o">&lt;</span><span class="nc">AnyType</span><span class="o">&gt;</span> <span class="nc">Wrapper</span><span class="o">&lt;</span><span class="nc">AnyType</span><span class="o">&gt;</span> <span class="nf">From</span><span class="o">(</span><span class="kd">final</span> <span class="nc">AnyType</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+          <span class="k">return</span> <span class="k">new</span> <span class="nc">Wrapper</span><span class="o">&lt;&gt;(</span><span class="n">value</span><span class="o">);</span>
       <span class="o">}</span>
 
-      <span class="kd">static</span> <span class="o">&lt;</span><span class="n">AnyType</span><span class="o">&gt;</span> <span class="n">Wrapper</span><span class="o">&lt;</span><span class="n">AnyType</span><span class="o">&gt;</span> <span class="nf">From</span><span class="o">(</span><span class="kd">final</span> <span class="n">Supplier</span><span class="o">&lt;</span><span class="n">AnyType</span><span class="o">&gt;</span> <span class="n">supplier</span><span class="o">)</span> <span class="o">{</span>
+      <span class="kd">static</span> <span class="o">&lt;</span><span class="nc">AnyType</span><span class="o">&gt;</span> <span class="nc">Wrapper</span><span class="o">&lt;</span><span class="nc">AnyType</span><span class="o">&gt;</span> <span class="nf">From</span><span class="o">(</span><span class="kd">final</span> <span class="nc">Supplier</span><span class="o">&lt;</span><span class="nc">AnyType</span><span class="o">&gt;</span> <span class="n">supplier</span><span class="o">)</span> <span class="o">{</span>
           <span class="k">return</span> <span class="nf">From</span><span class="o">(</span><span class="n">supplier</span><span class="o">.</span><span class="na">get</span><span class="o">());</span>
       <span class="o">}</span>
 
-      <span class="o">&lt;</span><span class="n">OtherType</span><span class="o">&gt;</span> <span class="n">Wrapper</span><span class="o">&lt;</span><span class="n">OtherType</span><span class="o">&gt;</span> <span class="nf">pipe</span><span class="o">(</span><span class="kd">final</span> <span class="n">Function</span><span class="o">&lt;</span><span class="n">Type</span><span class="o">,</span> <span class="n">OtherType</span><span class="o">&gt;</span> <span class="n">transformer</span><span class="o">)</span> <span class="o">{</span>
+      <span class="o">&lt;</span><span class="nc">OtherType</span><span class="o">&gt;</span> <span class="nc">Wrapper</span><span class="o">&lt;</span><span class="nc">OtherType</span><span class="o">&gt;</span> <span class="nf">pipe</span><span class="o">(</span><span class="kd">final</span> <span class="nc">Function</span><span class="o">&lt;</span><span class="nc">Type</span><span class="o">,</span> <span class="nc">OtherType</span><span class="o">&gt;</span> <span class="n">transformer</span><span class="o">)</span> <span class="o">{</span>
           <span class="k">return</span> <span class="nf">From</span><span class="o">(</span><span class="n">transformer</span><span class="o">.</span><span class="na">apply</span><span class="o">(</span><span class="n">value</span><span class="o">));</span>
       <span class="o">}</span>
 
-      <span class="kt">void</span> <span class="nf">pipe</span><span class="o">(</span><span class="kd">final</span> <span class="n">Consumer</span><span class="o">&lt;</span><span class="n">Type</span><span class="o">&gt;</span> <span class="n">consumer</span><span class="o">)</span> <span class="o">{</span>
+      <span class="kt">void</span> <span class="nf">pipe</span><span class="o">(</span><span class="kd">final</span> <span class="nc">Consumer</span><span class="o">&lt;</span><span class="nc">Type</span><span class="o">&gt;</span> <span class="n">consumer</span><span class="o">)</span> <span class="o">{</span>
           <span class="n">consumer</span><span class="o">.</span><span class="na">accept</span><span class="o">(</span><span class="n">value</span><span class="o">);</span>
       <span class="o">}</span>
   <span class="o">}</span></code></pre></figure>
@@ -115,30 +115,30 @@ learn Kotlin</a>, I like to update my previous entry with examples written in Ko
 <p>Our functions:</p>
 
 <figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="kd">private</span> <span class="kt">int</span> <span class="nf">random</span><span class="o">()</span> <span class="o">{</span>
-      <span class="n">Random</span> <span class="n">rand</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Random</span><span class="o">();</span>
+      <span class="nc">Random</span> <span class="n">rand</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Random</span><span class="o">();</span>
 
       <span class="k">return</span> <span class="n">rand</span><span class="o">.</span><span class="na">nextInt</span><span class="o">();</span>
   <span class="o">}</span>
 
-  <span class="kd">private</span> <span class="n">String</span> <span class="nf">reverse</span><span class="o">(</span><span class="n">String</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+  <span class="kd">private</span> <span class="nc">String</span> <span class="nf">reverse</span><span class="o">(</span><span class="nc">String</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
       <span class="k">return</span> <span class="k">new</span> <span class="nf">StringBuffer</span><span class="o">(</span><span class="n">value</span><span class="o">).</span><span class="na">reverse</span><span class="o">().</span><span class="na">toString</span><span class="o">();</span>
   <span class="o">}</span>
 
-  <span class="kd">private</span> <span class="kt">void</span> <span class="nf">print</span><span class="o">(</span><span class="n">Object</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
-      <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">value</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+  <span class="kd">private</span> <span class="kt">void</span> <span class="nf">print</span><span class="o">(</span><span class="nc">Object</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">value</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
   <span class="o">}</span>
 
   <span class="kd">private</span> <span class="kt">int</span> <span class="nf">square</span><span class="o">(</span><span class="kd">final</span> <span class="kt">int</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
-      <span class="k">return</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="n">Math</span><span class="o">.</span><span class="na">pow</span><span class="o">(</span><span class="n">value</span><span class="o">,</span> <span class="mi">2</span><span class="o">);</span>
+      <span class="k">return</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="nc">Math</span><span class="o">.</span><span class="na">pow</span><span class="o">(</span><span class="n">value</span><span class="o">,</span> <span class="mi">2</span><span class="o">);</span>
   <span class="o">}</span>
 
-  <span class="kd">private</span> <span class="n">String</span> <span class="nf">text</span><span class="o">(</span><span class="kd">final</span> <span class="kt">int</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
-      <span class="k">return</span> <span class="n">Integer</span><span class="o">.</span><span class="na">toString</span><span class="o">(</span><span class="n">value</span><span class="o">);</span>
+  <span class="kd">private</span> <span class="nc">String</span> <span class="nf">text</span><span class="o">(</span><span class="kd">final</span> <span class="kt">int</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">toString</span><span class="o">(</span><span class="n">value</span><span class="o">);</span>
   <span class="o">}</span></code></pre></figure>
 
 <p>And how we use it:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="n">From</span><span class="o">(</span><span class="mi">12545</span><span class="o">)</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="nc">From</span><span class="o">(</span><span class="mi">12545</span><span class="o">)</span>
       <span class="o">.</span><span class="na">pipe</span><span class="o">(</span><span class="k">this</span><span class="o">::</span><span class="n">square</span><span class="o">)</span>
       <span class="o">.</span><span class="na">pipe</span><span class="o">(</span><span class="k">this</span><span class="o">::</span><span class="n">text</span><span class="o">)</span>
       <span class="o">.</span><span class="na">pipe</span><span class="o">(</span><span class="k">this</span><span class="o">::</span><span class="n">reverse</span><span class="o">)</span>
@@ -148,34 +148,34 @@ learn Kotlin</a>, I like to update my previous entry with examples written in Ko
 
 <p>A fist approach with a direct implementation from Java:</p>
 
-<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="kd">class</span> <span class="nc">Wrapper</span><span class="p">&lt;</span><span class="k">out</span> <span class="n">Type</span> <span class="p">:</span> <span class="n">Any</span><span class="p">&gt;(</span><span class="kd">val</span> <span class="py">value</span><span class="p">:</span> <span class="n">Type</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">fun</span> <span class="err">&lt;</span><span class="nf">OtherType</span> <span class="p">:</span> <span class="n">Any</span><span class="p">&gt;</span> <span class="n">pipe</span><span class="p">(</span><span class="n">compose</span><span class="p">:</span> <span class="p">(</span><span class="n">Type</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">OtherType</span><span class="p">)</span> <span class="p">=</span>
-        <span class="n">Wrapper</span><span class="p">(</span><span class="n">compose</span><span class="p">.</span><span class="n">invoke</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">value</span><span class="p">))</span>
+<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="kd">class</span> <span class="nc">Wrapper</span><span class="p">&lt;</span><span class="k">out</span> <span class="nc">Type</span> <span class="p">:</span> <span class="nc">Any</span><span class="p">&gt;(</span><span class="kd">val</span> <span class="py">value</span><span class="p">:</span> <span class="nc">Type</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">fun</span> <span class="p">&lt;</span><span class="nc">OtherType</span> <span class="err">:</span> <span class="nc">Any</span><span class="p">&gt;</span> <span class="nf">pipe</span><span class="p">(</span><span class="n">compose</span><span class="p">:</span> <span class="p">(</span><span class="nc">Type</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nc">OtherType</span><span class="p">)</span> <span class="p">=</span>
+        <span class="nc">Wrapper</span><span class="p">(</span><span class="n">compose</span><span class="p">.</span><span class="nf">invoke</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">value</span><span class="p">))</span>
   <span class="p">}</span>
-  <span class="k">fun</span> <span class="err">&lt;</span><span class="nf">OtherType</span> <span class="p">:</span> <span class="n">Any</span><span class="p">&gt;</span> <span class="n">From</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">OtherType</span><span class="p">):</span> <span class="n">Wrapper</span><span class="p">&lt;</span><span class="n">OtherType</span><span class="p">&gt;</span> <span class="p">=</span> <span class="n">Wrapper</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></code></pre></figure>
+  <span class="k">fun</span> <span class="p">&lt;</span><span class="nc">OtherType</span> <span class="err">:</span> <span class="nc">Any</span><span class="p">&gt;</span> <span class="nf">From</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nc">OtherType</span><span class="p">):</span> <span class="nc">Wrapper</span><span class="p">&lt;</span><span class="nc">OtherType</span><span class="p">&gt;</span> <span class="p">=</span> <span class="nc">Wrapper</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></code></pre></figure>
 
 <p>Our functions:</p>
 
-<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">fun</span> <span class="err">&lt;</span><span class="nf">Type</span> <span class="p">:</span> <span class="n">Any</span><span class="p">&gt;</span> <span class="n">print</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Type</span><span class="p">)</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-  <span class="k">fun</span> <span class="err">&lt;</span><span class="nf">Type</span> <span class="p">:</span> <span class="n">Any</span><span class="p">&gt;</span> <span class="n">text</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Type</span><span class="p">)</span> <span class="p">=</span> <span class="n">value</span><span class="p">.</span><span class="n">toString</span><span class="p">()</span>
-  <span class="k">fun</span> <span class="err">&lt;</span><span class="nf">Type</span> <span class="p">:</span> <span class="n">Any</span><span class="p">&gt;</span> <span class="n">reverse</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Type</span><span class="p">)</span> <span class="p">=</span> <span class="n">value</span><span class="p">.</span><span class="n">toString</span><span class="p">().</span><span class="n">reversed</span><span class="p">()</span>
-  <span class="k">fun</span> <span class="nf">square</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Int</span><span class="p">)</span> <span class="p">=</span> <span class="n">value</span><span class="p">.</span><span class="n">times</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">fun</span> <span class="p">&lt;</span><span class="nc">Type</span> <span class="err">:</span> <span class="nc">Any</span><span class="p">&gt;</span> <span class="nf">print</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nc">Type</span><span class="p">)</span> <span class="p">=</span> <span class="nf">println</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+  <span class="k">fun</span> <span class="p">&lt;</span><span class="nc">Type</span> <span class="err">:</span> <span class="nc">Any</span><span class="p">&gt;</span> <span class="nf">text</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nc">Type</span><span class="p">)</span> <span class="p">=</span> <span class="n">value</span><span class="p">.</span><span class="nf">toString</span><span class="p">()</span>
+  <span class="k">fun</span> <span class="p">&lt;</span><span class="nc">Type</span> <span class="err">:</span> <span class="nc">Any</span><span class="p">&gt;</span> <span class="nf">reverse</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nc">Type</span><span class="p">)</span> <span class="p">=</span> <span class="n">value</span><span class="p">.</span><span class="nf">toString</span><span class="p">().</span><span class="nf">reversed</span><span class="p">()</span>
+  <span class="k">fun</span> <span class="nf">square</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nc">Int</span><span class="p">)</span> <span class="p">=</span> <span class="n">value</span><span class="p">.</span><span class="nf">times</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></code></pre></figure>
 
 <p>And how to use it:</p>
 
-<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="n">From</span><span class="p">(</span><span class="m">12345</span><span class="p">)</span>
-      <span class="p">.</span><span class="n">pipe</span><span class="p">(</span><span class="k">this</span><span class="o">::</span><span class="n">reverse</span><span class="p">)</span>
-      <span class="p">.</span><span class="n">pipe</span><span class="p">(</span><span class="k">this</span><span class="o">::</span><span class="n">print</span><span class="p">)</span>
+<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="nc">From</span><span class="p">(</span><span class="m">12345</span><span class="p">)</span>
+      <span class="p">.</span><span class="nf">pipe</span><span class="p">(</span><span class="k">this</span><span class="o">::</span><span class="n">reverse</span><span class="p">)</span>
+      <span class="p">.</span><span class="nf">pipe</span><span class="p">(</span><span class="k">this</span><span class="o">::</span><span class="n">print</span><span class="p">)</span>
 
-  <span class="n">From</span><span class="p">(</span><span class="s">"dlrow olleh"</span><span class="p">)</span>
-      <span class="p">.</span><span class="n">pipe</span><span class="p">(</span><span class="k">this</span><span class="o">::</span><span class="n">reverse</span><span class="p">)</span>
-      <span class="p">.</span><span class="n">pipe</span><span class="p">(</span><span class="k">this</span><span class="o">::</span><span class="n">print</span><span class="p">)</span>
+  <span class="nc">From</span><span class="p">(</span><span class="s">"dlrow olleh"</span><span class="p">)</span>
+      <span class="p">.</span><span class="nf">pipe</span><span class="p">(</span><span class="k">this</span><span class="o">::</span><span class="n">reverse</span><span class="p">)</span>
+      <span class="p">.</span><span class="nf">pipe</span><span class="p">(</span><span class="k">this</span><span class="o">::</span><span class="n">print</span><span class="p">)</span>
 
-  <span class="n">From</span><span class="p">(</span><span class="m">12545</span><span class="p">)</span>
-      <span class="p">.</span><span class="n">pipe</span><span class="p">(</span><span class="k">this</span><span class="o">::</span><span class="n">square</span><span class="p">)</span>
-      <span class="p">.</span><span class="n">pipe</span><span class="p">(</span><span class="k">this</span><span class="o">::</span><span class="n">text</span><span class="p">)</span>
-      <span class="p">.</span><span class="n">pipe</span><span class="p">(</span><span class="k">this</span><span class="o">::</span><span class="n">reverse</span><span class="p">)</span>
-      <span class="p">.</span><span class="n">pipe</span><span class="p">(</span><span class="k">this</span><span class="o">::</span><span class="n">print</span><span class="p">)</span></code></pre></figure>
+  <span class="nc">From</span><span class="p">(</span><span class="m">12545</span><span class="p">)</span>
+      <span class="p">.</span><span class="nf">pipe</span><span class="p">(</span><span class="k">this</span><span class="o">::</span><span class="n">square</span><span class="p">)</span>
+      <span class="p">.</span><span class="nf">pipe</span><span class="p">(</span><span class="k">this</span><span class="o">::</span><span class="n">text</span><span class="p">)</span>
+      <span class="p">.</span><span class="nf">pipe</span><span class="p">(</span><span class="k">this</span><span class="o">::</span><span class="n">reverse</span><span class="p">)</span>
+      <span class="p">.</span><span class="nf">pipe</span><span class="p">(</span><span class="k">this</span><span class="o">::</span><span class="n">print</span><span class="p">)</span></code></pre></figure>
 
 <p>This is very look like to our Java implementation but shorter due some of the benefits from Kotlin, like we only need a pipe function since every
 function in Kotlin returns a value Unit (equivalent to void) where there is not output.</p>
@@ -186,24 +186,24 @@ function in Kotlin returns a value Unit (equivalent to void) where there is not 
 
 <p>Let’s do just a pipe function attached to any type:</p>
 
-<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">fun</span> <span class="err">&lt;</span><span class="nf">Type</span> <span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">OtherType</span> <span class="p">:</span> <span class="n">Any</span><span class="p">&gt;</span> <span class="n">Type</span><span class="p">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">compose</span><span class="p">:</span> <span class="p">(</span><span class="n">Type</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">OtherType</span><span class="p">)</span> <span class="p">=</span>
-    <span class="n">compose</span><span class="p">.</span><span class="n">invoke</span><span class="p">(</span><span class="k">this</span><span class="p">)</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">fun</span> <span class="p">&lt;</span><span class="nc">Type</span> <span class="err">:</span> <span class="nc">Any</span><span class="p">,</span> <span class="nc">OtherType</span> <span class="err">:</span> <span class="nc">Any</span><span class="p">&gt;</span> <span class="nc">Type</span><span class="p">.</span><span class="nf">pipe</span><span class="p">(</span><span class="n">compose</span><span class="p">:</span> <span class="p">(</span><span class="nc">Type</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nc">OtherType</span><span class="p">)</span> <span class="p">=</span>
+    <span class="n">compose</span><span class="p">.</span><span class="nf">invoke</span><span class="p">(</span><span class="k">this</span><span class="p">)</span></code></pre></figure>
 
 <p>We don’t need to change our functions, so the example is:</p>
 
 <figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="m">12545</span>
-      <span class="p">.</span><span class="n">pipe</span><span class="p">(</span><span class="k">this</span><span class="o">::</span><span class="n">reverse</span><span class="p">)</span>
-      <span class="p">.</span><span class="n">pipe</span><span class="p">(</span><span class="k">this</span><span class="o">::</span><span class="n">print</span><span class="p">)</span>
+      <span class="p">.</span><span class="nf">pipe</span><span class="p">(</span><span class="k">this</span><span class="o">::</span><span class="n">reverse</span><span class="p">)</span>
+      <span class="p">.</span><span class="nf">pipe</span><span class="p">(</span><span class="k">this</span><span class="o">::</span><span class="n">print</span><span class="p">)</span>
 
   <span class="s">"dlrow olleh"</span>
-      <span class="p">.</span><span class="n">pipe</span><span class="p">(</span><span class="k">this</span><span class="o">::</span><span class="n">reverse</span><span class="p">)</span>
-      <span class="p">.</span><span class="n">pipe</span><span class="p">(</span><span class="k">this</span><span class="o">::</span><span class="n">print</span><span class="p">)</span>
+      <span class="p">.</span><span class="nf">pipe</span><span class="p">(</span><span class="k">this</span><span class="o">::</span><span class="n">reverse</span><span class="p">)</span>
+      <span class="p">.</span><span class="nf">pipe</span><span class="p">(</span><span class="k">this</span><span class="o">::</span><span class="n">print</span><span class="p">)</span>
 
   <span class="m">12545</span>
-      <span class="p">.</span><span class="n">pipe</span><span class="p">(</span><span class="k">this</span><span class="o">::</span><span class="n">square</span><span class="p">)</span>
-      <span class="p">.</span><span class="n">pipe</span><span class="p">(</span><span class="k">this</span><span class="o">::</span><span class="n">text</span><span class="p">)</span>
-      <span class="p">.</span><span class="n">pipe</span><span class="p">(</span><span class="k">this</span><span class="o">::</span><span class="n">reverse</span><span class="p">)</span>
-      <span class="p">.</span><span class="n">pipe</span><span class="p">(</span><span class="k">this</span><span class="o">::</span><span class="n">print</span><span class="p">)</span></code></pre></figure>
+      <span class="p">.</span><span class="nf">pipe</span><span class="p">(</span><span class="k">this</span><span class="o">::</span><span class="n">square</span><span class="p">)</span>
+      <span class="p">.</span><span class="nf">pipe</span><span class="p">(</span><span class="k">this</span><span class="o">::</span><span class="n">text</span><span class="p">)</span>
+      <span class="p">.</span><span class="nf">pipe</span><span class="p">(</span><span class="k">this</span><span class="o">::</span><span class="n">reverse</span><span class="p">)</span>
+      <span class="p">.</span><span class="nf">pipe</span><span class="p">(</span><span class="k">this</span><span class="o">::</span><span class="n">print</span><span class="p">)</span></code></pre></figure>
 
 <p>This is nicer, and we get rid of the wrapper class because Kotlin extensions functions, but we could take another approach.</p>
 
@@ -211,8 +211,8 @@ function in Kotlin returns a value Unit (equivalent to void) where there is not 
 
 <p>So let’s change our pipe function to be an operator:</p>
 
-<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">infix</span> <span class="k">fun</span> <span class="err">&lt;</span><span class="nf">Type</span> <span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">OtherType</span> <span class="p">:</span> <span class="n">Any</span><span class="p">&gt;</span> <span class="n">Type</span><span class="p">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">compose</span><span class="p">:</span> <span class="p">(</span><span class="n">Type</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">OtherType</span><span class="p">)</span> <span class="p">=</span>
-    <span class="n">compose</span><span class="p">.</span><span class="n">invoke</span><span class="p">(</span><span class="k">this</span><span class="p">)</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">infix</span> <span class="k">fun</span> <span class="p">&lt;</span><span class="nc">Type</span> <span class="err">:</span> <span class="nc">Any</span><span class="p">,</span> <span class="nc">OtherType</span> <span class="err">:</span> <span class="nc">Any</span><span class="p">&gt;</span> <span class="nc">Type</span><span class="p">.</span><span class="nf">pipe</span><span class="p">(</span><span class="n">compose</span><span class="p">:</span> <span class="p">(</span><span class="nc">Type</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nc">OtherType</span><span class="p">)</span> <span class="p">=</span>
+    <span class="n">compose</span><span class="p">.</span><span class="nf">invoke</span><span class="p">(</span><span class="k">this</span><span class="p">)</span></code></pre></figure>
 
 <p>Now this could be use like this:</p>
 
@@ -228,28 +228,28 @@ function in Kotlin returns a value Unit (equivalent to void) where there is not 
 
 <p>Let’s create another infix, that actually use the previous one:</p>
 
-<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">infix</span> <span class="k">fun</span> <span class="err">&lt;</span><span class="nf">Type</span> <span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">OtherType</span> <span class="p">:</span> <span class="n">Any</span><span class="p">&gt;</span> <span class="n">Type</span><span class="p">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">compose</span><span class="p">:</span> <span class="p">(</span><span class="n">Type</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">OtherType</span><span class="p">)</span> <span class="p">=</span>
-    <span class="n">compose</span><span class="p">.</span><span class="n">invoke</span><span class="p">(</span><span class="k">this</span><span class="p">)</span>
+<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">infix</span> <span class="k">fun</span> <span class="p">&lt;</span><span class="nc">Type</span> <span class="err">:</span> <span class="nc">Any</span><span class="p">,</span> <span class="nc">OtherType</span> <span class="err">:</span> <span class="nc">Any</span><span class="p">&gt;</span> <span class="nc">Type</span><span class="p">.</span><span class="nf">pipe</span><span class="p">(</span><span class="n">compose</span><span class="p">:</span> <span class="p">(</span><span class="nc">Type</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nc">OtherType</span><span class="p">)</span> <span class="p">=</span>
+    <span class="n">compose</span><span class="p">.</span><span class="nf">invoke</span><span class="p">(</span><span class="k">this</span><span class="p">)</span>
 
-  <span class="k">infix</span> <span class="k">fun</span> <span class="err">&lt;</span><span class="nf">Type</span> <span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">OtherType</span> <span class="p">:</span> <span class="n">Any</span><span class="p">&gt;</span> <span class="n">Type</span><span class="p">.</span><span class="n">and</span><span class="p">(</span><span class="n">compose</span><span class="p">:</span> <span class="p">(</span><span class="n">Type</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">OtherType</span><span class="p">)</span> <span class="p">=</span>
+  <span class="k">infix</span> <span class="k">fun</span> <span class="p">&lt;</span><span class="nc">Type</span> <span class="err">:</span> <span class="nc">Any</span><span class="p">,</span> <span class="nc">OtherType</span> <span class="err">:</span> <span class="nc">Any</span><span class="p">&gt;</span> <span class="nc">Type</span><span class="p">.</span><span class="nf">and</span><span class="p">(</span><span class="n">compose</span><span class="p">:</span> <span class="p">(</span><span class="nc">Type</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nc">OtherType</span><span class="p">)</span> <span class="p">=</span>
     <span class="k">this</span> <span class="n">pipe</span> <span class="n">compose</span></code></pre></figure>
 
 <p>And change our functions to be part of a companion object:</p>
 
-<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">companion</span> <span class="kd">object</span> <span class="nc">Do</span> <span class="p">{</span>
-    <span class="k">fun</span> <span class="err">&lt;</span><span class="nf">Type</span> <span class="p">:</span> <span class="n">Any</span><span class="p">&gt;</span> <span class="n">print</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Type</span><span class="p">)</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-    <span class="k">fun</span> <span class="err">&lt;</span><span class="nf">Type</span> <span class="p">:</span> <span class="n">Any</span><span class="p">&gt;</span> <span class="n">text</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Type</span><span class="p">)</span> <span class="p">=</span> <span class="n">value</span><span class="p">.</span><span class="n">toString</span><span class="p">()</span>
-    <span class="k">fun</span> <span class="err">&lt;</span><span class="nf">Type</span> <span class="p">:</span> <span class="n">Any</span><span class="p">&gt;</span> <span class="n">reverse</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Type</span><span class="p">)</span> <span class="p">=</span> <span class="n">value</span><span class="p">.</span><span class="n">toString</span><span class="p">().</span><span class="n">reversed</span><span class="p">()</span>
-    <span class="k">fun</span> <span class="nf">square</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Int</span><span class="p">)</span> <span class="p">=</span> <span class="n">value</span><span class="p">.</span><span class="n">times</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">companion</span> <span class="k">object</span> <span class="nc">Do</span> <span class="p">{</span>
+    <span class="k">fun</span> <span class="p">&lt;</span><span class="nc">Type</span> <span class="err">:</span> <span class="nc">Any</span><span class="p">&gt;</span> <span class="nf">print</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nc">Type</span><span class="p">)</span> <span class="p">=</span> <span class="nf">println</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">fun</span> <span class="p">&lt;</span><span class="nc">Type</span> <span class="err">:</span> <span class="nc">Any</span><span class="p">&gt;</span> <span class="nf">text</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nc">Type</span><span class="p">)</span> <span class="p">=</span> <span class="n">value</span><span class="p">.</span><span class="nf">toString</span><span class="p">()</span>
+    <span class="k">fun</span> <span class="p">&lt;</span><span class="nc">Type</span> <span class="err">:</span> <span class="nc">Any</span><span class="p">&gt;</span> <span class="nf">reverse</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nc">Type</span><span class="p">)</span> <span class="p">=</span> <span class="n">value</span><span class="p">.</span><span class="nf">toString</span><span class="p">().</span><span class="nf">reversed</span><span class="p">()</span>
+    <span class="k">fun</span> <span class="nf">square</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nc">Int</span><span class="p">)</span> <span class="p">=</span> <span class="n">value</span><span class="p">.</span><span class="nf">times</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
   <span class="p">}</span></code></pre></figure>
 
 <p>So now we could use them like this:</p>
 
-<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="m">12545</span> <span class="n">pipe</span> <span class="n">Do</span><span class="o">::</span><span class="n">reverse</span> <span class="n">and</span> <span class="n">Do</span><span class="o">::</span><span class="n">print</span>
+<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="m">12545</span> <span class="n">pipe</span> <span class="nc">Do</span><span class="o">::</span><span class="n">reverse</span> <span class="n">and</span> <span class="nc">Do</span><span class="o">::</span><span class="n">print</span>
 
-  <span class="s">"dlrow olleh"</span> <span class="n">pipe</span> <span class="n">Do</span><span class="o">::</span><span class="n">reverse</span> <span class="n">and</span> <span class="n">Do</span><span class="o">::</span><span class="n">print</span>
+  <span class="s">"dlrow olleh"</span> <span class="n">pipe</span> <span class="nc">Do</span><span class="o">::</span><span class="n">reverse</span> <span class="n">and</span> <span class="nc">Do</span><span class="o">::</span><span class="n">print</span>
 
-  <span class="m">12545</span> <span class="n">pipe</span> <span class="n">Do</span><span class="o">::</span><span class="n">square</span> <span class="n">and</span> <span class="n">Do</span><span class="o">::</span><span class="n">text</span> <span class="n">and</span> <span class="n">Do</span><span class="o">::</span><span class="n">reverse</span> <span class="n">and</span> <span class="n">Do</span><span class="o">::</span><span class="n">print</span></code></pre></figure>
+  <span class="m">12545</span> <span class="n">pipe</span> <span class="nc">Do</span><span class="o">::</span><span class="n">square</span> <span class="n">and</span> <span class="nc">Do</span><span class="o">::</span><span class="n">text</span> <span class="n">and</span> <span class="nc">Do</span><span class="o">::</span><span class="n">reverse</span> <span class="n">and</span> <span class="nc">Do</span><span class="o">::</span><span class="n">print</span></code></pre></figure>
 
 <p>I can understand that this whole operators things is not for everyone, neither to use for everything so we have one
 last way to do this that may be better.</p>
@@ -258,18 +258,18 @@ last way to do this that may be better.</p>
 
 <p>No pipe functions, change our normal functions into extensions:</p>
 
-<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">fun</span> <span class="err">&lt;</span><span class="nf">Type</span> <span class="p">:</span> <span class="n">Any</span><span class="p">&gt;</span> <span class="n">Type</span><span class="p">.</span><span class="n">print</span><span class="p">()</span> <span class="p">=</span> <span class="n">println</span><span class="p">(</span><span class="k">this</span><span class="p">)</span>
-  <span class="k">fun</span> <span class="nf">Int</span><span class="p">.</span><span class="n">square</span><span class="p">()</span> <span class="p">=</span> <span class="k">this</span><span class="p">.</span><span class="n">times</span><span class="p">(</span><span class="k">this</span><span class="p">)</span>
-  <span class="k">fun</span> <span class="err">&lt;</span><span class="nf">Type</span> <span class="p">:</span> <span class="n">Any</span><span class="p">&gt;</span> <span class="n">Type</span><span class="p">.</span><span class="n">text</span><span class="p">()</span> <span class="p">=</span> <span class="k">this</span><span class="p">.</span><span class="n">toString</span><span class="p">()</span>
-  <span class="k">fun</span> <span class="err">&lt;</span><span class="nf">Type</span> <span class="p">:</span> <span class="n">Any</span><span class="p">&gt;</span> <span class="n">Type</span><span class="p">.</span><span class="n">reverse</span><span class="p">()</span> <span class="p">=</span> <span class="k">this</span><span class="p">.</span><span class="n">toString</span><span class="p">().</span><span class="n">reversed</span><span class="p">()</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">fun</span> <span class="p">&lt;</span><span class="nc">Type</span> <span class="err">:</span> <span class="nc">Any</span><span class="p">&gt;</span> <span class="nc">Type</span><span class="p">.</span><span class="nf">print</span><span class="p">()</span> <span class="p">=</span> <span class="nf">println</span><span class="p">(</span><span class="k">this</span><span class="p">)</span>
+  <span class="k">fun</span> <span class="nc">Int</span><span class="p">.</span><span class="nf">square</span><span class="p">()</span> <span class="p">=</span> <span class="k">this</span><span class="p">.</span><span class="nf">times</span><span class="p">(</span><span class="k">this</span><span class="p">)</span>
+  <span class="k">fun</span> <span class="p">&lt;</span><span class="nc">Type</span> <span class="err">:</span> <span class="nc">Any</span><span class="p">&gt;</span> <span class="nc">Type</span><span class="p">.</span><span class="nf">text</span><span class="p">()</span> <span class="p">=</span> <span class="k">this</span><span class="p">.</span><span class="nf">toString</span><span class="p">()</span>
+  <span class="k">fun</span> <span class="p">&lt;</span><span class="nc">Type</span> <span class="err">:</span> <span class="nc">Any</span><span class="p">&gt;</span> <span class="nc">Type</span><span class="p">.</span><span class="nf">reverse</span><span class="p">()</span> <span class="p">=</span> <span class="k">this</span><span class="p">.</span><span class="nf">toString</span><span class="p">().</span><span class="nf">reversed</span><span class="p">()</span></code></pre></figure>
 
 <p>So know the example is:</p>
 
-<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="m">12545</span><span class="p">.</span><span class="n">reverse</span><span class="p">().</span><span class="n">print</span><span class="p">()</span>
+<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="m">12545</span><span class="p">.</span><span class="nf">reverse</span><span class="p">().</span><span class="nf">print</span><span class="p">()</span>
 
-  <span class="s">"dlrow olleh"</span><span class="p">.</span><span class="n">reverse</span><span class="p">().</span><span class="n">print</span><span class="p">()</span>
+  <span class="s">"dlrow olleh"</span><span class="p">.</span><span class="nf">reverse</span><span class="p">().</span><span class="nf">print</span><span class="p">()</span>
 
-  <span class="m">12545</span><span class="p">.</span><span class="n">square</span><span class="p">().</span><span class="n">text</span><span class="p">().</span><span class="n">reverse</span><span class="p">().</span><span class="n">print</span><span class="p">()</span></code></pre></figure>
+  <span class="m">12545</span><span class="p">.</span><span class="nf">square</span><span class="p">().</span><span class="nf">text</span><span class="p">().</span><span class="nf">reverse</span><span class="p">().</span><span class="nf">print</span><span class="p">()</span></code></pre></figure>
 
 <p>Any of this examples will have the same qualities that we talk about before, small blocks that connect things, that can be unit tested and
 they could be use to simplify building complex functionality.</p>

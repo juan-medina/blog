@@ -35,5 +35,5 @@ permalink: /:year/:month/:day/:title/
 sass:
   style: compressed
 
-# Gems
-gems: [jekyll-paginate, jekyll-sitemap, octopress-autoprefixer]
+# plugins
+plugins: [jekyll-paginate, jekyll-sitemap, octopress-autoprefixer]

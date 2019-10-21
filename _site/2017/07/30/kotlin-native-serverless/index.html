@@ -85,7 +85,7 @@
 
 <p>To setup the environment just:</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="nv">$ </span>git clone --depth<span class="o">=</span>1 https://github.com/apache/incubator-openwhisk.git openwhisk
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="nv">$ </span>git clone <span class="nt">--depth</span><span class="o">=</span>1 https://github.com/apache/incubator-openwhisk.git openwhisk
   <span class="nv">$ </span><span class="nb">cd </span>openwhisk/tools/vagrant
   <span class="nv">$ </span>./hello</code></pre></figure>
 
@@ -95,16 +95,16 @@
 
 <p>To test the action directly just using the docker that I’ve upload to <a href="https://hub.docker.com/r/jamedina/kotlin-native-fibonacci/" target="_blank">docker hub</a>:</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="nv">$ </span>wsk action create native-fibonacci --docker jamedina/kotlin-native-fibonacci</code></pre></figure>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="nv">$ </span>wsk action create native-fibonacci <span class="nt">--docker</span> jamedina/kotlin-native-fibonacci</code></pre></figure>
 
 <p>To test the new action just run:</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="nv">$ </span>wsk action invoke --result native-fibonacci --param numbers 5</code></pre></figure>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="nv">$ </span>wsk action invoke <span class="nt">--result</span> native-fibonacci <span class="nt">--param</span> numbers 5</code></pre></figure>
 
 <p>This will output something like:</p>
 
 <figure class="highlight"><pre><code class="language-json" data-lang="json"><span class="w">  </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"result"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="nl">"result"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
         </span><span class="mi">1</span><span class="p">,</span><span class="w">
         </span><span class="mi">1</span><span class="p">,</span><span class="w">
         </span><span class="mi">2</span><span class="p">,</span><span class="w">
@@ -117,7 +117,7 @@
 
 <p>So to create our function first we need to have <a href="https://github.com/JetBrains/kotlin-native" target="_blank">kotlin-native</a> installed and configured:</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="nv">$ </span>git clone --depth 1 https://github.com/JetBrains/kotlin-native.git /kotlin-native
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="nv">$ </span>git clone <span class="nt">--depth</span> 1 https://github.com/JetBrains/kotlin-native.git /kotlin-native
   <span class="nv">$ </span><span class="nb">cd</span> /kotlin-native
   <span class="nv">$ </span>./gradlew dependencies:update
   <span class="nv">$ </span>./gradlew dist
@@ -154,23 +154,23 @@
 
 <p>now lets just create one simple main in the folder src/main.kt</p>
 
-<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">fun</span> <span class="nf">fibonacci</span><span class="p">(</span><span class="n">numbers</span><span class="p">:</span> <span class="n">Long</span><span class="p">):</span> <span class="n">Array</span><span class="p">&lt;</span><span class="n">Long</span><span class="p">&gt;</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">numbers</span> <span class="p">==</span> <span class="m">0L</span><span class="p">)</span> <span class="k">return</span> <span class="n">arrayOf</span><span class="p">(</span><span class="m">0L</span><span class="p">)</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">numbers</span> <span class="p">==</span> <span class="m">1L</span><span class="p">)</span> <span class="k">return</span> <span class="n">arrayOf</span><span class="p">(</span><span class="m">1L</span><span class="p">)</span>
+<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">fun</span> <span class="nf">fibonacci</span><span class="p">(</span><span class="n">numbers</span><span class="p">:</span> <span class="nc">Long</span><span class="p">):</span> <span class="nc">Array</span><span class="p">&lt;</span><span class="nc">Long</span><span class="p">&gt;</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">numbers</span> <span class="p">==</span> <span class="m">0L</span><span class="p">)</span> <span class="k">return</span> <span class="nf">arrayOf</span><span class="p">(</span><span class="m">0L</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">numbers</span> <span class="p">==</span> <span class="m">1L</span><span class="p">)</span> <span class="k">return</span> <span class="nf">arrayOf</span><span class="p">(</span><span class="m">1L</span><span class="p">)</span>
 
     <span class="kd">var</span> <span class="py">previous</span> <span class="p">=</span> <span class="m">1L</span>
     <span class="kd">var</span> <span class="py">current</span> <span class="p">=</span> <span class="m">1L</span>
-    <span class="kd">var</span> <span class="py">temp</span><span class="p">:</span> <span class="n">Long</span>
+    <span class="kd">var</span> <span class="py">temp</span><span class="p">:</span> <span class="nc">Long</span>
 
-    <span class="k">return</span> <span class="n">arrayOf</span><span class="p">(</span><span class="m">1L</span><span class="p">,</span> <span class="m">1L</span><span class="p">)</span> <span class="p">+</span> <span class="p">(</span><span class="m">1</span><span class="o">..</span><span class="p">(</span><span class="n">numbers</span> <span class="p">-</span> <span class="m">2</span><span class="p">)).</span><span class="n">map</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nf">arrayOf</span><span class="p">(</span><span class="m">1L</span><span class="p">,</span> <span class="m">1L</span><span class="p">)</span> <span class="p">+</span> <span class="p">(</span><span class="m">1</span><span class="o">..</span><span class="p">(</span><span class="n">numbers</span> <span class="p">-</span> <span class="m">2</span><span class="p">)).</span><span class="nf">map</span> <span class="p">{</span>
       <span class="n">temp</span> <span class="p">=</span> <span class="n">current</span> <span class="p">+</span> <span class="n">previous</span>
       <span class="n">previous</span> <span class="p">=</span> <span class="n">current</span>
       <span class="n">current</span> <span class="p">=</span> <span class="n">temp</span>
       <span class="n">current</span>
-    <span class="p">}.</span><span class="n">toList</span><span class="p">().</span><span class="n">toTypedArray</span><span class="p">()</span>
+    <span class="p">}.</span><span class="nf">toList</span><span class="p">().</span><span class="nf">toTypedArray</span><span class="p">()</span>
   <span class="p">}</span>
 
-  <span class="k">fun</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="n">Array</span><span class="p">&lt;</span><span class="n">String</span><span class="p">&gt;)</span> <span class="p">=</span> <span class="n">fibonacci</span><span class="p">(</span><span class="m">5</span><span class="p">).</span><span class="n">forEach</span><span class="p">(</span><span class="o">::</span><span class="n">println</span><span class="p">)</span></code></pre></figure>
+  <span class="k">fun</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="nc">Array</span><span class="p">&lt;</span><span class="nc">String</span><span class="p">&gt;)</span> <span class="p">=</span> <span class="nf">fibonacci</span><span class="p">(</span><span class="m">5</span><span class="p">).</span><span class="nf">forEach</span><span class="p">(</span><span class="o">::</span><span class="n">println</span><span class="p">)</span></code></pre></figure>
 
 <p>Now to compile simple :</p>
 
@@ -191,21 +191,21 @@
 
 <p>First clone it, or create a submodule in your git:</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="nv">$ </span>mkdir src/cpp
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="nv">$ </span><span class="nb">mkdir </span>src/cpp
   <span class="nv">$ </span><span class="nb">cd </span>src/cpp
-  <span class="nv">$ </span>git clone --depth 1 https://github.com/kgabis/parson.git</code></pre></figure>
+  <span class="nv">$ </span>git clone <span class="nt">--depth</span> 1 https://github.com/kgabis/parson.git</code></pre></figure>
 
 <p>No I’ve create a shell script to compile the C code into a library that we could latter link:</p>
 
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash">  <span class="nv">DEPS</span><span class="o">=</span><span class="k">$(</span>dirname <span class="sb">`</span><span class="nb">type</span> -p konanc<span class="sb">`</span><span class="k">)</span>/../dependencies
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">  <span class="nv">DEPS</span><span class="o">=</span><span class="si">$(</span><span class="nb">dirname</span> <span class="sb">`</span><span class="nb">type</span> <span class="nt">-p</span> konanc<span class="sb">`</span><span class="si">)</span>/../dependencies
 
-  <span class="k">if</span> <span class="o">[</span> x<span class="nv">$TARGET</span> <span class="o">==</span> x <span class="o">]</span>; <span class="k">then
+  <span class="k">if</span> <span class="o">[</span> x<span class="nv">$TARGET</span> <span class="o">==</span> x <span class="o">]</span><span class="p">;</span> <span class="k">then
   case</span> <span class="s2">"</span><span class="nv">$OSTYPE</span><span class="s2">"</span> <span class="k">in
     </span>darwin<span class="k">*</span><span class="p">)</span>  <span class="nv">TARGET</span><span class="o">=</span>macbook <span class="p">;;</span>
     linux<span class="k">*</span><span class="p">)</span>   <span class="nv">TARGET</span><span class="o">=</span>linux <span class="p">;;</span>
-    <span class="k">*</span><span class="p">)</span>        <span class="nb">echo</span> <span class="s2">"unknown: </span><span class="nv">$OSTYPE</span><span class="s2">"</span> <span class="o">&amp;&amp;</span> <span class="nb">exit </span>1;;
-  <span class="k">esac
-  fi
+    <span class="k">*</span><span class="p">)</span>        <span class="nb">echo</span> <span class="s2">"unknown: </span><span class="nv">$OSTYPE</span><span class="s2">"</span> <span class="o">&amp;&amp;</span> <span class="nb">exit </span>1<span class="p">;;</span>
+  <span class="k">esac</span>
+  <span class="k">fi
 
   </span><span class="nv">CLANG_linux</span><span class="o">=</span><span class="nv">$DEPS</span>/clang-llvm-3.9.0-linux-x86-64/bin/clang++
   <span class="nv">CLANG_macbook</span><span class="o">=</span><span class="nv">$DEPS</span>/clang-llvm-3.9.0-darwin-macos/bin/clang++
@@ -213,9 +213,9 @@
   <span class="nv">var</span><span class="o">=</span>CLANG_<span class="k">${</span><span class="nv">TARGET</span><span class="k">}</span>
   <span class="nv">CLANG</span><span class="o">=</span><span class="k">${</span><span class="p">!var</span><span class="k">}</span>
 
-  mkdir -p build/clang/
+  <span class="nb">mkdir</span> <span class="nt">-p</span> build/clang/
 
-  <span class="nv">$CLANG</span> -x c -c src/main/cpp/parson/parson.c -o build/clang/parson.bc -emit-llvm <span class="o">||</span> <span class="nb">exit </span>1</code></pre></figure>
+  <span class="nv">$CLANG</span> <span class="nt">-x</span> c <span class="nt">-c</span> src/main/cpp/parson/parson.c <span class="nt">-o</span> build/clang/parson.bc <span class="nt">-emit-llvm</span> <span class="o">||</span> <span class="nb">exit </span>1</code></pre></figure>
 
 <p>This script will create a library in <a href="https://llvm.org/" target="_blank">LLVM</a> format, the architecture used by Kotlin Native.</p>
 
@@ -300,13 +300,13 @@
 
   fun Array&lt;String&gt;.paramOrElse<span class="o">(</span>name: String, elseValue: Long<span class="o">)</span>: Long <span class="o">{</span>
     var result <span class="o">=</span> elseValue
-    <span class="k">if</span> <span class="o">(</span>this.size &gt; 0<span class="o">)</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span>this.size <span class="o">&gt;</span> 0<span class="o">)</span> <span class="o">{</span>
       val json <span class="o">=</span> this[0]
       memScoped <span class="o">{</span>
         val schema <span class="o">=</span> json_parse_string<span class="o">(</span>json<span class="o">)</span>
-        <span class="k">if</span> <span class="o">(</span>schema !<span class="o">=</span> null<span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span>schema <span class="o">!=</span> null<span class="o">)</span> <span class="o">{</span>
           val root <span class="o">=</span> json_object<span class="o">(</span>schema<span class="o">)</span>
-          <span class="k">if</span> <span class="o">(</span>root !<span class="o">=</span> null<span class="o">)</span> <span class="o">{</span>
+          <span class="k">if</span> <span class="o">(</span>root <span class="o">!=</span> null<span class="o">)</span> <span class="o">{</span>
             <span class="k">if</span> <span class="o">(</span>json_object_has_value<span class="o">(</span>root, name<span class="o">)</span> <span class="o">==</span> 1<span class="o">)</span> <span class="o">{</span>
               result <span class="o">=</span> json_object_get_number<span class="o">(</span>root, name<span class="o">)</span>.toLong<span class="o">()</span>
             <span class="o">}</span>
@@ -326,13 +326,13 @@
       val root <span class="o">=</span> json_value_get_object<span class="o">(</span>schema<span class="o">)</span>
 
       json_object_set_value<span class="o">(</span>root, <span class="s2">"result"</span>, json_value_init_array<span class="o">())</span>
-      val array <span class="o">=</span> json_object_get_array<span class="o">(</span>root, <span class="s2">"result"</span><span class="o">)</span>;
+      val array <span class="o">=</span> json_object_get_array<span class="o">(</span>root, <span class="s2">"result"</span><span class="o">)</span><span class="p">;</span>
 
       elements.forEach <span class="o">{</span>
         json_array_append_number<span class="o">(</span>array, it.toDouble<span class="o">())</span>
       <span class="o">}</span>
 
-      result <span class="o">=</span> json_serialize_to_string<span class="o">(</span>schema<span class="o">)</span>?.toKString<span class="o">()</span>!!
+      result <span class="o">=</span> json_serialize_to_string<span class="o">(</span>schema<span class="o">)</span>?.toKString<span class="o">()!!</span>
       json_value_free<span class="o">(</span>schema<span class="o">)</span>
     <span class="o">}</span>
     <span class="k">return </span>result
@@ -356,10 +356,10 @@
 
 <p>The docker file for that image is:</p>
 
-<figure class="highlight"><pre><code class="language-dockerfile" data-lang="dockerfile">  # Dockerfile for runing a openwishk Kotlin native action
+<figure class="highlight"><pre><code class="language-dockerfile" data-lang="dockerfile">  <span class="c"># Dockerfile for runing a openwishk Kotlin native action</span>
   FROM openjdk:8-jdk
 
-  #install kotlin native
+  <span class="c">#install kotlin native</span>
   RUN git clone --depth 1 https://github.com/JetBrains/kotlin-native.git
   WORKDIR kotlin-native
   RUN ./gradlew dependencies:update
@@ -367,18 +367,18 @@
 
   ENV PATH /kotlin-native/dist/bin:$PATH
 
-  #install python
+  <span class="c">#install python</span>
   RUN apt-get update
   RUN apt-get install python3-setuptools -y
   RUN easy_install3 pip
   RUN pip3 install --upgrade pip setuptools six
   RUN pip3 install --no-cache-dir gevent==1.2.1 flask==0.12
 
-  #install c libraries
+  <span class="c">#install c libraries</span>
   RUN apt-get update
   RUN apt-get install libc-dev -y
 
-  #preparing the action proxy
+  <span class="c">#preparing the action proxy</span>
   ADD actionProxy/ /actionProxy
   WORKDIR /actionProxy
   ENV FLASK_PROXY_PORT 8080
@@ -389,32 +389,32 @@
 
 <p>So now we could create a docker image for our fibonacci function:</p>
 
-<figure class="highlight"><pre><code class="language-dockerfile" data-lang="dockerfile">  # Dockerfile for runing a Kotlin native fibonacci action
+<figure class="highlight"><pre><code class="language-dockerfile" data-lang="dockerfile">  <span class="c"># Dockerfile for runing a Kotlin native fibonacci action</span>
   FROM jamedina/openwhisk-kotlin-native
 
-  #add basic gradle files
+  <span class="c">#add basic gradle files</span>
   ADD .gradle/ /temp-build/.gradle
   ADD gradle/ /temp-build/gradle
   ADD build.gradle /temp-build
   ADD gradlew /temp-build
   ADD gradle.properties /temp-build
 
-  #get the compiler
+  <span class="c">#get the compiler</span>
   WORKDIR /temp-build
   RUN ./gradlew
 
-  # add our action code
+  <span class="c"># add our action code</span>
   ADD src/ /temp-build/src
   ADD buildCpp.sh /temp-build
 
-  #build our action
+  <span class="c">#build our action</span>
   RUN ./gradlew build
 
-  #copy the action as the default OpenWhisk docker actions
+  <span class="c">#copy the action as the default OpenWhisk docker actions</span>
   RUN mkdir /action
   RUN cp /temp-build/build/konan/bin/fibonacci.kexe /action/exec
 
-  #clean up
+  <span class="c">#clean up</span>
   RUN rm -rf /temp-build
   RUN rm -rf /kotlin-native
 
@@ -424,21 +424,21 @@
 
 <figure class="highlight"><pre><code class="language-bash" data-lang="bash">  <span class="c">#!/usr/bin/env bash</span>
   <span class="nb">echo</span> <span class="s2">"creating base image jamedina/openwhisk-kotlin-native"</span>
-  docker build -t jamedina/openwhisk-kotlin-native docker/
+  docker build <span class="nt">-t</span> jamedina/openwhisk-kotlin-native docker/
 
-  <span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$?</span><span class="s2">"</span> -eq <span class="s2">"0"</span> <span class="o">]</span>
+  <span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$?</span><span class="s2">"</span> <span class="nt">-eq</span> <span class="s2">"0"</span> <span class="o">]</span>
   <span class="k">then
     </span><span class="nb">echo</span> <span class="s2">"pushing jamedina/openwhisk-kotlin-native"</span>
     docker push jamedina/openwhisk-kotlin-native
-    <span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$?</span><span class="s2">"</span> -eq <span class="s2">"0"</span> <span class="o">]</span>
+    <span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$?</span><span class="s2">"</span> <span class="nt">-eq</span> <span class="s2">"0"</span> <span class="o">]</span>
     <span class="k">then
       </span><span class="nb">echo</span> <span class="s2">"creating image jamedina/kotlin-native-fibonacci"</span>
-      docker build -t jamedina/kotlin-native-fibonacci .
-      <span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$?</span><span class="s2">"</span> -eq <span class="s2">"0"</span> <span class="o">]</span>
+      docker build <span class="nt">-t</span> jamedina/kotlin-native-fibonacci <span class="nb">.</span>
+      <span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$?</span><span class="s2">"</span> <span class="nt">-eq</span> <span class="s2">"0"</span> <span class="o">]</span>
       <span class="k">then
         </span><span class="nb">echo</span> <span class="s2">"pushing"</span>
         docker push jamedina/kotlin-native-fibonacci
-        <span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$?</span><span class="s2">"</span> -eq <span class="s2">"0"</span> <span class="o">]</span>
+        <span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$?</span><span class="s2">"</span> <span class="nt">-eq</span> <span class="s2">"0"</span> <span class="o">]</span>
         <span class="k">then
           </span><span class="nb">echo</span> <span class="s2">"done"</span>
         <span class="k">else
@@ -459,8 +459,8 @@
 <p>So now we could put all things together to do:</p>
 
 <figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="nv">$ </span>./build.sh
-  <span class="nv">$ </span>wsk action create native-fibonacci --docker jamedina/kotlin-native-fibonacci
-  <span class="nv">$ </span>wsk action invoke --result native-fibonacci --param numbers 5
+  <span class="nv">$ </span>wsk action create native-fibonacci <span class="nt">--docker</span> jamedina/kotlin-native-fibonacci
+  <span class="nv">$ </span>wsk action invoke <span class="nt">--result</span> native-fibonacci <span class="nt">--param</span> numbers 5
   <span class="o">{</span>
     <span class="s2">"result"</span>: <span class="o">[</span>
         1,

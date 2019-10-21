@@ -87,7 +87,7 @@
 
 <p>So now let starting to preparing our platform, we will require <a href="http://vagrantup.com/" target="_blank">Vagrant</a> and <a href="https://www.virtualbox.org/wiki/Downloads" target="_blank">Virtual Box</a>, so install those first.</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="nv">$ </span>git clone --depth<span class="o">=</span>1 https://github.com/apache/incubator-openwhisk.git openwhisk
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="nv">$ </span>git clone <span class="nt">--depth</span><span class="o">=</span>1 https://github.com/apache/incubator-openwhisk.git openwhisk
   <span class="nv">$ </span><span class="nb">cd </span>openwhisk/tools/vagrant
   <span class="nv">$ </span>./hello</code></pre></figure>
 
@@ -95,12 +95,12 @@
 
 <p>Now to test that the installation work we could just:</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="nv">$ </span>vagrant ssh -- wsk action invoke /whisk.system/utils/echo -p message hello --result</code></pre></figure>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="nv">$ </span>vagrant ssh <span class="nt">--</span> wsk action invoke /whisk.system/utils/echo <span class="nt">-p</span> message hello <span class="nt">--result</span></code></pre></figure>
 
 <p>This will output:</p>
 
 <figure class="highlight"><pre><code class="language-json" data-lang="json"><span class="w">  </span><span class="p">{</span><span class="w">
-      </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hello"</span><span class="w">
+      </span><span class="nl">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hello"</span><span class="w">
   </span><span class="p">}</span></code></pre></figure>
 
 <p>Now we could stop our Whisk server anytime with:</p>
@@ -113,25 +113,25 @@
 
 <p>Now let’s create a simple Kotlin function:</p>
 
-<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">fun</span> <span class="nf">fibonacci</span><span class="p">(</span><span class="n">numbers</span><span class="p">:</span> <span class="n">Long</span><span class="p">):</span> <span class="n">Array</span><span class="p">&lt;</span><span class="n">Long</span><span class="p">&gt;</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">numbers</span> <span class="p">==</span> <span class="m">0L</span><span class="p">)</span> <span class="k">return</span> <span class="n">arrayOf</span><span class="p">(</span><span class="m">0L</span><span class="p">)</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">numbers</span> <span class="p">==</span> <span class="m">1L</span><span class="p">)</span> <span class="k">return</span> <span class="n">arrayOf</span><span class="p">(</span><span class="m">1L</span><span class="p">)</span>
+<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">fun</span> <span class="nf">fibonacci</span><span class="p">(</span><span class="n">numbers</span><span class="p">:</span> <span class="nc">Long</span><span class="p">):</span> <span class="nc">Array</span><span class="p">&lt;</span><span class="nc">Long</span><span class="p">&gt;</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">numbers</span> <span class="p">==</span> <span class="m">0L</span><span class="p">)</span> <span class="k">return</span> <span class="nf">arrayOf</span><span class="p">(</span><span class="m">0L</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">numbers</span> <span class="p">==</span> <span class="m">1L</span><span class="p">)</span> <span class="k">return</span> <span class="nf">arrayOf</span><span class="p">(</span><span class="m">1L</span><span class="p">)</span>
 
     <span class="kd">var</span> <span class="py">previous</span> <span class="p">=</span> <span class="m">1L</span>
     <span class="kd">var</span> <span class="py">current</span> <span class="p">=</span> <span class="m">1L</span>
-    <span class="kd">var</span> <span class="py">temp</span><span class="p">:</span> <span class="n">Long</span>
+    <span class="kd">var</span> <span class="py">temp</span><span class="p">:</span> <span class="nc">Long</span>
 
-    <span class="k">return</span> <span class="n">arrayOf</span><span class="p">(</span><span class="m">1L</span><span class="p">,</span> <span class="m">1L</span><span class="p">)</span> <span class="p">+</span> <span class="p">(</span><span class="m">1</span><span class="o">..</span><span class="p">(</span><span class="n">numbers</span> <span class="p">-</span> <span class="m">2</span><span class="p">)).</span><span class="n">map</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nf">arrayOf</span><span class="p">(</span><span class="m">1L</span><span class="p">,</span> <span class="m">1L</span><span class="p">)</span> <span class="p">+</span> <span class="p">(</span><span class="m">1</span><span class="o">..</span><span class="p">(</span><span class="n">numbers</span> <span class="p">-</span> <span class="m">2</span><span class="p">)).</span><span class="nf">map</span> <span class="p">{</span>
       <span class="n">temp</span> <span class="p">=</span> <span class="n">current</span> <span class="p">+</span> <span class="n">previous</span>
       <span class="n">previous</span> <span class="p">=</span> <span class="n">current</span>
       <span class="n">current</span> <span class="p">=</span> <span class="n">temp</span>
       <span class="n">current</span>
-    <span class="p">}.</span><span class="n">toList</span><span class="p">().</span><span class="n">toTypedArray</span><span class="p">()</span>
+    <span class="p">}.</span><span class="nf">toList</span><span class="p">().</span><span class="nf">toTypedArray</span><span class="p">()</span>
   <span class="p">}</span></code></pre></figure>
 
 <p>This function just calculate a set of Fibonacci numbers, let try it out:</p>
 
-<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">fun</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="n">Array</span><span class="p">&lt;</span><span class="n">String</span><span class="p">&gt;)</span> <span class="p">=</span> <span class="n">fibonacci</span><span class="p">(</span><span class="m">5</span><span class="p">).</span><span class="n">forEach</span><span class="p">(</span><span class="o">::</span><span class="n">println</span><span class="p">)</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">fun</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="nc">Array</span><span class="p">&lt;</span><span class="nc">String</span><span class="p">&gt;)</span> <span class="p">=</span> <span class="nf">fibonacci</span><span class="p">(</span><span class="m">5</span><span class="p">).</span><span class="nf">forEach</span><span class="p">(</span><span class="o">::</span><span class="n">println</span><span class="p">)</span></code></pre></figure>
 
 <p>This should output:</p>
 
@@ -145,7 +145,7 @@
 
 <p>First we need to create a main function as OpenWhisk will be able to understand :</p>
 
-<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">fun</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="n">JsonObject</span><span class="p">)</span> <span class="p">:</span> <span class="n">JsonObject</span> <span class="p">{</span>
+<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">fun</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="nc">JsonObject</span><span class="p">)</span> <span class="p">:</span> <span class="nc">JsonObject</span> <span class="p">{</span>
 
   <span class="p">}</span></code></pre></figure>
 
@@ -155,41 +155,41 @@
 
 <p>We could get the value with a simple extension function:</p>
 
-<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">fun</span> <span class="nf">JsonObject</span><span class="p">.</span><span class="n">paramOrElse</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span> <span class="n">elseValue</span><span class="p">:</span> <span class="n">Long</span><span class="p">):</span> <span class="n">Long</span> <span class="p">=</span> <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">has</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
-    <span class="k">this</span><span class="p">.</span><span class="n">getAsJsonPrimitive</span><span class="p">(</span><span class="n">name</span><span class="p">).</span><span class="n">asLong</span> <span class="k">else</span> <span class="n">elseValue</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">fun</span> <span class="nc">JsonObject</span><span class="p">.</span><span class="nf">paramOrElse</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nc">String</span><span class="p">,</span> <span class="n">elseValue</span><span class="p">:</span> <span class="nc">Long</span><span class="p">):</span> <span class="nc">Long</span> <span class="p">=</span> <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nf">has</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+    <span class="k">this</span><span class="p">.</span><span class="nf">getAsJsonPrimitive</span><span class="p">(</span><span class="n">name</span><span class="p">).</span><span class="n">asLong</span> <span class="k">else</span> <span class="n">elseValue</span></code></pre></figure>
 
 <p>So now in our main function we could do something like :</p>
 
-<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">fun</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="n">JsonObject</span><span class="p">)</span> <span class="p">:</span> <span class="n">JsonObject</span> <span class="p">{</span>
-    <span class="kd">val</span> <span class="py">numbers</span> <span class="p">=</span> <span class="n">args</span><span class="p">.</span><span class="n">paramOrElse</span><span class="p">(</span><span class="s">"numbers"</span><span class="p">,</span> <span class="m">10L</span><span class="p">)</span>
-    <span class="kd">val</span> <span class="py">results</span> <span class="p">=</span> <span class="n">fibonacci</span><span class="p">(</span><span class="n">numbers</span><span class="p">)</span>
+<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">fun</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="nc">JsonObject</span><span class="p">)</span> <span class="p">:</span> <span class="nc">JsonObject</span> <span class="p">{</span>
+    <span class="kd">val</span> <span class="py">numbers</span> <span class="p">=</span> <span class="n">args</span><span class="p">.</span><span class="nf">paramOrElse</span><span class="p">(</span><span class="s">"numbers"</span><span class="p">,</span> <span class="m">10L</span><span class="p">)</span>
+    <span class="kd">val</span> <span class="py">results</span> <span class="p">=</span> <span class="nf">fibonacci</span><span class="p">(</span><span class="n">numbers</span><span class="p">)</span>
   <span class="p">}</span></code></pre></figure>
 
 <p>All so now we need to get a result so we could do something like:</p>
 
-<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">fun</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="n">JsonObject</span><span class="p">)</span> <span class="p">:</span> <span class="n">JsonObject</span> <span class="p">{</span>
-    <span class="kd">val</span> <span class="py">numbers</span> <span class="p">=</span> <span class="n">args</span><span class="p">.</span><span class="n">paramOrElse</span><span class="p">(</span><span class="s">"numbers"</span><span class="p">,</span> <span class="m">10L</span><span class="p">)</span>
-    <span class="kd">val</span> <span class="py">results</span> <span class="p">=</span> <span class="n">fibonacci</span><span class="p">(</span><span class="n">numbers</span><span class="p">)</span>
-    <span class="kd">val</span> <span class="py">response</span> <span class="p">=</span> <span class="n">JsonObject</span><span class="p">()</span>
-    <span class="kd">val</span> <span class="py">elements</span> <span class="p">=</span> <span class="n">JsonArray</span><span class="p">()</span>
-    <span class="n">results</span><span class="p">.</span><span class="n">forEach</span><span class="p">{</span> <span class="n">elements</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">it</span><span class="p">)</span> <span class="p">}</span>
-    <span class="n">response</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s">"result"</span><span class="p">,</span> <span class="n">elements</span><span class="p">)</span>
+<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">fun</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="nc">JsonObject</span><span class="p">)</span> <span class="p">:</span> <span class="nc">JsonObject</span> <span class="p">{</span>
+    <span class="kd">val</span> <span class="py">numbers</span> <span class="p">=</span> <span class="n">args</span><span class="p">.</span><span class="nf">paramOrElse</span><span class="p">(</span><span class="s">"numbers"</span><span class="p">,</span> <span class="m">10L</span><span class="p">)</span>
+    <span class="kd">val</span> <span class="py">results</span> <span class="p">=</span> <span class="nf">fibonacci</span><span class="p">(</span><span class="n">numbers</span><span class="p">)</span>
+    <span class="kd">val</span> <span class="py">response</span> <span class="p">=</span> <span class="nc">JsonObject</span><span class="p">()</span>
+    <span class="kd">val</span> <span class="py">elements</span> <span class="p">=</span> <span class="nc">JsonArray</span><span class="p">()</span>
+    <span class="n">results</span><span class="p">.</span><span class="nf">forEach</span><span class="p">{</span> <span class="n">elements</span><span class="p">.</span><span class="nf">add</span><span class="p">(</span><span class="n">it</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">response</span><span class="p">.</span><span class="nf">add</span><span class="p">(</span><span class="s">"result"</span><span class="p">,</span> <span class="n">elements</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">response</span>
   <span class="p">}</span></code></pre></figure>
 
 <p>This look OK but I think we could improve adding just one extension function:</p>
 
-<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">fun</span> <span class="nf">Long</span><span class="p">.</span><span class="n">throughFunction</span><span class="p">(</span><span class="n">operation</span><span class="p">:</span> <span class="p">(</span><span class="n">Long</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Array</span><span class="p">&lt;</span><span class="n">Long</span><span class="p">&gt;):</span> <span class="n">JsonObject</span> <span class="p">{</span>
-    <span class="kd">val</span> <span class="py">result</span> <span class="p">=</span> <span class="n">JsonObject</span><span class="p">()</span>
-    <span class="kd">val</span> <span class="py">elements</span> <span class="p">=</span> <span class="n">JsonArray</span><span class="p">()</span>
-    <span class="n">operation</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="n">forEach</span><span class="p">(</span><span class="n">elements</span><span class="o">::</span><span class="n">add</span><span class="p">)</span>
-    <span class="n">result</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s">"result"</span><span class="p">,</span> <span class="n">elements</span><span class="p">)</span>
+<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">fun</span> <span class="nc">Long</span><span class="p">.</span><span class="nf">throughFunction</span><span class="p">(</span><span class="n">operation</span><span class="p">:</span> <span class="p">(</span><span class="nc">Long</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nc">Array</span><span class="p">&lt;</span><span class="nc">Long</span><span class="p">&gt;):</span> <span class="nc">JsonObject</span> <span class="p">{</span>
+    <span class="kd">val</span> <span class="py">result</span> <span class="p">=</span> <span class="nc">JsonObject</span><span class="p">()</span>
+    <span class="kd">val</span> <span class="py">elements</span> <span class="p">=</span> <span class="nc">JsonArray</span><span class="p">()</span>
+    <span class="nf">operation</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nf">forEach</span><span class="p">(</span><span class="n">elements</span><span class="o">::</span><span class="n">add</span><span class="p">)</span>
+    <span class="n">result</span><span class="p">.</span><span class="nf">add</span><span class="p">(</span><span class="s">"result"</span><span class="p">,</span> <span class="n">elements</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span>
   <span class="p">}</span></code></pre></figure>
 
 <p>With this our main could become just:</p>
 
-<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">fun</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="n">JsonObject</span><span class="p">)</span> <span class="p">=</span> <span class="n">args</span><span class="p">.</span><span class="n">paramOrElse</span><span class="p">(</span><span class="s">"numbers"</span><span class="p">,</span> <span class="m">10L</span><span class="p">).</span><span class="n">throughFunction</span><span class="p">(</span><span class="o">::</span><span class="n">fibonacci</span><span class="p">)</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">fun</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="nc">JsonObject</span><span class="p">)</span> <span class="p">=</span> <span class="n">args</span><span class="p">.</span><span class="nf">paramOrElse</span><span class="p">(</span><span class="s">"numbers"</span><span class="p">,</span> <span class="m">10L</span><span class="p">).</span><span class="nf">throughFunction</span><span class="p">(</span><span class="o">::</span><span class="n">fibonacci</span><span class="p">)</span></code></pre></figure>
 
 <p>Let put all the parts together :</p>
 
@@ -198,34 +198,34 @@
   <span class="k">import</span> <span class="nn">com.google.gson.JsonArray</span>
   <span class="k">import</span> <span class="nn">com.google.gson.JsonObject</span>
 
-  <span class="k">fun</span> <span class="nf">fibonacci</span><span class="p">(</span><span class="n">numbers</span><span class="p">:</span> <span class="n">Long</span><span class="p">):</span> <span class="n">Array</span><span class="p">&lt;</span><span class="n">Long</span><span class="p">&gt;</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">numbers</span> <span class="p">==</span> <span class="m">0L</span><span class="p">)</span> <span class="k">return</span> <span class="n">arrayOf</span><span class="p">(</span><span class="m">0L</span><span class="p">)</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">numbers</span> <span class="p">==</span> <span class="m">1L</span><span class="p">)</span> <span class="k">return</span> <span class="n">arrayOf</span><span class="p">(</span><span class="m">1L</span><span class="p">)</span>
+  <span class="k">fun</span> <span class="nf">fibonacci</span><span class="p">(</span><span class="n">numbers</span><span class="p">:</span> <span class="nc">Long</span><span class="p">):</span> <span class="nc">Array</span><span class="p">&lt;</span><span class="nc">Long</span><span class="p">&gt;</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">numbers</span> <span class="p">==</span> <span class="m">0L</span><span class="p">)</span> <span class="k">return</span> <span class="nf">arrayOf</span><span class="p">(</span><span class="m">0L</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">numbers</span> <span class="p">==</span> <span class="m">1L</span><span class="p">)</span> <span class="k">return</span> <span class="nf">arrayOf</span><span class="p">(</span><span class="m">1L</span><span class="p">)</span>
 
     <span class="kd">var</span> <span class="py">previous</span> <span class="p">=</span> <span class="m">1L</span>
     <span class="kd">var</span> <span class="py">current</span> <span class="p">=</span> <span class="m">1L</span>
-    <span class="kd">var</span> <span class="py">temp</span><span class="p">:</span> <span class="n">Long</span>
+    <span class="kd">var</span> <span class="py">temp</span><span class="p">:</span> <span class="nc">Long</span>
 
-    <span class="k">return</span> <span class="n">arrayOf</span><span class="p">(</span><span class="m">1L</span><span class="p">,</span> <span class="m">1L</span><span class="p">)</span> <span class="p">+</span> <span class="p">(</span><span class="m">1</span><span class="o">..</span><span class="p">(</span><span class="n">numbers</span> <span class="p">-</span> <span class="m">2</span><span class="p">)).</span><span class="n">map</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nf">arrayOf</span><span class="p">(</span><span class="m">1L</span><span class="p">,</span> <span class="m">1L</span><span class="p">)</span> <span class="p">+</span> <span class="p">(</span><span class="m">1</span><span class="o">..</span><span class="p">(</span><span class="n">numbers</span> <span class="p">-</span> <span class="m">2</span><span class="p">)).</span><span class="nf">map</span> <span class="p">{</span>
       <span class="n">temp</span> <span class="p">=</span> <span class="n">current</span> <span class="p">+</span> <span class="n">previous</span>
       <span class="n">previous</span> <span class="p">=</span> <span class="n">current</span>
       <span class="n">current</span> <span class="p">=</span> <span class="n">temp</span>
       <span class="n">current</span>
-    <span class="p">}.</span><span class="n">toList</span><span class="p">().</span><span class="n">toTypedArray</span><span class="p">()</span>
+    <span class="p">}.</span><span class="nf">toList</span><span class="p">().</span><span class="nf">toTypedArray</span><span class="p">()</span>
   <span class="p">}</span>
 
-  <span class="k">fun</span> <span class="nf">JsonObject</span><span class="p">.</span><span class="n">paramOrElse</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span> <span class="n">elseValue</span><span class="p">:</span> <span class="n">Long</span><span class="p">):</span> <span class="n">Long</span> <span class="p">=</span> <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">has</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
-    <span class="k">this</span><span class="p">.</span><span class="n">getAsJsonPrimitive</span><span class="p">(</span><span class="n">name</span><span class="p">).</span><span class="n">asLong</span> <span class="k">else</span> <span class="n">elseValue</span>
+  <span class="k">fun</span> <span class="nc">JsonObject</span><span class="p">.</span><span class="nf">paramOrElse</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nc">String</span><span class="p">,</span> <span class="n">elseValue</span><span class="p">:</span> <span class="nc">Long</span><span class="p">):</span> <span class="nc">Long</span> <span class="p">=</span> <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nf">has</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+    <span class="k">this</span><span class="p">.</span><span class="nf">getAsJsonPrimitive</span><span class="p">(</span><span class="n">name</span><span class="p">).</span><span class="n">asLong</span> <span class="k">else</span> <span class="n">elseValue</span>
 
-  <span class="k">fun</span> <span class="nf">Long</span><span class="p">.</span><span class="n">throughFunction</span><span class="p">(</span><span class="n">operation</span><span class="p">:</span> <span class="p">(</span><span class="n">Long</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="n">Array</span><span class="p">&lt;</span><span class="n">Long</span><span class="p">&gt;):</span> <span class="n">JsonObject</span> <span class="p">{</span>
-    <span class="kd">val</span> <span class="py">result</span> <span class="p">=</span> <span class="n">JsonObject</span><span class="p">()</span>
-    <span class="kd">val</span> <span class="py">elements</span> <span class="p">=</span> <span class="n">JsonArray</span><span class="p">()</span>
-    <span class="n">operation</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="n">forEach</span><span class="p">(</span><span class="n">elements</span><span class="o">::</span><span class="n">add</span><span class="p">)</span>
-    <span class="n">result</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s">"result"</span><span class="p">,</span> <span class="n">elements</span><span class="p">)</span>
+  <span class="k">fun</span> <span class="nc">Long</span><span class="p">.</span><span class="nf">throughFunction</span><span class="p">(</span><span class="n">operation</span><span class="p">:</span> <span class="p">(</span><span class="nc">Long</span><span class="p">)</span> <span class="p">-&gt;</span> <span class="nc">Array</span><span class="p">&lt;</span><span class="nc">Long</span><span class="p">&gt;):</span> <span class="nc">JsonObject</span> <span class="p">{</span>
+    <span class="kd">val</span> <span class="py">result</span> <span class="p">=</span> <span class="nc">JsonObject</span><span class="p">()</span>
+    <span class="kd">val</span> <span class="py">elements</span> <span class="p">=</span> <span class="nc">JsonArray</span><span class="p">()</span>
+    <span class="nf">operation</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nf">forEach</span><span class="p">(</span><span class="n">elements</span><span class="o">::</span><span class="n">add</span><span class="p">)</span>
+    <span class="n">result</span><span class="p">.</span><span class="nf">add</span><span class="p">(</span><span class="s">"result"</span><span class="p">,</span> <span class="n">elements</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span>
   <span class="p">}</span>
 
-  <span class="k">fun</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="n">JsonObject</span><span class="p">)</span> <span class="p">=</span> <span class="n">args</span><span class="p">.</span><span class="n">paramOrElse</span><span class="p">(</span><span class="s">"numbers"</span><span class="p">,</span> <span class="m">10L</span><span class="p">).</span><span class="n">throughFunction</span><span class="p">(</span><span class="o">::</span><span class="n">fibonacci</span><span class="p">)</span></code></pre></figure>
+  <span class="k">fun</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="nc">JsonObject</span><span class="p">)</span> <span class="p">=</span> <span class="n">args</span><span class="p">.</span><span class="nf">paramOrElse</span><span class="p">(</span><span class="s">"numbers"</span><span class="p">,</span> <span class="m">10L</span><span class="p">).</span><span class="nf">throughFunction</span><span class="p">(</span><span class="o">::</span><span class="n">fibonacci</span><span class="p">)</span></code></pre></figure>
 
 <p>With this prototype we could create many functions, in fact with a couple of generics could get even better but let’s do that another day.</p>
 
@@ -247,7 +247,7 @@ since it will be map into the OpenWhisk machine.</p>
 <p>Now from the OpenWhisk machine we will get into our function directory:</p>
 
 <figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="nv">$ </span><span class="nb">cd </span>openwhisk/projects/KotlinServerless/target
-  <span class="nv">$ </span>wsk action create Fibonacci KotlinServerless-1.0-SNAPSHOT-jar-with-dependencies.jar --main <span class="se">\</span>
+  <span class="nv">$ </span>wsk action create Fibonacci KotlinServerless-1.0-SNAPSHOT-jar-with-dependencies.jar <span class="nt">--main</span> <span class="se">\</span>
   org.learning.by.example.serverless.kotlin.FibonacciKt
 
   ok: created action Fibonacci</code></pre></figure>
@@ -256,12 +256,12 @@ since it will be map into the OpenWhisk machine.</p>
 
 <p>Now let’s run our function:</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="nv">$ </span>wsk action invoke --result Fibonacci --param numbers 5</code></pre></figure>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="nv">$ </span>wsk action invoke <span class="nt">--result</span> Fibonacci <span class="nt">--param</span> numbers 5</code></pre></figure>
 
 <p>And we will get as output something like:</p>
 
 <figure class="highlight"><pre><code class="language-json" data-lang="json"><span class="w">  </span><span class="p">{</span><span class="w">
-      </span><span class="nt">"result"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="nl">"result"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
           </span><span class="mi">1</span><span class="p">,</span><span class="w">
           </span><span class="mi">1</span><span class="p">,</span><span class="w">
           </span><span class="mi">2</span><span class="p">,</span><span class="w">
@@ -272,12 +272,12 @@ since it will be map into the OpenWhisk machine.</p>
 
 <p>And of course we could running without parameters as:</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="nv">$ </span>wsk action invoke --result Fibonacci</code></pre></figure>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">  <span class="nv">$ </span>wsk action invoke <span class="nt">--result</span> Fibonacci</code></pre></figure>
 
 <p>And the result will be:</p>
 
 <figure class="highlight"><pre><code class="language-json" data-lang="json"><span class="w">  </span><span class="p">{</span><span class="w">
-      </span><span class="nt">"result"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="nl">"result"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
           </span><span class="mi">1</span><span class="p">,</span><span class="w">
           </span><span class="mi">1</span><span class="p">,</span><span class="w">
           </span><span class="mi">2</span><span class="p">,</span><span class="w">

@@ -87,46 +87,46 @@
 
 <p>or download from Docker hub:</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>docker pull jamedina/ml-api</code></pre></figure>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nv">$ </span>docker pull jamedina/ml-api</code></pre></figure>
 
 <p>Before starting its worth mentioning that going through <a href="https://docs.docker.com/mac/started/" target="_blank">getting started with docker</a> is a excellent starting point for understanding many of the docker topics and will give you the tools required.</p>
 
 <p>First lets create a new folder for our docker image an the Dockerfile:</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>mkdir ml-api
-<span class="gp">$ </span><span class="nb">cd </span>ml-api
-<span class="gp">$ </span>touch Dockerfile</code></pre></figure>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nv">$ </span><span class="nb">mkdir </span>ml-api
+<span class="nv">$ </span><span class="nb">cd </span>ml-api
+<span class="nv">$ </span><span class="nb">touch </span>Dockerfile</code></pre></figure>
 
 <p>Now we add the initial lines to our docker file:</p>
 
-<figure class="highlight"><pre><code class="language-dockerfile" data-lang="dockerfile">FROM ubuntu:14.04
-MAINTAINER Juan Medina &lt;jamedina@gmail.com&gt;
-ENV DEBIAN_FRONTEND noninteractive</code></pre></figure>
+<figure class="highlight"><pre><code class="language-dockerfile" data-lang="dockerfile"><span class="k">FROM</span><span class="s"> ubuntu:14.04</span>
+<span class="k">MAINTAINER</span><span class="s"> Juan Medina &lt;jamedina@gmail.com&gt;</span>
+<span class="k">ENV</span><span class="s"> DEBIAN_FRONTEND noninteractive</span></code></pre></figure>
 
 <p>Lets build our docker, initial build will take a while:</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>docker build -t ml-api .</code></pre></figure>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nv">$ </span>docker build <span class="nt">-t</span> ml-api .</code></pre></figure>
 
 <p>And them run the docker in iterative way since there is nothing there yet.</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>docker run -i ml-api</code></pre></figure>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nv">$ </span>docker run <span class="nt">-i</span> ml-api</code></pre></figure>
 
 <p>In the iterative shell we could just try to list files and exit:</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>ls
-<span class="gp">$ </span><span class="nb">exit</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nv">$ </span><span class="nb">ls</span>
+<span class="nv">$ </span><span class="nb">exit</span></code></pre></figure>
 
 <p>Lets add now python and pip to the docker image adding to the Dockerfile:</p>
 
-<figure class="highlight"><pre><code class="language-dockerfile" data-lang="dockerfile">RUN apt-get update
-RUN apt-get -y install python-pip python-dev
+<figure class="highlight"><pre><code class="language-dockerfile" data-lang="dockerfile"><span class="k">RUN </span>apt-get update
+<span class="k">RUN </span>apt-get <span class="nt">-y</span> <span class="nb">install </span>python-pip python-dev
 
-CMD ["/usr/bin/python","--version"]</code></pre></figure>
+<span class="k">CMD</span><span class="s"> ["/usr/bin/python","--version"]</span></code></pre></figure>
 
 <p>Now we could just rebuild and run:</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>docker build -t ml-api .
-<span class="gp">$ </span>docker run ml-api</code></pre></figure>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nv">$ </span>docker build <span class="nt">-t</span> ml-api <span class="nb">.</span>
+<span class="nv">$ </span>docker run ml-api</code></pre></figure>
 
 <p>Something like this will be output:</p>
 
@@ -134,7 +134,7 @@ CMD ["/usr/bin/python","--version"]</code></pre></figure>
 
 <p>Now lets create a folder for our python app:</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>mkdir python-app</code></pre></figure>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nv">$ </span><span class="nb">mkdir </span>python-app</code></pre></figure>
 
 <p>Lets create a small test python program in /python-app/test.py:</p>
 
@@ -147,7 +147,7 @@ CMD ["/usr/bin/python","--version"]</code></pre></figure>
 MAINTAINER Juan Medina &lt;jamedina@gmail.com&gt;
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update
-RUN apt-get -y install python-pip python-dev
+RUN apt-get <span class="nt">-y</span> <span class="nb">install </span>python-pip python-dev
 copy python-app /var/python-app
 CMD <span class="o">[</span><span class="s2">"/usr/bin/python"</span>,<span class="s2">"/var/python-app/test.py"</span><span class="o">]</span></code></pre></figure>
 
@@ -157,16 +157,16 @@ CMD <span class="o">[</span><span class="s2">"/usr/bin/python"</span>,<span clas
 
 <p>Sometimes we like to clean our docker system, if we do this we could see the containers:</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>docker ps -a</code></pre></figure>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nv">$ </span>docker ps <span class="nt">-a</span></code></pre></figure>
 
 <p>To stop and remove our containers we could do:</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>docker stop <span class="sb">`</span>docker ps -qa<span class="sb">`</span>
-<span class="gp">$ </span>docker rm <span class="sb">`</span>docker ps -qa<span class="sb">`</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nv">$ </span>docker stop <span class="sb">`</span>docker ps <span class="nt">-qa</span><span class="sb">`</span>
+<span class="nv">$ </span>docker <span class="nb">rm</span> <span class="sb">`</span>docker ps <span class="nt">-qa</span><span class="sb">`</span></code></pre></figure>
 
 <p>Now we are going to change our python installation to be a machine learning installation, edit the Dockerfile and change the apt-install to be:</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell">RUN apt-get -y install python-pip python-numpy python-scipy python-matplotlib ipython ipython-notebook python-pandas python-sympy python-nose python-sklearn python-nltk</code></pre></figure>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">RUN apt-get <span class="nt">-y</span> <span class="nb">install </span>python-pip python-numpy python-scipy python-matplotlib ipython ipython-notebook python-pandas python-sympy python-nose python-sklearn python-nltk</code></pre></figure>
 
 <p>Now we could modify our test program /python-app/test.py:</p>
 
@@ -183,7 +183,7 @@ CMD <span class="o">[</span><span class="s2">"/usr/bin/python"</span>,<span clas
 <p>Is time to do a simple sentiment analysis using TextBlob
 Now we are going to create a folder for our configuration:</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>mkdir cfg</code></pre></figure>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nv">$ </span><span class="nb">mkdir </span>cfg</code></pre></figure>
 
 <p>We will add this file for set python dependencies in /cfg/python-deps.txt</p>
 
@@ -198,13 +198,13 @@ MAINTAINER Juan Medina &lt;jamedina@gmail.com&gt;
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update
-RUN apt-get -y install python-pip python-numpy python-scipy python-matplotlib ipython ipython-notebook python-pandas python-sympy python-nose python-sklearn python-nltk
+RUN apt-get <span class="nt">-y</span> <span class="nb">install </span>python-pip python-numpy python-scipy python-matplotlib ipython ipython-notebook python-pandas python-sympy python-nose python-sklearn python-nltk
 
 copy python-app /var/python-app
 copy cfg /etc/cfg
 
-RUN pip install -r /etc/cfg/python-deps.txt
-RUN python -m textblob.download_corpora
+RUN pip <span class="nb">install</span> <span class="nt">-r</span> /etc/cfg/python-deps.txt
+RUN python <span class="nt">-m</span> textblob.download_corpora
 
 CMD <span class="o">[</span><span class="s2">"/usr/bin/python"</span>,<span class="s2">"/var/python-app/test.py"</span><span class="o">]</span></code></pre></figure>
 
@@ -234,14 +234,14 @@ MAINTAINER Juan Medina &lt;jamedina@gmail.com&gt;
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update
-RUN apt-get -y install python-pip python-numpy python-scipy python-matplotlib ipython ipython-notebook python-pandas python-sympy python-nose python-sklearn python-nltk
+RUN apt-get <span class="nt">-y</span> <span class="nb">install </span>python-pip python-numpy python-scipy python-matplotlib ipython ipython-notebook python-pandas python-sympy python-nose python-sklearn python-nltk
 
 copy python-app /var/python-app
 
 copy cfg /etc/cfg
 
-RUN pip install -r /etc/cfg/python-deps.txt
-RUN python -m textblob.download_corpora
+RUN pip <span class="nb">install</span> <span class="nt">-r</span> /etc/cfg/python-deps.txt
+RUN python <span class="nt">-m</span> textblob.download_corpora
 
 ENV FLASK_PORT 8080
 
@@ -257,7 +257,7 @@ CMD <span class="o">[</span><span class="s2">"/usr/bin/python"</span>,<span clas
 
 <span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
 
-<span class="nd">@app.route</span><span class="p">(</span><span class="s">'/api/test'</span><span class="p">)</span>
+<span class="o">@</span><span class="n">app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s">'/api/test'</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">test</span><span class="p">():</span>
     <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">result</span> <span class="o">=</span> <span class="s">"ok"</span><span class="p">)</span>
 
@@ -267,27 +267,27 @@ CMD <span class="o">[</span><span class="s2">"/usr/bin/python"</span>,<span clas
 
 <p>Now to run our docker in daemon and map the expose port to port 80:</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>docker run -d -p 80:8080 ml-api</code></pre></figure>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nv">$ </span>docker run <span class="nt">-d</span> <span class="nt">-p</span> 80:8080 ml-api</code></pre></figure>
 
 <p>Remember that the docker could be stop with:</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>docker stop <span class="o">[</span>container]&lt;/code&gt;</code></pre></figure>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nv">$ </span>docker stop <span class="o">[</span>container]&lt;/code&gt;</code></pre></figure>
 
 <p>We need to know the IP of our container, if we are using docker machine and we haven’t change the default VM we could use:</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>docker-machine ip default</code></pre></figure>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nv">$ </span>docker-machine ip default</code></pre></figure>
 
 <p>Them we could test using the url : http://IP/api/test</p>
 
 <p>We should see this:</p>
 
 <figure class="highlight"><pre><code class="language-json" data-lang="json"><span class="p">{</span><span class="w">
-  </span><span class="nt">"result"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ok"</span><span class="w">
+  </span><span class="nl">"result"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ok"</span><span class="w">
 </span><span class="p">}</span></code></pre></figure>
 
 <p>And we could see the log using :</p>
 
-<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="gp">$ </span>docker logs <span class="o">[</span>container]</code></pre></figure>
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="nv">$ </span>docker logs <span class="o">[</span>container]</code></pre></figure>
 
 <p>This should output</p>
 
@@ -306,7 +306,7 @@ CMD <span class="o">[</span><span class="s2">"/usr/bin/python"</span>,<span clas
 
 <span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
 
-<span class="nd">@app.route</span><span class="p">(</span><span class="s">'/api/sentiment/query'</span><span class="p">,</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">'POST'</span><span class="p">,</span><span class="s">'GET'</span><span class="p">])</span>
+<span class="o">@</span><span class="n">app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s">'/api/sentiment/query'</span><span class="p">,</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">'POST'</span><span class="p">,</span><span class="s">'GET'</span><span class="p">])</span>
 <span class="k">def</span> <span class="nf">query_sentiment</span><span class="p">():</span>
 
     <span class="k">try</span><span class="p">:</span>
@@ -335,7 +335,7 @@ CMD <span class="o">[</span><span class="s2">"/usr/bin/python"</span>,<span clas
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
 
     <span class="n">LOG_FORMAT</span> <span class="o">=</span> <span class="s">"'</span><span class="si">%(asctime)</span><span class="s">s - </span><span class="si">%(name)</span><span class="s">s - </span><span class="si">%(levelname)</span><span class="s">s - </span><span class="si">%(message)</span><span class="s">s'"</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span><span class="n">format</span><span class="o">=</span><span class="n">LOG_FORMAT</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="n">LOG_FORMAT</span><span class="p">)</span>
     <span class="n">app</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
 
     <span class="n">port</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">'FLASK_PORT'</span><span class="p">]</span>

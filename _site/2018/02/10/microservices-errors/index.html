@@ -102,24 +102,24 @@
 
 <p>How to use this class is simple, for example:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="kd">public</span> <span class="n">Result</span> <span class="nf">get</span><span class="o">(</span><span class="kt">int</span> <span class="n">id</span><span class="o">)</span> <span class="o">{</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">id</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="k">return</span> <span class="n">Result</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="k">new</span> <span class="n">Customer</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="s">"super customer"</span><span class="o">));</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="kd">public</span> <span class="nc">Result</span> <span class="nf">get</span><span class="o">(</span><span class="kt">int</span> <span class="n">id</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">id</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="k">return</span> <span class="nc">Result</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="k">new</span> <span class="nc">Customer</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="s">"super customer"</span><span class="o">));</span>
     <span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="n">id</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="o">)</span>
-      <span class="k">return</span> <span class="n">Result</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="k">new</span> <span class="n">BadParameters</span><span class="o">(</span><span class="s">"bad parameters"</span><span class="o">));</span>
+      <span class="k">return</span> <span class="nc">Result</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="k">new</span> <span class="nc">BadParameters</span><span class="o">(</span><span class="s">"bad parameters"</span><span class="o">));</span>
     <span class="k">else</span>
-      <span class="k">return</span> <span class="n">Result</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="k">new</span> <span class="n">NotFound</span><span class="o">(</span><span class="s">"customer not found"</span><span class="o">));</span>
+      <span class="k">return</span> <span class="nc">Result</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="k">new</span> <span class="nc">NotFound</span><span class="o">(</span><span class="s">"customer not found"</span><span class="o">));</span>
   <span class="o">}</span></code></pre></figure>
 
 <p><code class="highlighter-rouge">BadParameters</code> and <code class="highlighter-rouge">NotFound</code> are entities for our business logic that contain the desired information for handling these responses.</p>
 
 <p>For handling the result we could just use the methods <code class="highlighter-rouge">isError()</code> and <code class="highlighter-rouge">getData()</code>.</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="n">Result</span> <span class="n">result</span> <span class="o">=</span> <span class="n">operation</span><span class="o">();</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="nc">Result</span> <span class="n">result</span> <span class="o">=</span> <span class="n">operation</span><span class="o">();</span>
 
   <span class="k">if</span><span class="o">(</span><span class="n">result</span><span class="o">.</span><span class="na">isError</span><span class="o">()){</span>
     <span class="c1">//do something with the error</span>
   <span class="o">}</span><span class="k">else</span><span class="o">{</span>
-    <span class="n">Customer</span> <span class="n">customer</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="na">getValue</span><span class="o">();</span>
+    <span class="nc">Customer</span> <span class="n">customer</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="na">getValue</span><span class="o">();</span>
   <span class="o">}</span></code></pre></figure>
 
 <p>Finally we use in our mapping a generic ResponseEntity we could return the wrapper value without needing to understand what contains.</p>
@@ -127,22 +127,22 @@
 <p>For example:</p>
 
 <figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="nd">@GetMapping</span><span class="o">(</span><span class="s">"/customer/{id}"</span><span class="o">)</span>
-    <span class="kd">public</span> <span class="n">ResponseEntity</span><span class="o">&lt;?&gt;</span> <span class="n">get</span><span class="o">(</span><span class="nd">@PathVariable</span><span class="o">()</span> <span class="kt">int</span> <span class="n">id</span><span class="o">)</span> <span class="o">{</span>
-    <span class="kd">final</span> <span class="n">Result</span> <span class="n">result</span> <span class="o">=</span> <span class="n">customerService</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">id</span><span class="o">);</span>
-    <span class="kd">final</span> <span class="n">HttpStatus</span> <span class="n">status</span> <span class="o">=</span> <span class="n">getStatus</span><span class="o">(</span><span class="n">result</span><span class="o">);</span>
+    <span class="kd">public</span> <span class="nc">ResponseEntity</span><span class="o">&lt;?&gt;</span> <span class="n">get</span><span class="o">(</span><span class="nd">@PathVariable</span><span class="o">()</span> <span class="kt">int</span> <span class="n">id</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kd">final</span> <span class="nc">Result</span> <span class="n">result</span> <span class="o">=</span> <span class="n">customerService</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">id</span><span class="o">);</span>
+    <span class="kd">final</span> <span class="nc">HttpStatus</span> <span class="n">status</span> <span class="o">=</span> <span class="n">getStatus</span><span class="o">(</span><span class="n">result</span><span class="o">);</span>
 
-    <span class="k">return</span> <span class="k">new</span> <span class="n">ResponseEntity</span><span class="o">&lt;&gt;(</span><span class="n">result</span><span class="o">.</span><span class="na">getValue</span><span class="o">(),</span> <span class="n">status</span><span class="o">);</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nc">ResponseEntity</span><span class="o">&lt;&gt;(</span><span class="n">result</span><span class="o">.</span><span class="na">getValue</span><span class="o">(),</span> <span class="n">status</span><span class="o">);</span>
   <span class="o">}</span></code></pre></figure>
 
 <p>Since we may like to return different HTTP status, based on the error contained, we could create a helper that use the type of the class held on the wrapper.</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="kd">private</span> <span class="n">HttpStatus</span> <span class="nf">getStatus</span><span class="o">(</span><span class="kd">final</span> <span class="n">Result</span> <span class="n">result</span><span class="o">){</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="kd">private</span> <span class="nc">HttpStatus</span> <span class="nf">getStatus</span><span class="o">(</span><span class="kd">final</span> <span class="nc">Result</span> <span class="n">result</span><span class="o">){</span>
     <span class="k">if</span> <span class="o">(</span><span class="n">result</span><span class="o">.</span><span class="na">isError</span><span class="o">())</span> <span class="o">{</span>
-      <span class="k">if</span> <span class="o">(</span><span class="n">result</span><span class="o">.</span><span class="na">getValue</span><span class="o">()</span> <span class="k">instanceof</span> <span class="n">NotFound</span><span class="o">)</span>
-        <span class="k">return</span> <span class="n">HttpStatus</span><span class="o">.</span><span class="na">NOT_FOUND</span><span class="o">;</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">result</span><span class="o">.</span><span class="na">getValue</span><span class="o">()</span> <span class="k">instanceof</span> <span class="nc">NotFound</span><span class="o">)</span>
+        <span class="k">return</span> <span class="nc">HttpStatus</span><span class="o">.</span><span class="na">NOT_FOUND</span><span class="o">;</span>
       <span class="k">else</span>
-        <span class="k">return</span> <span class="n">HttpStatus</span><span class="o">.</span><span class="na">BAD_REQUEST</span><span class="o">;</span>
-    <span class="o">}</span> <span class="k">else</span> <span class="k">return</span> <span class="n">HttpStatus</span><span class="o">.</span><span class="na">OK</span><span class="o">;</span>
+        <span class="k">return</span> <span class="nc">HttpStatus</span><span class="o">.</span><span class="na">BAD_REQUEST</span><span class="o">;</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="k">return</span> <span class="nc">HttpStatus</span><span class="o">.</span><span class="na">OK</span><span class="o">;</span>
   <span class="o">}</span></code></pre></figure>
 
 <p>To just run the example microservice you could just do from the command line:</p>
@@ -151,10 +151,10 @@
 
 <p>To test the output when sending a correct customer id:</p>
 
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash">  <span class="nv">$ </span>curl -i http://localhost:8080/customer/1
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">  <span class="nv">$ </span>curl <span class="nt">-i</span> http://localhost:8080/customer/1
   HTTP/1.1 200
   X-Application-Context: application
-  Content-Type: application/json;charset<span class="o">=</span>UTF-8
+  Content-Type: application/json<span class="p">;</span><span class="nv">charset</span><span class="o">=</span>UTF-8
   Transfer-Encoding: chunked
   Date: Wed, 31 Jan 2018 09:33:01 GMT
 
@@ -165,10 +165,10 @@
 
 <p>To test the output when sending a invalid customer id</p>
 
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash">  <span class="nv">$curl</span> -i http://localhost:8080/customer/-1
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">  <span class="nv">$curl</span> <span class="nt">-i</span> http://localhost:8080/customer/-1
   HTTP/1.1 400
   X-Application-Context: application
-  Content-Type: application/json;charset<span class="o">=</span>UTF-8
+  Content-Type: application/json<span class="p">;</span><span class="nv">charset</span><span class="o">=</span>UTF-8
   Transfer-Encoding: chunked
   Date: Wed, 31 Jan 2018 09:34:03 GMT
   Connection: close
@@ -179,10 +179,10 @@
 
 <p>To test the output when sending a not found customer id</p>
 
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash">  <span class="nv">$ </span>curl -i http://localhost:8080/customer/2
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">  <span class="nv">$ </span>curl <span class="nt">-i</span> http://localhost:8080/customer/2
   HTTP/1.1 404
   X-Application-Context: application
-  Content-Type: application/json;charset<span class="o">=</span>UTF-8
+  Content-Type: application/json<span class="p">;</span><span class="nv">charset</span><span class="o">=</span>UTF-8
   Transfer-Encoding: chunked
   Date: Wed, 31 Jan 2018 09:34:48 GMT
 
