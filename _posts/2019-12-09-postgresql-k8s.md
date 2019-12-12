@@ -1,7 +1,7 @@
 ---
 layout: post
 title: PostgreSQL in Kubernetes
-date: 2019-12-2 00:00:00
+date: 2019-12-12 00:00:00
 author: Juan Medina
 comments: true
 categories: [Cloud]
