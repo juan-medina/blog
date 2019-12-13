@@ -114,7 +114,7 @@ movies-db-cluster-0   1/1     Running   0          6m56s   master
 movies-db-cluster-1   1/1     Running   0          6m15s   replica
 {% endhighlight %}
 
-As we could see our database has a mater and a replica running.
+As we could see our database has a master and a replica running.
 
 **Accessing our database**
 
