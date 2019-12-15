@@ -8,9 +8,9 @@ google_analytics: "UA-71726617-1"
 
 # SEO settings
 title: Juan Medina Personal Blog
-description: Personar blog from Juan Medina
+description: Personal blog from Juan Medina
 url: "http://juan-medina.com"
-twitter_username: jamedinatwit
+twitter_username: JuanMedinaCode
 default_img: "/assets/img/pp.jpg"
 
 # Profile settings
@@ -21,6 +21,7 @@ I'm just a normal geek that code all kind of stuff, from complex corporate appli
 <br/>
 Games, music, movies and traveling are my escape pods."
 social:
+  address-card: "https://juan-medina.com/cv"
   github: "https://github.com/juan-medina"
   twitter: "https://twitter.com/JuanMedinaCode"
   stack-overflow: "http://stackoverflow.com/users/7910403/juan-medina"
