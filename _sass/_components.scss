@@ -600,3 +600,10 @@
     padding-right: 1em;
   }
 }
+
+code,
+kbd,
+pre,
+samp {
+  font-size: 0.90em; /* scale down code font */
+}
