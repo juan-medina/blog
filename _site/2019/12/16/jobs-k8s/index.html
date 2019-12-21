@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Creating Jobs in Kubernetes | Juan Medina Personal Blog</title>
+  <meta name="author" content="Juan Medina">
+  <meta name="description" content="Personal blog from Juan Medina">
+  <meta property="og:title" content="Creating Jobs in Kubernetes | Juan Medina Personal Blog">
+  <meta property="og:url" content="http://juan-medina.com/2019/12/16/jobs-k8s/">
+  <meta property="og:site_name" content="Juan Medina Personal Blog">
+  <meta property="og:description" content="Personal blog from Juan Medina">
+  <meta property="og:image" content="http://juan-medina.com/assets/img/gears.jpg">
+  <meta property="og:type" content="blog">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:description" content="Personal blog from Juan Medina">
+  <meta name="twitter:title" content="Creating Jobs in Kubernetes | Juan Medina Personal Blog">
+  <meta name="twitter:url" content="http://juan-medina.com/2019/12/16/jobs-k8s/">
+  <meta name="twitter:site" content="Juan Medina Personal Blog">
+  <meta name="twitter:creator" content="@JuanMedinaCode">
+  <meta name="twitter:domain" content="http://juan-medina.com">
+  <meta property="twitter:image" content="http://juan-medina.com/assets/img/gears.jpg">
+
+  <link type="application/atom+xml" rel="alternate" href="http://juan-medina.com/feed.xml" title="Juan Medina Personal Blog" />
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata|Lora|Space+Mono:700">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/syntax.css">
+
+  <link rel="alternate" type="application/rss+xml" title="Juan Medina Personal Blog" href="http://juan-medina.com/feed.xml">
+  <link rel="canonical" href="http://juan-medina.com/2019/12/16/jobs-k8s/">
+
+  
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-71726617-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+  
+</head>
+
+
+  <body>
+
+    <main>
+      <article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="section-padding--lg mast rellax" data-rellax-speed="-4">
+    <a class="nav nav--white" href="/">
+      <i class="fa fa-lg fa-arrow-left"></i>
+      <span>Back to Posts</span>
+    </a>
+    <figure class="absolute-bg mast__img" style="background-image: url('/assets/img/gears.jpg');"></figure>
+    <div class="mast__container">
+      <span><time datetime="2019-12-16T00:00:00+00:00" itemprop="datePublished">Dec 16, 2019</time></span>
+      <h1 itemprop="name headline">Creating Jobs in Kubernetes</h1>
+      
+        <span>Posted in
+          
+            <a class="nav--white" href="/category/cloud">Cloud</a>
+          
+        </span>
+      
+      <span></span>
+    </div>
+  </header>
+
+  <section class="section-padding bg-grey" itemprop="articleBody">
+    <div class="post">
+      <p><a href="/2019/12/02/microk8s/" target="_blank">We recently configure</a> our own Kubernetes (K8s), cluster using MicroK8s and learn how we could use an operator for <a href="/2019/12/12/postgresql-k8s/" target="_blank">deploying a PostgreSQL Server</a> within our cluster. Now we will learn how we could create k8s jobs that populate a database within our cluster.</p>
+
+<p><strong>Creating our Database</strong></p>
+
+<p>This exercise assume that we have the PostgreSQL operator installed in our cluster, if not we may need to follow the steps that we did in the <a href="/2019/12/12/postgresql-k8s/" target="_blank">previous post</a>.</p>
+
+<p>First we will delete the database that we created previously.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>microk8s.kubectl delete postgresql movies-db-cluster
+postgresql.acid.zalan.do <span class="s2">"movies-db-cluster"</span> deleted
+<span class="nv">$ </span>microk8s.kubectl get postgresql                     
+No resources found <span class="k">in </span>default namespace.</code></pre></figure>
+
+<p>We will put everything that we are going to use in a directory that latter we could push to a repository, so we will start with a similar yaml that we original did <em>movies-db.yml</em> :</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">apiVersion</span><span class="pi">:</span> <span class="s2">"</span><span class="s">acid.zalan.do/v1"</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">postgresql</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">movies-db-cluster</span>
+  <span class="na">namespace</span><span class="pi">:</span> <span class="s">default</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">teamId</span><span class="pi">:</span> <span class="s2">"</span><span class="s">movies"</span>
+  <span class="na">volume</span><span class="pi">:</span>
+    <span class="na">size</span><span class="pi">:</span> <span class="s">2Gi</span>
+  <span class="na">numberOfInstances</span><span class="pi">:</span> <span class="m">2</span>
+  <span class="na">users</span><span class="pi">:</span>
+    <span class="na">moviesdba</span><span class="pi">:</span>  <span class="c1"># database owner</span>
+    <span class="pi">-</span> <span class="s">superuser</span>
+    <span class="pi">-</span> <span class="s">createdb</span>
+    <span class="na">moviesuser</span><span class="pi">:</span> <span class="pi">[]</span>  <span class="c1"># roles</span>
+  <span class="na">databases</span><span class="pi">:</span>
+    <span class="na">movies</span><span class="pi">:</span> <span class="s">moviesdba</span>  <span class="c1"># dbname: owner</span>
+  <span class="na">postgresql</span><span class="pi">:</span>
+    <span class="na">version</span><span class="pi">:</span> <span class="s2">"</span><span class="s">11"</span></code></pre></figure>
+
+<p>We are requesting 2 Gibibytes for the volume on our database named <em>movies</em> and a admin user named <em>moviesdba</em> and normal user name <em>moviesuser</em>, and we like to have to instance, one will be our master and the other our replica.</p>
+
+<p><em>For those not familiar with the Gibibytes (Gi) instead of Gigabytes (G) you may check the IEEE 1541-2002 by the International Electrotechnical Commission (IEC) or <a href="https://en.wikipedia.org/wiki/Gibibyte" target="_blank">this article</a> in the Wikipedia</em></p>
+
+<p>Now we could create the database executing :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>microk8s.kubectl create <span class="nt">-f</span> movies-db.yml
+postgresql.acid.zalan.do/movies-db-cluster created</code></pre></figure>
+
+<p>Now we we need to wait that our database is running, we could check until we get this output :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>microk8s.kubectl get postgresql
+NAME                TEAM     VERSION   PODS   VOLUME   CPU-REQUEST   MEMORY-REQUEST   AGE    STATUS
+movies-db-cluster   movies   11        2      2Gi                                     106s   Running</code></pre></figure>
+
+<p>And the inspect the nodes four our database with :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>microk8s.kubectl get pods <span class="nt">-l</span> <span class="nv">version</span><span class="o">=</span>movies-db-cluster <span class="nt">-L</span> spilo-role
+NAME                  READY   STATUS    RESTARTS   AGE     SPILO-ROLE
+movies-db-cluster-0   1/1     Running   0          3m49s   master
+movies-db-cluster-1   1/1     Running   0          3m6s    replica</code></pre></figure>
+
+<p><strong>Creating a simple Job</strong></p>
+
+<p>Now that we have our database we could start creating our Job but first we need to learn how Jobs work in k8s. A k8s job is a task that run
+until completion, that means if the job doesn’t end it will run forever.</p>
+
+<p>We could tell k8s to deploy an image, base on a existing image, and run it until it’s end, for this we will use a yaml file to
+describe it, in this example will be : database-load.yml</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">apiVersion</span><span class="pi">:</span> <span class="s">batch/v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Job</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">movies-load-run</span> <span class="c1"># the name of our job</span>
+  <span class="na">labels</span><span class="pi">:</span>
+    <span class="na">job-group</span><span class="pi">:</span> <span class="s">movie-load</span> <span class="c1"># logical grouping</span>
+<span class="na">spec</span><span class="pi">:</span>  
+  <span class="na">template</span><span class="pi">:</span>
+    <span class="na">metadata</span><span class="pi">:</span>
+      <span class="na">labels</span><span class="pi">:</span>
+        <span class="na">job-group</span><span class="pi">:</span> <span class="s">movie-load</span> <span class="c1"># logical grouping</span>
+    <span class="na">spec</span><span class="pi">:</span>
+      <span class="na">containers</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">database-load-container</span>
+        <span class="na">image</span><span class="pi">:</span> <span class="s">perl</span>
+        <span class="na">command</span><span class="pi">:</span> <span class="pi">[</span><span class="s2">"</span><span class="s">perl"</span> <span class="pi">,</span><span class="s2">"</span><span class="s">-wle"</span><span class="pi">,</span> <span class="s2">"</span><span class="s">print</span><span class="nv"> </span><span class="s">'hello</span><span class="nv"> </span><span class="s">from</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">Job'"</span><span class="pi">]</span>
+      <span class="na">restartPolicy</span><span class="pi">:</span> <span class="s">Never</span></code></pre></figure>
+
+<p>For running this job we could just do  :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>microk8s.kubectl create <span class="nt">-f</span> database-load.yml
+job.batch/movies-load-run created</code></pre></figure>
+
+<p>To check the job that we have create we could do :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>microk8s.kubectl get job/movies-load-run
+NAME              COMPLETIONS   DURATION   AGE
+movies-load-run   0/1           3s         3s</code></pre></figure>
+
+<p>We see that our job run during 3s, completions show 0/1 because is not running anymore. Let’s check the pods for our job</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>microk8s.kubectl get pod <span class="nt">-l</span><span class="o">=</span>job-name<span class="o">=</span>movies-load-run
+NAME                    READY   STATUS      RESTARTS   AGE
+movies-load-run-rgrz8   0/1     Completed   0          6m4s</code></pre></figure>
+
+<p>We could see that we have a pod for our job that is not running and is complete, we could check the log for our run with :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>microk8s.kubectl logs movies-load-run-rgrz8
+hello from a Job</code></pre></figure>
+
+<p><strong>Rerun our Job</strong></p>
+
+<p>Our job is complete but we may want to run it again, we could try doing :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>microk8s.kubectl create <span class="nt">-f</span> database-load.yml
+Error from server <span class="o">(</span>AlreadyExists<span class="o">)</span>: error when creating <span class="s2">"database-load.yml"</span>: jobs.batch <span class="s2">"movies-load-run"</span> already exists</code></pre></figure>
+
+<p>And this is because that job already exist, so we could not create again, however we could delete it first :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>microk8s.kubectl delete <span class="nt">-f</span> database-load.yml
+job.batch <span class="s2">"movies-load-run"</span> deleted
+<span class="nv">$ </span>microk8s.kubectl create <span class="nt">-f</span> database-load.yml
+job.batch/movies-load-run created</code></pre></figure>
+
+<p>And we could get the log as before :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>microk8s.kubectl get pod <span class="nt">-l</span><span class="o">=</span>job-name<span class="o">=</span>movies-load-run
+NAME                    READY   STATUS      RESTARTS   AGE
+movies-load-run-t8lqw   0/1     Completed   0          3m13s
+<span class="nv">$ </span>microk8s.kubectl logs movies-load-run-t8lqw
+hello from a Job</code></pre></figure>
+
+<p>But this is not great, there is a different way to do this, first we will delete our job:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>microk8s.kubectl delete <span class="nt">-f</span> database-load.yml
+job.batch <span class="s2">"movies-load-run"</span> deleted</code></pre></figure>
+
+<p>We will modify our database-load.yml to use <em>generateName</em> instead of <em>name</em> :</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">apiVersion</span><span class="pi">:</span> <span class="s">batch/v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Job</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">generateName</span><span class="pi">:</span> <span class="s">movies-load-run-</span> <span class="c1"># the name of our job</span>
+  <span class="na">labels</span><span class="pi">:</span>
+    <span class="na">job-group</span><span class="pi">:</span> <span class="s">movie-load</span> <span class="c1"># logical grouping</span>
+<span class="na">spec</span><span class="pi">:</span>  
+  <span class="na">template</span><span class="pi">:</span>
+    <span class="na">metadata</span><span class="pi">:</span>
+      <span class="na">labels</span><span class="pi">:</span>
+        <span class="na">job-group</span><span class="pi">:</span> <span class="s">movie-load</span> <span class="c1"># logical grouping</span>
+    <span class="na">spec</span><span class="pi">:</span>
+      <span class="na">containers</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">database-load-container</span>
+        <span class="na">image</span><span class="pi">:</span> <span class="s">perl</span>
+        <span class="na">command</span><span class="pi">:</span> <span class="pi">[</span><span class="s2">"</span><span class="s">perl"</span> <span class="pi">,</span><span class="s2">"</span><span class="s">-wle"</span><span class="pi">,</span> <span class="s2">"</span><span class="s">print</span><span class="nv"> </span><span class="s">'hello</span><span class="nv"> </span><span class="s">from</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">Job'"</span><span class="pi">]</span>
+      <span class="na">restartPolicy</span><span class="pi">:</span> <span class="s">Never</span></code></pre></figure>
+
+<p>And now let’s do a couple of runs :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>microk8s.kubectl create <span class="nt">-f</span> database-load.yml
+job.batch/movies-load-run-ps4nn created
+<span class="nv">$ </span>microk8s.kubectl create <span class="nt">-f</span> database-load.yml
+job.batch/movies-load-run-8hm9h created</code></pre></figure>
+
+<p>Now we could get our jobs with :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>microk8s.kubectl get <span class="nb">jobs</span> <span class="nt">--selector</span><span class="o">=</span>job-group<span class="o">=</span>movie-load
+NAME                    COMPLETIONS   DURATION   AGE
+movies-load-run-8hm9h   1/1           3s         90s
+movies-load-run-ps4nn   1/1           3s         92s</code></pre></figure>
+
+<p>And the pods that they run with :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>microk8s.kubectl get pods <span class="nt">--selector</span><span class="o">=</span>job-group<span class="o">=</span>movie-load
+NAME                          READY   STATUS      RESTARTS   AGE
+movies-load-run-8hm9h-m7rd5   0/1     Completed   0          3m22s
+movies-load-run-ps4nn-dswxg   0/1     Completed   0          3m24s</code></pre></figure>
+
+<p>We are doing this using the custom label that we have add named <em>job-group</em>, and we could use it even for get the logs :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>microk8s.kubectl logs <span class="nt">--timestamps</span> <span class="nt">--selector</span><span class="o">=</span>job-group<span class="o">=</span>movie-load
+2019-12-18T07:52:07.434994661Z hello from a Job
+2019-12-18T07:52:05.793251225Z hello from a Job</code></pre></figure>
+
+<p>Ne could delete our jobs using as well the group :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>microk8s.kubectl delete <span class="nb">jobs</span> <span class="nt">--selector</span><span class="o">=</span>job-group<span class="o">=</span>movie-load
+job.batch <span class="s2">"movies-load-run-8hm9h"</span> deleted
+job.batch <span class="s2">"movies-load-run-ps4nn"</span> delete</code></pre></figure>
+
+<p>One interesting fact is that when we run a job a pod is created and remain on hour cluster until is restarted, we
+may not want to do that for freeing cluster resources so we want may want to delete the jobs.</p>
+
+<p>There is a alpha feature of k8s, <a href="https://kubernetes.io/docs/concepts/workloads/controllers/ttlafterfinished/" target="_blank">TTL Controller for Finished Resources</a>, that allow that, but since is alpha is may change in the future so we are not going to use it, for now.</p>
+
+<p><strong>Visualizing our Jobs in Kibana</strong></p>
+
+<p>Since we want to delete our job if we do it so we could not use kubectl to view our past logs, however we could use Kibana, as it was <a href="/2019/12/02/microk8s/" target="_blank">setup</a> in our MicroK8s, for visualizing our past jobs.</p>
+
+<p>For example we could just filter using the simple expression : <em>kubernetes.labels.job-group: “movie-load”</em></p>
+
+<p><a href="/assets/img/captures/kibana_jobs_01.jpg" target="_blank"><img src="/assets/img/captures/kibana_jobs_01.jpg" alt="kibana job by group" style="width:80%; display:block; margin-left:auto; margin-right:auto;" /></a></p>
+
+<p>Or we could explore a particular run with : <em>kubernetes.labels.job-name: “movies-load-run-mrn7f”</em></p>
+
+<p><a href="/assets/img/captures/kibana_jobs_02.jpg" target="_blank"><img src="/assets/img/captures/kibana_jobs_02.jpg" alt="kibana job by name" style="width:80%; display:block; margin-left:auto; margin-right:auto;" /></a></p>
+
+<p><strong>Creating our own image</strong></p>
+
+<p>For creating our job so far we have use an existing image, however we will need to create our own in order to add the dependencies that we will need, 
+such the PostgreSQL client, but we need a tool for creating images and we are going to use <a href="https://buildah.io/" target="_blank">docker</a>.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span><span class="nb">sudo </span>apt-get <span class="nb">install</span> <span class="se">\</span>
+    apt-transport-https <span class="se">\</span>
+    ca-certificates <span class="se">\</span>
+    curl <span class="se">\</span>
+    gnupg-agent <span class="se">\</span>
+    software-properties-common
+
+<span class="nv">$ </span>curl <span class="nt">-fsSL</span> https://download.docker.com/linux/ubuntu/gpg | <span class="nb">sudo </span>apt-key add -
+
+<span class="nv">$ </span><span class="nb">sudo </span>add-apt-repository <span class="s2">"deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"</span>
+
+<span class="nv">$ </span><span class="nb">sudo </span>apt-get update
+
+<span class="nv">$ </span><span class="nb">sudo </span>apt-get <span class="nb">install </span>docker-ce docker-ce-cli containerd.io</code></pre></figure>
+
+<p><em>Note : there is a bug in linux mint 19.1 that the add-apt-repository does not work, you could add it manually as describe <a href="https://forums.linuxmint.com/viewtopic.php?t=300469" target="_blank">here</a>.</em></p>
+
+<p>We will need as well to add our user to the docker group so we do not need to sudo :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span><span class="nb">sudo </span>usermod <span class="nt">-a</span> <span class="nt">-G</span> docker <span class="nv">$USER</span></code></pre></figure>
+
+<p>After this we should restart our system.</p>
+
+<p>Them we to configure in docker the registry that we have in our MicroK8s cluster modifying the file <em>/etc/docker/daemon.json</em> as superuser :</p>
+
+<figure class="highlight"><pre><code class="language-json" data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"insecure-registries"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"localhost:32000"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span></code></pre></figure>
+
+<p>After that we will need to restart the docker engine :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span><span class="nb">sudo </span>systemctl restart docker</code></pre></figure>
+
+<p>Now we will start to create our <em>Dockerfile</em> :</p>
+
+<figure class="highlight"><pre><code class="language-dockerfile" data-lang="dockerfile"><span class="k">FROM</span><span class="s"> ubuntu:latest</span>
+
+<span class="k">ADD</span><span class="s"> job.sh /usr/src/job.sh</span>
+<span class="k">RUN </span><span class="nb">chmod</span> +x /usr/src/job.sh
+
+<span class="k">CMD</span><span class="s"> ["/usr/src/job.sh"]</span></code></pre></figure>
+
+<p>Now we will could build our container with :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>docker build <span class="nb">.</span> <span class="nt">-t</span> localhost:32000/movie-load:registry</code></pre></figure>
+
+<p>If we like to test our docker we could do :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>docker run localhost:32000/movie-load:registry       
+hello from a shell script <span class="k">in </span>a docker</code></pre></figure>
+
+<p>Now we will push our docker into the registry</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>docker push localhost:32000/movie-load</code></pre></figure>
+
+<p>We need to modify the <em>database-load.yml</em> for our job to refer to the new image:</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">apiVersion</span><span class="pi">:</span> <span class="s">batch/v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Job</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">generateName</span><span class="pi">:</span> <span class="s">movies-load-run-</span> <span class="c1"># the name of our job</span>
+  <span class="na">labels</span><span class="pi">:</span>
+    <span class="na">job-group</span><span class="pi">:</span> <span class="s">movie-load</span> <span class="c1"># logical grouping</span>
+<span class="na">spec</span><span class="pi">:</span>  
+  <span class="na">template</span><span class="pi">:</span>
+    <span class="na">metadata</span><span class="pi">:</span>
+      <span class="na">labels</span><span class="pi">:</span>
+        <span class="na">job-group</span><span class="pi">:</span> <span class="s">movie-load</span> <span class="c1"># logical grouping</span>
+    <span class="na">spec</span><span class="pi">:</span>
+      <span class="na">containers</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">database-load-container</span>
+        <span class="na">image</span><span class="pi">:</span> <span class="s">localhost:32000/movie-load:registry</span>
+        <span class="na">imagePullPolicy</span><span class="pi">:</span> <span class="s">Always</span>
+      <span class="na">restartPolicy</span><span class="pi">:</span> <span class="s">Never</span></code></pre></figure>
+
+<p>Now we could run our job as before :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>microk8s.kubectl create <span class="nt">-f</span> database-load.yml </code></pre></figure>
+
+<p>And get our logs as we did previously :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>microk8s.kubectl logs <span class="nt">--timestamps</span> <span class="nt">--selector</span><span class="o">=</span>job-group<span class="o">=</span>movie-load
+2019-12-21T10:48:37.625914657Z hello from a shell script <span class="k">in </span>a docker</code></pre></figure>
+
+<p>To make the things simple lets create an script name <em>build.sh</em> to build and push our docker :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/bin/sh -</span>
+
+docker build <span class="nb">.</span> <span class="nt">-t</span> localhost:32000/movie-load:registry
+docker push localhost:32000/movie-load</code></pre></figure>
+
+<p>Lets make it executable with :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span><span class="nb">chmod</span> +x build.sh</code></pre></figure>
+
+<p>Now for build and push our docker we could just do :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>./build.sh</code></pre></figure>
+
+<p><strong>Adding a PostgreSQL Client</strong></p>
+
+<p>Since our job will load data from a database we will add the PostgreSQL client our <em>Dockerfile</em> :</p>
+
+<figure class="highlight"><pre><code class="language-dockerfile" data-lang="dockerfile"><span class="k">FROM</span><span class="s"> ubuntu:latest</span>
+
+<span class="k">RUN </span>apt-get update
+<span class="k">RUN </span>apt-get <span class="nb">install </span>postgresql-client <span class="nt">-y</span>
+
+<span class="k">ADD</span><span class="s"> job.sh /usr/src/job.sh</span>
+<span class="k">RUN </span><span class="nb">chmod</span> +x /usr/src/job.sh
+
+<span class="k">CMD</span><span class="s"> ["/usr/src/job.sh"]</span></code></pre></figure>
+
+<p>And we will change our job to test the client :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/bin/sh -</span>
+
+<span class="nb">set</span> <span class="nt">-o</span> errexit
+
+psql <span class="nt">--version</span>
+
+<span class="nb">echo</span> <span class="s2">"job completed"</span>
+
+<span class="k">return </span>0</code></pre></figure>
+
+<p>For making the thing simpler we will create a new script named <em>run.sh</em> ::</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/bin/sh -</span>
+
+microk8s.kubectl delete <span class="nb">jobs</span> <span class="nt">--selector</span><span class="o">=</span>job-group<span class="o">=</span>movie-load
+
+microk8s.kubectl create <span class="nt">-f</span> database-load.yml</code></pre></figure>
+
+<p>Lets make it executable as well :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span><span class="nb">chmod</span> +x run.sh</code></pre></figure>
+
+<p>Now we could easily build and run our changes with :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>./build.sh
+Sending build context to Docker daemon  7.168kB
+Step 1/6 : FROM ubuntu:latest
+ <span class="nt">---</span><span class="o">&gt;</span> 549b9b86cb8d
+Step 2/6 : RUN apt-get update
+ <span class="nt">---</span><span class="o">&gt;</span> Using cache
+ <span class="nt">---</span><span class="o">&gt;</span> dcad669c2dc7
+Step 3/6 : RUN apt-get <span class="nb">install </span>postgresql-client <span class="nt">-y</span>
+ <span class="nt">---</span><span class="o">&gt;</span> Using cache
+ <span class="nt">---</span><span class="o">&gt;</span> 653870d02d92
+Step 4/6 : ADD job.sh /usr/src/job.sh
+ <span class="nt">---</span><span class="o">&gt;</span> Using cache
+ <span class="nt">---</span><span class="o">&gt;</span> f5eb8c9877f7
+Step 5/6 : RUN <span class="nb">chmod</span> +x /usr/src/job.sh
+ <span class="nt">---</span><span class="o">&gt;</span> Using cache
+ <span class="nt">---</span><span class="o">&gt;</span> 2f1342e99195
+Step 6/6 : CMD <span class="o">[</span><span class="s2">"/usr/src/job.sh"</span><span class="o">]</span>
+ <span class="nt">---</span><span class="o">&gt;</span> Using cache
+ <span class="nt">---</span><span class="o">&gt;</span> 2c93a1f139ef
+Successfully built 2c93a1f139ef
+Successfully tagged localhost:32000/movie-load:registry
+The push refers to repository <span class="o">[</span>localhost:32000/movie-load]
+a05f1dc51a49: Layer already exists 
+0cabfb9c787c: Layer already exists 
+422cf4890fa0: Layer already exists 
+918efb8f161b: Layer already exists 
+27dd43ea46a8: Layer already exists 
+9f3bfcc4a1a8: Layer already exists 
+2dc9f76fb25b: Layer already exists 
+registry: digest: sha256:a017e6185297983a583d9e4caf08524e961e75672e3a98cde959e8b3c675010a size: 1990
+
+<span class="nv">$ </span>./run.sh 
+job.batch <span class="s2">"movies-load-run-llftf"</span> deleted
+job.batch/movies-load-run-9qrfd created
+
+<span class="nv">$ </span>./microk8s.kubectl get pods <span class="nt">--selector</span><span class="o">=</span>job-group<span class="o">=</span>movie-load
+2019-12-21T11:29:41.615865967Z psql <span class="o">(</span>PostgreSQL<span class="o">)</span> 10.10 <span class="o">(</span>Ubuntu 10.10-0ubuntu0.18.04.1<span class="o">)</span>
+2019-12-21T11:29:41.616010932Z job completed</code></pre></figure>
+
+<p><strong>Connecting to our database</strong></p>
+
+<p>In order to connect to our database we require credentials so first we will inject them in our job changing our <em>database-load.yml</em> :</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">apiVersion</span><span class="pi">:</span> <span class="s">batch/v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Job</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">generateName</span><span class="pi">:</span> <span class="s">movies-load-run-</span> <span class="c1"># the name of our job</span>
+  <span class="na">labels</span><span class="pi">:</span>
+    <span class="na">job-group</span><span class="pi">:</span> <span class="s">movie-load</span> <span class="c1"># logical grouping</span>
+<span class="na">spec</span><span class="pi">:</span>  
+  <span class="na">template</span><span class="pi">:</span>
+    <span class="na">metadata</span><span class="pi">:</span>
+      <span class="na">labels</span><span class="pi">:</span>
+        <span class="na">job-group</span><span class="pi">:</span> <span class="s">movie-load</span> <span class="c1"># logical grouping</span>
+    <span class="na">spec</span><span class="pi">:</span>
+      <span class="na">containers</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">database-load-container</span>
+        <span class="na">image</span><span class="pi">:</span> <span class="s">localhost:32000/movie-load:registry</span>
+        <span class="na">imagePullPolicy</span><span class="pi">:</span> <span class="s">Always</span>
+        <span class="na">volumeMounts</span><span class="pi">:</span>
+          <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">db-credentials</span>
+            <span class="na">mountPath</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/etc/db-credentials"</span>
+            <span class="na">readOnly</span><span class="pi">:</span> <span class="no">true</span>
+      <span class="na">restartPolicy</span><span class="pi">:</span> <span class="s">Never</span>
+      <span class="na">volumes</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">db-credentials</span>
+          <span class="na">secret</span><span class="pi">:</span>
+            <span class="na">secretName</span><span class="pi">:</span> <span class="s">moviesdba.movies-db-cluster.credentials</span></code></pre></figure>
+
+<p>Now we will modify our script <em>job.sh</em> to use it :</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="c1">#!/bin/sh -</span>
+
+<span class="s">set -o errexit</span>
+
+<span class="s">cd /usr/src</span>
+
+<span class="s">export PGHOST=$MOVIES_DB_CLUSTER_SERVICE_HOST</span>
+<span class="s">export PGPORT=$MOVIES_DB_CLUSTER_SERVICE_PORT_POSTGRESQL</span>
+<span class="s">export PGDATABASE="movies"</span>
+<span class="s">export PGUSER=`cat /etc/db-credentials/username`</span>
+<span class="s">export PGPASSWORD=`cat /etc/db-credentials/password`</span>
+
+<span class="s">psql &lt; init.sql</span>                                                           
+
+<span class="s">echo "job completed"</span>
+
+<span class="s">return 0</span></code></pre></figure>
+
+<p>This script will run a file <em>init.sql</em> into our database, let’s create it :</p>
+
+<figure class="highlight"><pre><code class="language-sql" data-lang="sql"><span class="k">SELECT</span> <span class="s1">'hello from a SQL'</span> <span class="k">as</span> <span class="n">message</span><span class="p">,</span> <span class="k">current_timestamp</span> <span class="k">as</span> <span class="nb">date</span><span class="p">;</span></code></pre></figure>
+
+<p>But we need to add this file into our <em>Dockerfile</em> :</p>
+
+<figure class="highlight"><pre><code class="language-dockerfile" data-lang="dockerfile"><span class="k">FROM</span><span class="s"> ubuntu:latest</span>
+
+<span class="k">RUN </span>apt-get update
+<span class="k">RUN </span>apt-get <span class="nb">install </span>postgresql-client <span class="nt">-y</span>
+
+<span class="k">ADD</span><span class="s"> job.sh /usr/src/job.sh</span>
+<span class="k">RUN </span><span class="nb">chmod</span> +x /usr/src/job.sh
+
+<span class="k">ADD</span><span class="s"> init.sql /usr/src/init.sql</span>
+
+<span class="k">CMD</span><span class="s"> ["/usr/src/job.sh"]</span></code></pre></figure>
+
+<p>Finally we could build and run our job :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>./build.sh
+
+<span class="nv">$ </span>./run.sh  
+
+<span class="nv">$ </span>microk8s.kubectl get pods <span class="nt">--selector</span><span class="o">=</span>job-group<span class="o">=</span>movie-load
+2019-12-21T12:16:28.063280527Z      message      |             <span class="nb">date              
+</span>2019-12-21T12:16:28.063298709Z <span class="nt">------------------</span>+-------------------------------
+2019-12-21T12:16:28.063301164Z  hello from a SQL | 2019-12-21 12:16:28.062985+00
+2019-12-21T12:16:28.063302989Z <span class="o">(</span>1 row<span class="o">)</span>
+2019-12-21T12:16:28.063304716Z 
+2019-12-21T12:16:28.063652329Z job completed</code></pre></figure>
+
+<p>With this running we could add to our <em>init.sql</em> the creation of the tables for our database :</p>
+
+<figure class="highlight"><pre><code class="language-sql" data-lang="sql"><span class="k">DROP</span> <span class="k">TABLE</span> <span class="n">IF</span> <span class="k">EXISTS</span> <span class="n">movies</span><span class="p">;</span>
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">movies</span> <span class="p">(</span>
+  <span class="n">id</span> <span class="nb">serial</span> <span class="k">primary</span> <span class="k">key</span><span class="p">,</span>
+  <span class="n">title</span> <span class="nb">text</span> <span class="k">not</span> <span class="k">null</span><span class="p">,</span>
+  <span class="n">genres</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">1024</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="k">DROP</span> <span class="k">TABLE</span> <span class="n">IF</span> <span class="k">EXISTS</span> <span class="n">ratings</span><span class="p">;</span>
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">ratings</span> <span class="p">(</span>
+  <span class="n">id</span> <span class="nb">serial</span> <span class="k">primary</span> <span class="k">key</span><span class="p">,</span>
+  <span class="n">user_id</span> <span class="nb">int</span> <span class="k">not</span> <span class="k">null</span><span class="p">,</span>
+  <span class="n">movie_id</span> <span class="nb">int</span> <span class="k">not</span> <span class="k">null</span><span class="p">,</span>
+  <span class="n">rating</span> <span class="nb">float</span> <span class="k">not</span> <span class="k">null</span><span class="p">,</span>
+  <span class="n">created</span> <span class="nb">bigint</span> <span class="k">not</span> <span class="k">null</span>
+<span class="p">);</span>
+
+<span class="k">vacuum</span> <span class="k">full</span><span class="p">;</span></code></pre></figure>
+
+<p>We will create some tables from our jobs using this SQL statements, let’s build and run our job :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>./build.sh
+
+<span class="nv">$ </span>./run.sh  
+
+<span class="nv">$ </span>microk8s.kubectl get pods <span class="nt">--selector</span><span class="o">=</span>job-group<span class="o">=</span>movie-load
+NOTICE:  table <span class="s2">"movies"</span> does not exist, skipping
+CREATE TABLE
+NOTICE:  table <span class="s2">"ratings"</span> does not exist, skipping
+CREATE TABLE
+VACUUM
+job <span class="nb">complete</span></code></pre></figure>
+
+<p>We got some messages because our tables didn’t exist but if we run our job again :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>./run.sh  
+
+<span class="nv">$ </span>microk8s.kubectl get pods <span class="nt">--selector</span><span class="o">=</span>job-group<span class="o">=</span>movie-load
+DROP TABLE
+CREATE TABLE
+DROP TABLE
+CREATE TABLE
+VACUUM
+job completed</code></pre></figure>
+
+<p><strong>Download a file with movies data</strong></p>
+
+<p>Now that we are able to create our tables we will download movies data from <a href="https://grouplens.org/datasets/movielens/" target="_blank">movielens</a>, but
+first let’s modify our <em>database-load.yml</em> to have a volume to temporary store this data using <a href="https://kubernetes.io/docs/concepts/storage/volumes/#emptydir" target="_blank">emptyDir</a> :</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">apiVersion</span><span class="pi">:</span> <span class="s">batch/v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Job</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">generateName</span><span class="pi">:</span> <span class="s">movies-load-run-</span> <span class="c1"># the name of our job</span>
+  <span class="na">labels</span><span class="pi">:</span>
+    <span class="na">job-group</span><span class="pi">:</span> <span class="s">movie-load</span> <span class="c1"># logical grouping</span>
+<span class="na">spec</span><span class="pi">:</span>  
+  <span class="na">template</span><span class="pi">:</span>
+    <span class="na">metadata</span><span class="pi">:</span>
+      <span class="na">labels</span><span class="pi">:</span>
+        <span class="na">job-group</span><span class="pi">:</span> <span class="s">movie-load</span> <span class="c1"># logical grouping</span>
+    <span class="na">spec</span><span class="pi">:</span>
+      <span class="na">containers</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">database-load-container</span>
+        <span class="na">image</span><span class="pi">:</span> <span class="s">localhost:32000/movie-load:registry</span>
+        <span class="na">imagePullPolicy</span><span class="pi">:</span> <span class="s">Always</span>
+        <span class="na">volumeMounts</span><span class="pi">:</span>
+          <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">db-credentials</span>
+            <span class="na">mountPath</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/etc/db-credentials"</span>
+            <span class="na">readOnly</span><span class="pi">:</span> <span class="no">true</span>
+          <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">download</span>
+            <span class="na">mountPath</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/tmp/download"</span>
+            <span class="na">readOnly</span><span class="pi">:</span> <span class="no">false</span>            
+      <span class="na">restartPolicy</span><span class="pi">:</span> <span class="s">Never</span>
+      <span class="na">volumes</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">db-credentials</span>
+          <span class="na">secret</span><span class="pi">:</span>
+            <span class="na">secretName</span><span class="pi">:</span> <span class="s">moviesdba.movies-db-cluster.credentials</span>
+        <span class="pi">-</span> <span class="na">name </span><span class="pi">:</span> <span class="s">download</span>
+          <span class="na">emptyDir</span><span class="pi">:</span> <span class="pi">{}</span></code></pre></figure>
+
+<p>An empty dir is able to store information for our pod at long at is runs, and disappear when our pod/job ends,
+but will we need more tools in our container so we will first modify our <em>Dockerfile</em> adding wget and unzip:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">FROM ubuntu:latest
+
+RUN apt-get update
+RUN apt-get <span class="nb">install </span>postgresql-client <span class="nt">-y</span>
+RUN apt-get <span class="nb">install </span>wget <span class="nt">-y</span>
+RUN apt-get <span class="nb">install </span>unzip
+
+ADD job.sh /usr/src/job.sh
+RUN <span class="nb">chmod</span> +x /usr/src/job.sh
+
+ADD init.sql /usr/src/init.sql
+
+CMD <span class="o">[</span><span class="s2">"/usr/src/job.sh"</span><span class="o">]</span></code></pre></figure>
+
+<p>Now we will modify our job to download our movies file updating our <em>job.sh</em> :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/bin/sh -</span>
+
+<span class="nb">set</span> <span class="nt">-o</span> errexit
+
+<span class="nb">echo</span> <span class="s2">"downloading file.."</span>
+<span class="nb">cd</span> /tmp/download
+wget <span class="nt">-q</span> <span class="nt">-c</span> http://files.grouplens.org/datasets/movielens/ml-latest.zip 
+<span class="nb">echo</span> <span class="s2">"file downloaded"</span>
+
+<span class="nb">echo</span> <span class="s2">"unzip file.."</span>
+unzip <span class="nt">-o</span> ml-latest.zip
+<span class="nb">echo</span> <span class="s2">"file unziped"</span>
+
+<span class="nb">echo</span> <span class="s2">"running init script.."</span>
+<span class="nb">export </span><span class="nv">PGHOST</span><span class="o">=</span><span class="nv">$MOVIES_DB_CLUSTER_SERVICE_HOST</span>
+<span class="nb">export </span><span class="nv">PGPORT</span><span class="o">=</span><span class="nv">$MOVIES_DB_CLUSTER_SERVICE_PORT_POSTGRESQL</span>
+<span class="nb">export </span><span class="nv">PGDATABASE</span><span class="o">=</span><span class="s2">"movies"</span>
+<span class="nb">export </span><span class="nv">PGUSER</span><span class="o">=</span><span class="sb">`</span><span class="nb">cat</span> /etc/db-credentials/username<span class="sb">`</span>
+<span class="nb">export </span><span class="nv">PGPASSWORD</span><span class="o">=</span><span class="sb">`</span><span class="nb">cat</span> /etc/db-credentials/password<span class="sb">`</span>
+
+psql &lt; /usr/src/init.sql                                                           
+<span class="nb">echo</span> <span class="s2">"init script completed"</span>
+
+<span class="nb">echo</span> <span class="s2">"job completed"</span>
+
+<span class="k">return </span>0</code></pre></figure>
+
+<p>Now we could run our job but we will follow the log since will take longer :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>./build.sh
+
+<span class="nv">$ </span>./run.sh  
+
+<span class="nv">$ </span>microk8s.kubectl logs <span class="nt">--selector</span><span class="o">=</span>job-group<span class="o">=</span>movie-load <span class="nt">--timestamps</span> <span class="nt">-f</span>
+2019-12-21T17:10:02.282464543Z downloading file..
+2019-12-21T17:11:39.597312604Z Archive:  ml-latest.zip
+2019-12-21T17:11:39.597515143Z    creating: ml-latest/
+2019-12-21T17:11:39.632152585Z   inflating: ml-latest/links.csv     
+2019-12-21T17:11:39.842122169Z   inflating: ml-latest/tags.csv      
+2019-12-21T17:11:39.842264413Z   inflating: ml-latest/genome-tags.csv  
+2019-12-21T17:11:43.479114191Z   inflating: ml-latest/ratings.csv   
+2019-12-21T17:11:43.479184778Z   inflating: ml-latest/README.txt    
+2019-12-21T17:11:45.081158518Z   inflating: ml-latest/genome-scores.csv  
+2019-12-21T17:11:45.096730053Z   inflating: ml-latest/movies.csv    
+2019-12-21T17:11:45.096873562Z file downloaded
+2019-12-21T17:11:45.096880746Z running init script..
+2019-12-21T17:11:45.139973302Z DROP TABLE
+2019-12-21T17:11:45.156706409Z CREATE TABLE
+2019-12-21T17:11:45.164718047Z DROP TABLE
+2019-12-21T17:11:45.177663221Z CREATE TABLE
+2019-12-21T17:11:46.481417622Z VACUUM
+2019-12-21T17:11:46.484035911Z init script completed
+2019-12-21T17:11:46.484089699Z job completed</code></pre></figure>
+
+<p><strong>Upload csv data into our database</strong></p>
+
+<p>Now that we have the data download we will create an script that insert the csv data into our database, we will name <em>load.sql</em> :</p>
+
+<figure class="highlight"><pre><code class="language-sql" data-lang="sql"><span class="c1">-- movies.csv: movieId,title,genres</span>
+<span class="err">\</span><span class="k">copy</span> <span class="n">movies</span> <span class="p">(</span><span class="n">id</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">genres</span><span class="p">)</span> <span class="k">FROM</span> <span class="s1">'ml-latest/movies.csv'</span> <span class="k">WITH</span> <span class="p">(</span><span class="k">DELIMITER</span> <span class="s1">','</span><span class="p">,</span> <span class="n">FORMAT</span> <span class="n">CSV</span><span class="p">,</span> <span class="n">HEADER</span> <span class="k">true</span><span class="p">,</span> <span class="k">ESCAPE</span> <span class="s1">'"'</span><span class="p">,</span> <span class="k">ENCODING</span> <span class="s1">'UTF-8'</span><span class="p">);</span>
+
+<span class="c1">-- ratings.csv: userId,movieId,rating,timestamp</span>
+<span class="err">\</span><span class="k">copy</span> <span class="n">ratings</span> <span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">movie_id</span><span class="p">,</span> <span class="n">rating</span><span class="p">,</span> <span class="n">created</span><span class="p">)</span> <span class="k">FROM</span> <span class="s1">'ml-latest/ratings.csv'</span> <span class="k">WITH</span> <span class="p">(</span><span class="k">DELIMITER</span> <span class="s1">','</span><span class="p">,</span> <span class="n">FORMAT</span> <span class="n">CSV</span><span class="p">,</span> <span class="n">HEADER</span> <span class="k">true</span><span class="p">,</span> <span class="k">ESCAPE</span> <span class="s1">'"'</span><span class="p">,</span> <span class="k">ENCODING</span> <span class="s1">'UTF-8'</span><span class="p">);</span></code></pre></figure>
+
+<p>We need to add this new SQL script into our <em>Dockerfile</em> :</p>
+
+<figure class="highlight"><pre><code class="language-dockerfile" data-lang="dockerfile"><span class="k">FROM</span><span class="s"> ubuntu:latest</span>
+
+<span class="k">RUN </span>apt-get update
+<span class="k">RUN </span>apt-get <span class="nb">install </span>postgresql-client <span class="nt">-y</span>
+<span class="k">RUN </span>apt-get <span class="nb">install </span>wget <span class="nt">-y</span>
+<span class="k">RUN </span>apt-get <span class="nb">install </span>unzip
+
+<span class="k">ADD</span><span class="s"> job.sh /usr/src/job.sh</span>
+<span class="k">RUN </span><span class="nb">chmod</span> +x /usr/src/job.sh
+
+<span class="k">ADD</span><span class="s"> init.sql /usr/src/init.sql</span>
+<span class="k">ADD</span><span class="s"> load.sql /usr/src/load.sql</span>
+
+<span class="k">CMD</span><span class="s"> ["/usr/src/job.sh"]</span></code></pre></figure>
+
+<p>After this we need to modify our <em>job.sh</em> to run our new sql :</p>
+
+<figure class="highlight"><pre><code class="language-sql" data-lang="sql"><span class="o">#!/</span><span class="n">bin</span><span class="o">/</span><span class="n">sh</span> <span class="o">-</span>
+
+<span class="k">set</span> <span class="o">-</span><span class="n">o</span> <span class="n">errexit</span>
+
+<span class="n">echo</span> <span class="nv">"downloading file.."</span>
+<span class="n">cd</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">download</span>
+<span class="n">wget</span> <span class="o">-</span><span class="n">q</span> <span class="o">-</span><span class="k">c</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">files</span><span class="p">.</span><span class="n">grouplens</span><span class="p">.</span><span class="n">org</span><span class="o">/</span><span class="n">datasets</span><span class="o">/</span><span class="n">movielens</span><span class="o">/</span><span class="n">ml</span><span class="o">-</span><span class="n">latest</span><span class="p">.</span><span class="n">zip</span> 
+<span class="n">echo</span> <span class="nv">"file downloaded"</span>
+
+<span class="n">echo</span> <span class="nv">"unzip file.."</span>
+<span class="n">unzip</span> <span class="o">-</span><span class="n">o</span> <span class="n">ml</span><span class="o">-</span><span class="n">latest</span><span class="p">.</span><span class="n">zip</span>
+<span class="n">echo</span> <span class="nv">"file unziped"</span>
+
+<span class="n">export</span> <span class="n">PGHOST</span><span class="o">=</span><span class="err">$</span><span class="n">MOVIES_DB_CLUSTER_SERVICE_HOST</span>
+<span class="n">export</span> <span class="n">PGPORT</span><span class="o">=</span><span class="err">$</span><span class="n">MOVIES_DB_CLUSTER_SERVICE_PORT_POSTGRESQL</span>
+<span class="n">export</span> <span class="n">PGDATABASE</span><span class="o">=</span><span class="nv">"movies"</span>
+<span class="n">export</span> <span class="n">PGUSER</span><span class="o">=</span><span class="nv">`cat /etc/db-credentials/username`</span>
+<span class="n">export</span> <span class="n">PGPASSWORD</span><span class="o">=</span><span class="nv">`cat /etc/db-credentials/password`</span>
+
+<span class="n">echo</span> <span class="nv">"running init script.."</span>
+<span class="n">psql</span> <span class="o">&lt;</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">init</span><span class="p">.</span><span class="k">sql</span>                                                           
+<span class="n">echo</span> <span class="nv">"init script completed"</span>
+
+<span class="n">echo</span> <span class="nv">"running load script.."</span>
+<span class="n">psql</span> <span class="o">&lt;</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="k">load</span><span class="p">.</span><span class="k">sql</span>
+<span class="n">echo</span> <span class="nv">"load script completed"</span>
+
+<span class="n">echo</span> <span class="nv">"job completed"</span>
+
+<span class="k">return</span> <span class="mi">0</span></code></pre></figure>
+
+<p>Now we could run our job to load our database:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>./build.sh
+
+<span class="nv">$ </span>./run.sh  
+
+<span class="nv">$ </span>microk8s.kubectl logs <span class="nt">--selector</span><span class="o">=</span>job-group<span class="o">=</span>movie-load <span class="nt">--timestamps</span> <span class="nt">-f</span>
+2019-12-21T17:28:33.973743423Z downloading file..
+2019-12-21T17:30:12.031149113Z file downloaded
+2019-12-21T17:30:12.031203659Z unzip file..
+2019-12-21T17:30:12.034132763Z Archive:  ml-latest.zip
+2019-12-21T17:30:12.03426501Z    creating: ml-latest/
+2019-12-21T17:30:12.043329834Z   inflating: ml-latest/links.csv     
+2019-12-21T17:30:12.241631499Z   inflating: ml-latest/tags.csv      
+2019-12-21T17:30:12.241778497Z   inflating: ml-latest/genome-tags.csv  
+2019-12-21T17:30:15.845676942Z   inflating: ml-latest/ratings.csv   
+2019-12-21T17:30:15.845749788Z   inflating: ml-latest/README.txt    
+2019-12-21T17:30:17.440092559Z   inflating: ml-latest/genome-scores.csv  
+2019-12-21T17:30:17.455591045Z   inflating: ml-latest/movies.csv    
+2019-12-21T17:30:17.455835049Z file unziped
+2019-12-21T17:30:17.456391292Z running init script..
+2019-12-21T17:30:17.482454366Z DROP TABLE
+2019-12-21T17:30:17.492437203Z CREATE TABLE
+2019-12-21T17:30:17.495135958Z DROP TABLE
+2019-12-21T17:30:17.502169062Z CREATE TABLE
+2019-12-21T17:30:18.880631358Z VACUUM
+2019-12-21T17:30:18.883385958Z init script completed
+2019-12-21T17:30:18.883437157Z running load script..
+2019-12-21T17:30:19.025907717Z COPY 58098
+2019-12-21T17:32:29.037196091Z COPY 27753444
+2019-12-21T17:32:29.037863671Z load script completed
+2019-12-21T17:32:29.037873093Z job completed</code></pre></figure>
+
+<p>This job as load 58k movies and 2.7M ratings into our database in about 4 minutes, not bat at all.</p>
+
+<p><strong>Exploring the loaded data</strong></p>
+
+<p>Lest explore the data using PSQL, we will login in our server with our moviesdba user so we need to get it password, we could get it with:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>microk8s.kubectl get secret moviesdba.movies-db-cluster.credentials <span class="nt">-o</span> <span class="s1">'jsonpath={.data.password}'</span> | <span class="nb">base64</span> <span class="nt">-d</span> 
+9oYUFcamSKwjB5Yrg099glLHdqg8C1IkScRfd5TeHTisiuj23FQrx3YEW6fB3ctJ</code></pre></figure>
+
+<p>We will forward the postgres port 5432 on our master to our localhost port 6432, this will run until we do <em>ctrl+c</em> :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>microk8s.kubectl port-forward movies-db-cluster-0 6432:5432                        
+Forwarding from 127.0.0.1:6432 -&gt; 5432
+Forwarding from <span class="o">[</span>::1]:6432 -&gt; 5432</code></pre></figure>
+
+<p>Finally we can connect to our database with with the provide user and password using psql in another
+shell :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>psql <span class="nt">-h</span> localhost <span class="nt">-p</span> 6432 <span class="nt">-U</span> moviesdba movies
+Password <span class="k">for </span>user moviesdba: 
+psql <span class="o">(</span>11.6 <span class="o">(</span>Ubuntu 11.6-1.pgdg18.04+1<span class="o">)</span>, server 11.5 <span class="o">(</span>Ubuntu 11.5-1.pgdg18.04+1<span class="o">))</span>
+SSL connection <span class="o">(</span>protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, bits: 256, compression: off<span class="o">)</span>
+Type <span class="s2">"help"</span> <span class="k">for </span>help.
+
+<span class="nv">movies</span><span class="o">=</span><span class="c"># SELECT * FROM movies LIMIT 10;</span>
+ <span class="nb">id</span> |               title                |                   genres                    
+<span class="nt">----</span>+------------------------------------+---------------------------------------------
+  1 | Toy Story <span class="o">(</span>1995<span class="o">)</span>                   | Adventure|Animation|Children|Comedy|Fantasy
+  2 | Jumanji <span class="o">(</span>1995<span class="o">)</span>                     | Adventure|Children|Fantasy
+  3 | Grumpier Old Men <span class="o">(</span>1995<span class="o">)</span>            | Comedy|Romance
+  4 | Waiting to Exhale <span class="o">(</span>1995<span class="o">)</span>           | Comedy|Drama|Romance
+  5 | Father of the Bride Part II <span class="o">(</span>1995<span class="o">)</span> | Comedy
+  6 | Heat <span class="o">(</span>1995<span class="o">)</span>                        | Action|Crime|Thriller
+  7 | Sabrina <span class="o">(</span>1995<span class="o">)</span>                     | Comedy|Romance
+  8 | Tom and Huck <span class="o">(</span>1995<span class="o">)</span>                | Adventure|Children
+  9 | Sudden Death <span class="o">(</span>1995<span class="o">)</span>                | Action
+ 10 | GoldenEye <span class="o">(</span>1995<span class="o">)</span>                   | Action|Adventure|Thriller
+<span class="o">(</span>10 rows<span class="o">)</span>
+
+<span class="nv">movies</span><span class="o">=</span><span class="c"># SELECT * FROM ratings LIMIT 10;</span>
+ <span class="nb">id</span> | user_id | movie_id | rating |  created   
+<span class="nt">----</span>+---------+----------+--------+------------
+  1 |       1 |      307 |    3.5 | 1256677221
+  2 |       1 |      481 |    3.5 | 1256677456
+  3 |       1 |     1091 |    1.5 | 1256677471
+  4 |       1 |     1257 |    4.5 | 1256677460
+  5 |       1 |     1449 |    4.5 | 1256677264
+  6 |       1 |     1590 |    2.5 | 1256677236
+  7 |       1 |     1591 |    1.5 | 1256677475
+  8 |       1 |     2134 |    4.5 | 1256677464
+  9 |       1 |     2478 |      4 | 1256677239
+ 10 |       1 |     2840 |      3 | 1256677500
+<span class="o">(</span>10 rows<span class="o">)</span>
+
+<span class="nv">movies</span><span class="o">=</span><span class="c"># \q</span></code></pre></figure>
+
+<p><strong>Conclusions</strong></p>
+
+<p>We this we have complete this article, we have learn tons of new concepts, tools and information to create our own jobs that could run in our cluster and
+now we have a database populated with data that we will be used in further examples.</p>
+
+<p>If you like to download the scripts for this example you could grab it from <a href="https://github.com/LearningByExample/jobs-k8s" target="_blank">this github repository</a>.</p>
+
+<p><strong>Resources</strong></p>
+
+<ul>
+  <li><a href="https://grouplens.org/datasets/movielens/" target="_blank">https://grouplens.org/datasets/movielens/</a></li>
+  <li><a href="https://doi.org/10.1145/2827872" target="_blank">F. Maxwell Harper and Joseph A. Konstan. 2015. The MovieLens Datasets: History and Context. ACM Transactions on Interactive Intelligent Systems (TiiS) 5, 4: 19:1–19:19.</a></li>
+  <li><a href="https://github.com/bozaro/tech-db-lectures/tree/master/scripts/movielens" target="_blank">https://github.com/bozaro/tech-db-lectures/tree/master/scripts/movielens</a></li>
+  <li><a href="https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/" target="_blank">https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/</a></li>
+  <li><a href="https://github.com/containers/buildah/blob/master/install.md" target="_blank">https://github.com/containers/buildah/blob/master/install.md</a></li>
+  <li><a href="https://docs.docker.com/install/linux/docker-ce/ubuntu/" target="_blank">https://docs.docker.com/install/linux/docker-ce/ubuntu/</a></li>
+  <li><a href="https://forums.linuxmint.com/viewtopic.php?t=300469" target="_blank">https://forums.linuxmint.com/viewtopic.php?t=300469</a></li>
+  <li><a href="https://microk8s.io/docs/registry-built-in" target="_blank">https://microk8s.io/docs/registry-built-in</a></li>
+  <li><a href="https://kubernetes.io/docs/concepts/configuration/secret/" target="_blank">https://kubernetes.io/docs/concepts/configuration/secret/</a></li>
+  <li><a href="https://kubernetes.io/docs/concepts/storage/volumes/" target="_blank">https://kubernetes.io/docs/concepts/storage/volumes/</a></li>
+</ul>
+
+    
+
+    <div id="disqus_thread"></div>
+    <script>
+
+    /**
+    *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+    *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+
+    var disqus_config = function () {
+    this.page.url = "https://juan-medina.com/2019/12/16/jobs-k8s/";
+    this.page.identifier = "/2019/12/16/jobs-k8s/"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    this.page.title = "Creating Jobs in Kubernetes";
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = '//juan-medina-com.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+    
+
+    </div>
+  </section>
+
+  <section class="profile">
+    <div class="profile__card">
+      <div class="profile__img">
+        <figure class="absolute-bg" style="background-image: url('/assets/img/pp.jpg');"></figure>
+      </div>
+      <div class="profile__container">
+        <p><b>About Juan Medina</b><br/> I'm just a normal geek that code all kind of stuff, from complex corporate applications to games.<br/> <br/> Games, music, movies and traveling are my escape pods.</p>
+        
+          <ul class="profile__social">
+            
+              <li><a class="fa fa-lg fa-envelope-o" href="mailto:mail@juan-medina.com"></a></li>
+            
+            
+              <li><a class="fa fa-lg fa-address-card" href="https://juan-medina.com/cv" target="_blank"></a></li>
+            
+              <li><a class="fa fa-lg fa-github" href="https://github.com/juan-medina" target="_blank"></a></li>
+            
+              <li><a class="fa fa-lg fa-twitter" href="https://twitter.com/JuanMedinaCode" target="_blank"></a></li>
+            
+              <li><a class="fa fa-lg fa-stack-overflow" href="http://stackoverflow.com/users/7910403/juan-medina" target="_blank"></a></li>
+            
+          </ul>
+        
+      </div>
+    </div>
+  </section>
+
+</article>
+
+
+  <section class="next">
+    <a class="next__link" href="/2019/12/12/postgresql-k8s/" style="background-image: url('/assets/img/postgresql_k8s.png');">
+      <div class="next__container">
+        <span>Read Next</span>
+        <h2>PostgreSQL in Kubernetes</h2>
+      </div>
+    </a>
+  </section>
+
+
+    </main>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/rellax/1.0.0/rellax.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+<script type="text/javascript" src="/assets/js/app.js"></script>
+
+
+  </body>
+
+</html>
