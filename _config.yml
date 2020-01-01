@@ -38,9 +38,8 @@ sass:
 
 # plugins
 plugins: 
+  - jekyll-youtube
   - jekyll-feed
   - jekyll-paginate
   - jekyll-sitemap
   - octopress-autoprefixer
-  - jekyll-youtube
-
