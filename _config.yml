@@ -1,3 +1,11 @@
+# plugins
+plugins: 
+  - jekyll-youtube
+  - jekyll-feed
+  - jekyll-paginate
+  - jekyll-sitemap
+  - octopress-autoprefixer
+
 # Site settings
 encoding: utf-8
 email:  "mail@juan-medina.com"
@@ -35,11 +43,3 @@ permalink: /:year/:month/:day/:title/
 # Sass
 sass:
   style: compressed
-
-# plugins
-plugins: 
-  - jekyll-youtube
-  - jekyll-feed
-  - jekyll-paginate
-  - jekyll-sitemap
-  - octopress-autoprefixer
