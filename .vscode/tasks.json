@@ -6,8 +6,12 @@
         {
             "label": "Jekyll Serve",
             "type": "shell",
-            "command": "bundle exec jekyll serve",
-            "problemMatcher": []
+            "command": "bundle exec jekyll serve --watch --drafts",
+            "problemMatcher": [],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            }
         },
         {
             "label": "Jekyll Build",
