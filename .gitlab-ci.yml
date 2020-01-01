@@ -1,16 +1,9 @@
-image: ruby:2.3
-
-variables:
-  JEKYLL_ENV: production
-  LC_ALL: C.UTF-8
-
-before_script:
-  - bundle install
+image: alpine:latest
 
 pages:
   stage: deploy
   script:
-  - bundle exec jekyll build -d _site
+  - echo 'just publish the folder'
   artifacts:
     paths:
     - _site
