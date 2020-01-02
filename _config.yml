@@ -36,7 +36,7 @@ social:
 
 # Build settings
 include: ["_categories"]
-exclude: ["_screenshots", "Gemfile", "Gemfile.lock", "LICENSE.txt", "README.md", ".gitlab-ci.yml", "docs", "CNAME"]
+exclude: ["_screenshots", "Gemfile", "Gemfile.lock", "LICENSE.txt", "README.md", ".gitlab-ci.yml", "docs", "CNAME", "build.sh", "serve.sh"]
 markdown: kramdown
 permalink: /:year/:month/:day/:title/
 
