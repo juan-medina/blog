@@ -356,7 +356,7 @@ public class MoviesController {
 
 Our *MovieController* will answer HTTP GET request on /movies/{genre} and return the movies using the *MoviesService* that will use our *MoviesRepository*, however we need to stablish the connection to our database but first let thinks how this will run on our k8s cluster.
 
-When the service is running we need to connect to our database we could use the environment variables provide by kubernetes to connect to find the IP address and port, as we did in the [last example]({{ site.baseurl }}{% link _posts/2019-12-16-jobs-k8s.md %}){:target="_blank"}, this are _MOVIES_DB_CLUSTER_SERVICE_HOST}_ and _MOVIES_DB_CLUSTER_SERVICE_PORT_POSTGRESQL_, but we need as well the credentials that we could inject in our kubernetes deployment, as we did before, in a directory containing a username and password. Finally we need to tell spring witch database driver to use, and the JDBC connection string, for this let's add to our src/main/resources/application.yml some entries : 
+When the service is running we need to connect to our database we could use the environment variables provide by kubernetes to connect to find the IP address and port, as we did in the [last example]({{ site.baseurl }}{% link _posts/2019-12-16-jobs-k8s.md %}){:target="_blank"}, this are _MOVIES_DB_CLUSTER_SERVICE_HOST_ and _MOVIES_DB_CLUSTER_SERVICE_PORT_POSTGRESQL_, but we need as well the credentials that we could inject in our kubernetes deployment, as we did before, in a directory containing a username and password. Finally we need to tell spring witch database driver to use, and the JDBC connection string, for this let's add to our src/main/resources/application.yml some entries : 
 
 {% highlight yaml %}
 movies-datasource:
@@ -547,9 +547,340 @@ Transfer-Encoding: chunked
 
 This will output thousands of records, these where just some of them.
 
+But since we have as well include *Spring Actuator* in our dependencies we have two more URLs in our service :
+
+{% highlight bash %}
+$ http :8080/actuator/info
+HTTP/1.1 200 
+Connection: keep-alive
+Content-Type: application/vnd.spring-boot.actuator.v3+json
+Date: Thu, 02 Jan 2020 16:34:58 GMT
+Keep-Alive: timeout=60
+Transfer-Encoding: chunked
+
+{}
+
+$ http :8080/actuator/health
+HTTP/1.1 200 
+Connection: keep-alive
+Content-Type: application/vnd.spring-boot.actuator.v3+json
+Date: Thu, 02 Jan 2020 16:35:09 GMT
+Keep-Alive: timeout=60
+Transfer-Encoding: chunked
+
+{
+    "status": "UP"
+}
+{% endhighlight %}
+
 **Building our Docker Image**
 
-Now that we have test that our application runs correctly let's create a docker image and push it to our local repository that have in our cluster.
+Now that we have test that our application runs correctly let's create a docker image and push it to our local repository that we have in our cluster, first we will create a Dockerfile :
+
+{% highlight docker %}
+FROM openjdk:8-jdk
+
+COPY target/*.jar /usr/app/app.jar
+WORKDIR /usr/app
+
+CMD ["java", "-jar", "app.jar"]
+{% endhighlight %}
+
+Now we will create a small script that build our docker and publish it to the registry, we will name it *build.sh* :
+
+{% highlight bash %}
+#!/bin/sh -
+
+set -o errexit
+
+echo "doing maven build"
+./mvnw clean package
+echo "maven build done"
+
+echo "building docker"
+docker build . -t localhost:32000/movies-base-service:0.0.1
+echo "docker builded"
+
+echo "publishing docker"
+docker push localhost:32000/movies-base-service
+echo "docker published"
+{% endhighlight %}
+
+Running this script we will build our docker image and push to our local docker registry, but for deploying the image into our cluster we will create a deployment descriptor name *deployment.yml* :
+
+{% highlight yaml %}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: movies-base-service
+  name: movies-base-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: movies-base-service
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: movies-base-service
+    spec:
+      containers:
+        - image: localhost:32000/movies-base-service:0.0.1
+          imagePullPolicy: Always
+          name: movies-base-service
+          resources: {}
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+          livenessProbe:
+            httpGet:
+              path: /actuator/info
+              port: 8080
+          volumeMounts:
+            - name: db-credentials
+              mountPath: "/etc/movies-db"
+              readOnly: true
+            - name: tmp
+              mountPath: "/tmp"
+              readOnly: false
+      volumes:
+        - name: db-credentials
+          secret:
+            secretName: moviesuser.movies-db-cluster.credentials
+        - name: tmp
+          emptyDir: {}
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: movies-base-service
+  name: movies-base-service
+spec:
+  ports:
+    - name: 8080-8080
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: movies-base-service
+  type: ClusterIP
+status:
+  loadBalancer: {}
+{% endhighlight %}
+
+In this descriptor we are first deploying our service, we declare our liveness and readiness probes to use our actuator endpoint, we inject our credentials and we mount a temporary directory for our service to use. Them we create a k8s service with a load balancer to been able to call our service and balance between the pods that is available.
+
+Finally we will create another script to deploy our service deploy.sh :
+
+{% highlight bash %}
+#!/bin/sh -
+
+set -o errexit
+
+KUBECMD="kubectl"
+if [ -x "$(command -v microk8s.kubectl)" ]; then
+  KUBECMD="microk8s.kubectl"
+fi
+
+echo "deleting previous versions"
+$KUBECMD delete all --selector=app=movies-base-service
+echo "previous version deleted"
+
+echo "create deployment"
+$KUBECMD create -f deployment.yml
+echo "deployment created"
+{% endhighlight %}
+
+This script is a bit different we have create in other tu use the standard kubectl or microk8.kubectl if its available, it will delete the deployment and them deploy our service. 
+
+We can now build and deploy our service with : 
+
+{% highlight bash %}
+$ ./build.sh
+$ ./deploy.sh
+{% endhighlight %}
+
+Now we could check what we have in our cluster for our service with : 
+
+{% highlight bash %}
+$ microk8s.kubectl get all --selector=app=movies-base-service
+NAME                                       READY   STATUS    RESTARTS   AGE
+pod/movies-base-service-84cf9b8746-pj4xn   1/1     Running   0          4m40s
+
+NAME                          TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+service/movies-base-service   ClusterIP   10.152.183.244   <none>        8080/TCP   4m40s
+
+NAME                                  READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/movies-base-service   1/1     1            1           4m40s
+
+NAME                                             DESIRED   CURRENT   READY   AGE
+replicaset.apps/movies-base-service-84cf9b8746   1         1         1       4m40s
+{% endhighlight %}
+
+**Creating a load test**
+
+We have our service but in other to understand how it perform we will create an load test, we will start download [Apache JMeter](https://jmeter.apache.org/){:target="_blank"} visiting the download page : [https://jmeter.apache.org/download_jmeter.cgi](https://jmeter.apache.org/download_jmeter.cgi){:target="_blank"}
+
+Now let's unzip it and set in path that we could use : 
+
+{% highlight bash %}
+$ sudo mkdir /opt/jmeter
+$ cd /opt/jmeter
+$ sudo unzip ~/Downloads/apache-jmeter*.zip
+$ sudo ln -s apache-jmeter-5.2.1 default
+$ sudo ln -s /opt/jmeter/default/bin/jmeter /usr/local/bin/jmeter
+$ sudo chmod -R ugo+rw /opt/jmeter
+{% endhighlight %}
+
+With this now we have available jmeter to be use, however if you are using are high dpi screen, such a 4k or a retina display the JMeter UI may be to small to read but you could edit the file */opt/jmeter/default/bin/user.properties* and add this:
+
+{% highlight properties %}
+jmeter.hidpi.mode=true
+jmeter.hidpi.scale.factor=2.0
+jmeter.toolbar.icons.size=48x48
+jmeter.tree.icons.size=32x32
+jsyntaxtextarea.font.family=Hack
+jsyntaxtextarea.font.size=14
+{% endhighlight %}
+
+Now we could execute jmeter, it will open we a empty test plan, lest just on *Name* : *k8s service load test*
+
+[![JMeter test plan](/assets/img/captures/base_movies_services_03.jpg){:style="width:80%; display:block; margin-left:auto; margin-right:auto;"}](/assets/img/captures/base_movies_services_03.jpg){:target="_blank"}
+
+We will add a new thread group, right click on the tree panel on *k8s service load test* and select : *Add > Thread (Users) -> Thread Group*. Them we will set *Number of Threads (Users)* = *${__P(NUM_USERS)}*, *Ramp-up period (seconds)* = *${__P(RAMP_UP)}*, *Loop Count* = *Infinite*, *Specify Thread lifetime* = *Checked*, *Duration (Seconds)* = *${__P(DURATION)}*.
+
+[![JMeter thread group](/assets/img/captures/base_movies_services_04.jpg){:style="width:80%; display:block; margin-left:auto; margin-right:auto;"}](/assets/img/captures/base_movies_services_04.jpg){:target="_blank"}
+
+No we need to add a HTTP request, right click on the tree pane on *Thread Group* : *Add > Sampler > HTTP Request*. Them we will set *Name* = *${__P(TEST_URL)}*, *Server Name or IP* = *${__P(SERVICE_CLUSTER_IP)}*, *Port Number* = *${__P(SERVICE_PORT)}*, *Method* = *Get*, *Path* = *${__P(TEST_URL)}*.
+
+[![JMeter http request](/assets/img/captures/base_movies_services_05.jpg){:style="width:80%; display:block; margin-left:auto; margin-right:auto;"}](/assets/img/captures/base_movies_services_05.jpg){:target="_blank"}
+
+Now we will save our plan on k8s-sv-load-test/load_test.jmx.
+
+For launching our load test we wil create a new script on k8s-sv-load-test/k8s-sv-load-test.sh :
+
+{% highlight bash %}
+#!/bin/sh -
+
+set -o errexit
+
+if [ $# -ne 5 ]; then
+  echo "Illegal number of parameters, usage : "
+  echo " "
+  echo "  $0 <service> <path> <users> <duration> <ramp up>"
+  echo " "
+  echo " example: "
+  echo "  - $0 k8s-service /get/something 20 300 60"
+  exit 2
+fi
+
+KUBECMD="kubectl"
+if [ -x "$(command -v microk8s.kubectl)" ]; then
+  KUBECMD="microk8s.kubectl"
+fi
+
+LOAD_DIR="$(
+  cd "$(dirname "$0")"
+  pwd -P
+)"
+REPORT_DIR="$LOAD_DIR/report"
+
+if [ -d "$REPORT_DIR" ]; then
+  echo "deleting report directory"
+  rm -Rf "$REPORT_DIR"
+  echo "report directory deleted"
+fi
+
+echo "creating report directory"
+mkdir "$REPORT_DIR"
+echo "report directory created"
+
+SERVICE=$1
+TEST_URL=$2
+SERVICE_CLUSTER_IP=$($KUBECMD get "service/$SERVICE" -o jsonpath='{.spec.clusterIP}')
+SERVICE_PORT=$($KUBECMD get "service/$SERVICE" -o jsonpath='{.spec.ports.*.targetPort}')
+NUM_USERS=$3
+DURATION=$4
+RAMP_UP=$5
+
+echo "launching a load test on http://$SERVICE_CLUSTER_IP:$SERVICE_PORT$TEST_URL with $NUM_USERS "\
+  "user(s) during $DURATION seconds, ramping up during $RAMP_UP seconds"
+
+HEAP="-Xms1g -Xmx1g -XX:MaxMetaspaceSize=256m"
+jmeter -n -t "$LOAD_DIR/load_test.jmx" -l "$REPORT_DIR/run.jtl" -e -o "$REPORT_DIR" -j "$LOAD_DIR/jmeter.log" \
+  -JSERVICE_CLUSTER_IP="$SERVICE_CLUSTER_IP" \
+  -JSERVICE_PORT="$SERVICE_PORT" \
+  -JNUM_USERS="$NUM_USERS" \
+  -JDURATION="$DURATION" \
+  -JRAMP_UP="$RAMP_UP" \
+  -JTEST_URL="$TEST_URL"
+
+echo "load test done"
+
+WEB_REPORT_PATH="file:///$REPORT_DIR/index.html"
+echo "report available on $WEB_REPORT_PATH"
+{% endhighlight %}
+
+This is a very generic script that allow to test any k8s that we have in our cluster, for example if we like to launch a load test against our movies service in the actuator/info endpoint during 30s that will ramp up in 1s : 
+
+{% highlight bash %}
+$ ./k8s-sv-load-test/k8s-sv-load-test.sh movies-base-service /actuator/info 1 30 1
+deleting report directory
+report directory deleted
+creating report directory
+report directory created
+launching a load test on http://10.152.183.244:8080/actuator/info with 1  user(s) during 30 seconds, ramping up during 1 seconds
+Creating summariser <summary>
+Created the tree successfully using /home/jamedina/Sources/movies-base-service/k8s-sv-load-test/load_test.jmx
+Starting standalone test @ Thu Jan 02 18:25:14 GMT 2020 (1577989514103)
+Waiting for possible Shutdown/StopTestNow/HeapDump/ThreadDump message on port 4445
+Warning: Nashorn engine is planned to be removed from a future JDK release
+summary +  88707 in 00:00:16 = 5632.2/s Avg:     0 Min:     0 Max:    16 Err:     0 (0.00%) Active: 1 Started: 1 Finished: 0
+summary +  91647 in 00:00:14 = 6427.8/s Avg:     0 Min:     0 Max:     2 Err:     0 (0.00%) Active: 0 Started: 1 Finished: 1
+summary = 180354 in 00:00:30 = 6010.0/s Avg:     0 Min:     0 Max:    16 Err:     0 (0.00%)
+Tidying up ...    @ Thu Jan 02 18:25:44 GMT 2020 (1577989544259)
+... end of run
+load test done
+report available on file:////home/jamedina/Sources/movies-base-service/k8s-sv-load-test/report/index.html
+{% endhighlight %}
+
+When the test is complet we get a nice report in html, in this example was on *file:////home/jamedina/Sources/movies-base-service/k8s-sv-load-test/report/index.html*
+
+[![JMeter report](/assets/img/captures/base_movies_services_06.jpg){:style="width:80%; display:block; margin-left:auto; margin-right:auto;"}](/assets/img/captures/base_movies_services_06.jpg){:target="_blank"}
+
+But this is a generic script so lets create a more specific to test our movies/genre endpoint on *load-test.sh* :
+
+{% highlight bash %}
+#!/bin/sh -
+
+set -o errexit
+
+if [ $# -ne 3 ]; then
+    echo "Illegal number of parameters, usage : "
+    echo " "
+    echo "  $0 <users> <duration> <ramp up>"
+    echo " "
+    echo " example: "
+    echo "  - $0 20 300 60"
+    exit 2
+fi
+
+SERVICE="movies-base-service"
+TEST_URL="/movies/sci-fi"
+NUM_USERS=$1
+DURATION=$2
+RAMP_UP=$3
+
+./k8s-sv-load-test/k8s-sv-load-test.sh $SERVICE $TEST_URL $NUM_USERS $DURATION $RAMP_UP
+{% endhighlight %}
 
 **Resources**
 
