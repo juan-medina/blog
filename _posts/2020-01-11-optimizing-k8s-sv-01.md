@@ -1130,7 +1130,7 @@ This are the results for this first example in the series, if you repeat the ste
     </tr>
   </tbody>
 </table>
-Java 8  - Spring Boot 2.0 - Web - Spring Web - Spring Data JDBC	default settings, unoptimized
+Java 8  - Spring Boot 2.0 - Spring Web - Spring Data JDBC	default settings, unoptimized
 
 With this will close this first article, next we will try to optimize this first service and compare the results with the base.
 
