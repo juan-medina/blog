@@ -1134,6 +1134,8 @@ Java 8  - Spring Boot 2.0 - Web - Spring Web - Spring Data JDBC	default settings
 
 With this will close this first article, next we will try to optimize this first service and compare the results with the base.
 
+_Note: The full code of this service is available at this [repository](https://github.com/LearningByExample/movies-base-service){:target="_blank"}._
+
 **Resources**
 
 - [https://docs.spring.io/spring-data/jdbc/docs/current/reference/html/#jdbc.query-methods](https://docs.spring.io/spring-data/jdbc/docs/current/reference/html/#jdbc.query-methods){:target="_blank"}
