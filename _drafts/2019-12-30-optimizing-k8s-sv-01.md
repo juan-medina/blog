@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Optimizing Kubernetes Services - Part 1
+title: Optimizing Kubernetes Services - Part 1 &#58 Base service
 date: 2019-12-28 00:00:00
 author: Juan Medina
 comments: true
@@ -881,6 +881,258 @@ RAMP_UP=$3
 
 ./k8s-sv-load-test/k8s-sv-load-test.sh $SERVICE $TEST_URL $NUM_USERS $DURATION $RAMP_UP
 {% endhighlight %}
+
+Now that we have our script ready we could launch it with 
+
+{% highlight bash %}
+ ./load-test.sh 1 30 1
+deleting report directory
+report directory deleted
+creating report directory
+report directory created
+launching a load test on http://10.152.183.252:8080/movies/sci-fi with 1  user(s) during 30 seconds, ramping up during 1 seconds
+Creating summariser <summary>
+Created the tree successfully using /home/jamedina/src/movies-base-service/k8s-sv-load-test/load_test.jmx
+Starting standalone test @ Sat Jan 11 08:46:22 GMT 2020 (1578732382783)
+Waiting for possible Shutdown/StopTestNow/HeapDump/ThreadDump message on port 4445
+Warning: Nashorn engine is planned to be removed from a future JDK release
+summary +    164 in 00:00:07 =   23.2/s Avg:    42 Min:    40 Max:    65 Err:     0 (0.00%) Active: 1 Started: 1 Finished: 0
+summary +    570 in 00:00:23 =   24.8/s Avg:    40 Min:    38 Max:    59 Err:     0 (0.00%) Active: 0 Started: 1 Finished: 1
+summary =    734 in 00:00:30 =   24.4/s Avg:    40 Min:    38 Max:    65 Err:     0 (0.00%)
+Tidying up ...    @ Sat Jan 11 08:46:52 GMT 2020 (1578732412977)
+... end of run
+load test done
+report available on file:////home/jamedina/src/movies-base-service/k8s-sv-load-test/report/index.html
+{% endhighlight %}
+
+And this is the report that we get
+
+[![JMeter report on sci-fi movies](/assets/img/captures/base_movies_services_07.jpg){:style="width:80%; display:block; margin-left:auto; margin-right:auto;"}](/assets/img/captures/base_movies_services_07.jpg){:target="_blank"}
+
+
+**Getting data from Grafana**
+
+Now that we have done a simple test we could go to Grafana and look at the graph for this small test
+
+[![Grafana first test](/assets/img/captures/base_movies_services_08.jpg){:style="width:80%; display:block; margin-left:auto; margin-right:auto;"}](/assets/img/captures/base_movies_services_08.jpg){:target="_blank"}
+
+
+We could see in this test that initial we have a small increase of CPU and them a peak, this was quite rapidly because our ramp up period was just one second, 
+them we see a dropdown after our test.
+
+In terms of memory we see how slightly increase and remain unmodified during the test.
+
+**Scaling**
+
+For the next test we will need to increase and decrease the replicas of our service, we will use an small script for this mater name scale.sh
+
+{% highlight bash %}
+#!/bin/sh -
+
+set -o errexit
+
+if [ $# -ne 2 ]; then
+  echo "Illegal number of parameters, usage : "
+  echo " "
+  echo "  $0 <k8-deployment-name> <replicas>"
+  echo " "
+  echo " examples: "
+  echo "  - $0 my-deployment 5"
+  echo "  - $0 my-deployment 0"
+  exit 2
+fi
+
+KUBECMD="kubectl"
+if [ -x "$(command -v microk8s.kubectl)" ]; then
+  KUBECMD="microk8s.kubectl"
+fi
+
+DEPLOYMENT_NAME="$1"
+WANTED_REPLICAS="$2"
+REPLICAS="0"
+PREVIOUS_REPLICAS="-1"
+
+replicas() {
+  REPLICAS=$($KUBECMD get "deployment/$DEPLOYMENT_NAME" -o jsonpath='{.status.readyReplicas}')
+  if test -z "$REPLICAS"; then
+    REPLICAS="0"
+  fi
+}
+
+echo "checking deployment: $DEPLOYMENT_NAME"
+
+replicas
+if [ "$REPLICAS" -eq "$WANTED_REPLICAS" ]; then
+  echo "we dont need to scale allready got $REPLICAS replicas ready"
+  exit 0
+fi
+
+echo "scaling deployment: $DEPLOYMENT_NAME to $WANTED_REPLICAS replicas"
+
+$KUBECMD scale deployment/movies-base-service --replicas "$WANTED_REPLICAS"
+
+START=$(date +%s.%N)
+
+while true; do
+  if [ "$REPLICAS" != "$PREVIOUS_REPLICAS" ]; then
+    echo "waiting for scaling: got $REPLICAS replicas, want $WANTED_REPLICAS"
+    PREVIOUS_REPLICAS="$REPLICAS"
+  fi
+  if [ "$REPLICAS" -eq "$WANTED_REPLICAS" ]; then
+    END=$(date +%s.%N)
+    DIFF=$(echo "$END - $START" | bc)
+    echo "scaling complete, $REPLICAS ready, in $DIFF seconds"
+
+    exit 0
+  fi
+  replicas
+done
+{% endhighlight %}
+
+This script will tell K8s to scale our replica to a number and wait until we have the number of replicas that we ask for.
+
+First let's scale our application to 0 replicas.
+
+{% highlight bash %}
+$ ./scale.sh movies-base-service 0
+checking deployment: movies-base-service
+scaling deployment: movies-base-service to 0 replicas
+deployment.apps/movies-base-service scaled
+waiting for scaling: got 1 replicas, want 0
+waiting for scaling: got 0 replicas, want 0
+scaling complete, 0 ready, in .057501722 seconds
+{% endhighlight %}
+
+Not let's scale our service to 5 replicas.
+
+{% highlight bash %}
+$ ./scale.sh movies-base-service 5
+checking deployment: movies-base-service
+scaling deployment: movies-base-service to 5 replicas
+deployment.apps/movies-base-service scaled
+waiting for scaling: got 0 replicas, want 5
+waiting for scaling: got 1 replicas, want 5
+waiting for scaling: got 2 replicas, want 5
+waiting for scaling: got 3 replicas, want 5
+waiting for scaling: got 4 replicas, want 5
+waiting for scaling: got 5 replicas, want 5
+scaling complete, 5 ready, in 15.111852160 seconds
+{% endhighlight %}
+
+And now we will repeat our test but with *10* concurrent users :
+
+{% highlight bash %}
+$ ./load-test.sh 10 30 1          
+deleting report directory
+report directory deleted
+creating report directory
+report directory created
+launching a load test on http://10.152.183.252:8080/movies/sci-fi with 10  user(s) during 30 seconds, ramping up during 1 seconds
+Creating summariser <summary>
+Created the tree successfully using /home/jamedina/src/movies-base-service/k8s-sv-load-test/load_test.jmx
+Starting standalone test @ Sat Jan 11 09:36:12 GMT 2020 (1578735372194)
+Waiting for possible Shutdown/StopTestNow/HeapDump/ThreadDump message on port 4445
+Warning: Nashorn engine is planned to be removed from a future JDK release
+summary +    486 in 00:00:18 =   27.5/s Avg:   347 Min:    44 Max:  1118 Err:     0 (0.00%) Active: 10 Started: 10 Finished: 0
+summary +    327 in 00:00:13 =   25.1/s Avg:   401 Min:   108 Max:  1204 Err:     0 (0.00%) Active: 0 Started: 10 Finished: 10
+summary =    813 in 00:00:31 =   26.5/s Avg:   369 Min:    44 Max:  1204 Err:     0 (0.00%)
+Tidying up ...    @ Sat Jan 11 09:36:43 GMT 2020 (1578735403018)
+... end of run
+load test done
+report available on file:////home/jamedina/src/movies-base-service/k8s-sv-load-test/report/index.html
+{% endhighlight %}
+
+And this is the report that we got :
+
+[![Report 10 users 5 pods](/assets/img/captures/base_movies_services_09.jpg){:style="width:80%; display:block; margin-left:auto; margin-right:auto;"}](/assets/img/captures/base_movies_services_09.jpg){:target="_blank"}
+
+We like to get now the data from Grafana but we will create a copy of the *Pods* dashboard and name "movies" then we will edit the template to get our al movies pods :
+
+[![Edit movies dashboard](/assets/img/captures/base_movies_services_10.jpg){:style="width:80%; display:block; margin-left:auto; margin-right:auto;"}](/assets/img/captures/base_movies_services_10.jpg){:target="_blank"}
+
+Finally we will get from Grafana the graph for our 5 pods 10 users test :
+
+[![Edit movies dashboard](/assets/img/captures/base_movies_services_11.jpg){:style="width:80%; display:block; margin-left:auto; margin-right:auto;"}](/assets/img/captures/base_movies_services_11.jpg){:target="_blank"}
+
+**Getting our measure**
+
+Now that we have this tools ready we will defined how we are going to measure this base service, and hopefuly futher services on the nexst parts for the series. We know that we have dozen of different metrics to get from our tools but we are going some very simple with just few data points, and we are not focus on a particular runtime, so they will be not JVM metrics, because we will not haven in all the parts of this series.
+
+We will do this procedure with 1, 10, 25 and 50 concurrent users and 1 replica : 
+
+- Scale the replicas to 0
+- Stop our cluster
+- Start our cluster
+- Scale to desired number replicas
+- Run the test for the desire set of concurrent users during 10 minutes with a ramp up of 1 minute
+- If all request are OK (HTTP response code is 200) :
+  - Get from the JMeter report :
+    - Average response time
+    - Transactions per second
+  - Get from Grafana
+    - Max CPU Usage
+    - Max Memory Usage
+- If some request are not OK (HTTP response code is not 200)
+  - We will increase the desire number of replicas to one more
+
+Then we will repeat this procedure until we got the results for 100 concurrent users.
+
+We will scale down our replicas and restart our cluster to guarantee that each test is a fresh run, including the database load and connections.
+
+**The Results**
+
+This are the results for this first example in the series, if you repeat the steps you may get different numbers because they depend on the cluster and the computer that is launching the tests. 
+
+
+<table class="display data-table compact cell-border">
+  <thead>
+    <tr>
+      <th>C. Users</th>
+      <th>Pods</th>
+      <th>ART</th>
+      <th>TPS</th>
+      <th>Max CPU</th>
+      <th>Max MEM</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="dt-body-right">1</td>
+      <td class="dt-body-right">1</td>
+      <td class="dt-body-right">39.16</td>
+      <td class="dt-body-right">25.49</td>
+      <td class="dt-body-right">403</td>
+      <td class="dt-body-right">474</td>
+    </tr>
+    <tr>
+      <td class="dt-body-right">10</td>
+      <td class="dt-body-right">1</td>
+      <td class="dt-body-right">570.47</td>
+      <td class="dt-body-right">16.73</td>
+      <td class="dt-body-right">916</td>
+      <td class="dt-body-right">487</td>
+    </tr>
+    <tr>
+      <td class="dt-body-right">25</td>
+      <td class="dt-body-right">3</td>
+      <td class="dt-body-right">1615.82</td>
+      <td class="dt-body-right">14.72</td>
+      <td class="dt-body-right">1049</td>
+      <td class="dt-body-right">1454</td>
+    </tr>
+    <tr>
+      <td class="dt-body-right">50</td>
+      <td class="dt-body-right">5</td>
+      <td class="dt-body-right">3190.98</td>
+      <td class="dt-body-right">14.89</td>
+      <td class="dt-body-right">1351</td>
+      <td class="dt-body-right">2499</td>
+    </tr>
+  </tbody>
+</table>
+Java 8  - Spring Boot 2.0 - Web - Spring Web - Spring Data JDBC	default settings, unoptimized
+
+With this will close this first article, next we will try to optimize this first service and compare the results with the base.
 
 **Resources**
 
