@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Optimizing Kubernetes Services - Part 1 &amp;#58 Base service | Juan Medina Personal Blog</title>
+  <meta name="author" content="Juan Medina">
+  <meta name="description" content="Personal blog from Juan Medina">
+  <meta property="og:title" content="Optimizing Kubernetes Services - Part 1 &amp;#58 Base service | Juan Medina Personal Blog">
+  <meta property="og:url" content="http://juan-medina.com/2020/01/11/optimizing-k8s-sv-01/">
+  <meta property="og:site_name" content="Juan Medina Personal Blog">
+  <meta property="og:description" content="Personal blog from Juan Medina">
+  <meta property="og:image" content="http://juan-medina.com/assets/img/graph.jpg">
+  <meta property="og:type" content="blog">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:description" content="Personal blog from Juan Medina">
+  <meta name="twitter:title" content="Optimizing Kubernetes Services - Part 1 &amp;#58 Base service | Juan Medina Personal Blog">
+  <meta name="twitter:url" content="http://juan-medina.com/2020/01/11/optimizing-k8s-sv-01/">
+  <meta name="twitter:site" content="Juan Medina Personal Blog">
+  <meta name="twitter:creator" content="@JuanMedinaCode">
+  <meta name="twitter:domain" content="http://juan-medina.com">
+  <meta property="twitter:image" content="http://juan-medina.com/assets/img/graph.jpg">
+
+  <!-- ****** faviconit.com favicons ****** -->
+  <link rel="shortcut icon" href="/favicon/favicon.ico">
+  <link rel="icon" sizes="16x16 32x32 64x64" href="/favicon/favicon.ico">
+  <link rel="icon" type="image/png" sizes="196x196" href="/favicon/favicon-192.png">
+  <link rel="icon" type="image/png" sizes="160x160" href="/favicon/favicon-160.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon/favicon-96.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="/favicon/favicon-64.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16.png">
+  <link rel="apple-touch-icon" href="/favicon/favicon-57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/favicon/favicon-114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/favicon/favicon-72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/favicon/favicon-144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/favicon/favicon-60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/favicon/favicon-120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/favicon/favicon-76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/favicon/favicon-152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon/favicon-180.png">
+  
+  <meta name="msapplication-TileColor" content="#FFFFFF">
+  <meta name="msapplication-TileImage" content="/favicon-144.png">
+  <meta name="msapplication-config" content="/browserconfig.xml">
+  <!-- ****** faviconit.com favicons ****** -->
+
+  <link type="application/atom+xml" rel="alternate" href="http://juan-medina.com/feed.xml" title="Juan Medina Personal Blog" />
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata|Lora|Space+Mono:700">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/syntax.css">
+
+  <link rel="alternate" type="application/rss+xml" title="Juan Medina Personal Blog" href="http://juan-medina.com/feed.xml">
+  <link rel="canonical" href="http://juan-medina.com/2020/01/11/optimizing-k8s-sv-01/">
+
+
+  <script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
+  <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+
+  
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-71726617-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+  
+
+  <script type="text/javascript" class="init">
+    $(document).ready(function() {
+      $('.data-table').DataTable( {
+        "paging"    : false,
+        "info"      : false,
+        "searching" : false,
+      } );
+    });
+  </script>
+    
+</head>
+
+  <body>
+
+    <main>
+      <article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="section-padding--lg mast rellax" data-rellax-speed="-4">
+    <a class="nav nav--white" href="/">
+      <i class="fa fa-lg fa-arrow-left"></i>
+      <span>Back to Posts</span>
+    </a>
+    <figure class="absolute-bg mast__img" style="background-image: url('/assets/img/graph.jpg');"></figure>
+    <div class="mast__container">
+      <span><time datetime="2020-01-11T23:00:00+00:00" itemprop="datePublished">Jan 11, 2020</time></span>
+      <h1 itemprop="name headline">Optimizing Kubernetes Services - Part 1 &#58 Base service</h1>
+      
+        <span>Posted in
+          
+            <a class="nav--white" href="/category/cloud">Cloud</a>, 
+          
+            <a class="nav--white" href="/category/programming">Programming</a>
+          
+        </span>
+      
+      <span></span>
+    </div>
+  </header>
+
+  <section class="section-padding bg-grey" itemprop="articleBody">
+    <div class="post">
+      <p>Much have been said about the importance of optimizing services that are going to run in a cloud, and they are plenty of resources about the topic, from start up times, memory consumption or resource usage and dozen of data points of your applications.</p>
+
+<p>But even with this amount of information it get exponentially complex to understand why we are doing this?, and what actually means?. So I decided that is going to be simpler to just <a href="https://github.com/LearningByExample" target="_blank">learn by example</a>, so this is the first part of a series of articles that will help on this matter.</p>
+
+<p>We are going to create a series of services that we will deploy in our kubernetes (k8s) cluster, and we will learn how we could measure them. Them we will optimizing our service to perform better, so we could measure if what we have done improves using data we could use to understand why.</p>
+
+<p>In this first part on the series we will create our base service that will be use as a baseline for comparing the improvements that will be doing down the line, for this our service will be developed with default values, including configuration, forgetting things that we usually do for optimizing an application in order to understand what those optimizations actually do.</p>
+
+<p>We will use the Microk8s cluster that <a href="/2019/12/02/microk8s/" target="_blank">we recently setup</a> and the movies database that have been loaded with the <a href="/2019/12/16/jobs-k8s/" target="_blank">previous k8s job</a>.</p>
+
+<p><strong>Bootstrapping a Spring Boot application</strong></p>
+
+<p>We are going to use Spring Initializr <a href="https://start.spring.io/" target="_blank">https://start.spring.io/</a> to quickly bootstrap our application.</p>
+
+<p>We will create a <em>Maven Project</em> using <em>Java 8</em> and <em>Spring Boot</em> version <em>2.2.2</em>, we will set the <em>Group</em> to be <em>org.learning.by.example.movies</em>, and the <em>Artifact</em> to <em>base-service</em>, the rest of the values should be automatically populated.</p>
+
+<p><a href="/assets/img/captures/base_movies_services_01.jpg" target="_blank"><img src="/assets/img/captures/base_movies_services_01.jpg" alt="Spring Initializr setup" style="width:80%; display:block; margin-left:auto; margin-right:auto;" /></a></p>
+
+<p>For dependencies we will search and add :</p>
+<ul>
+  <li>Spring Web</li>
+  <li>Spring Boot Actuator</li>
+  <li>Spring Data JDBC</li>
+  <li>PostgreSQL Driver</li>
+</ul>
+
+<p><a href="/assets/img/captures/base_movies_services_02.jpg" target="_blank"><img src="/assets/img/captures/base_movies_services_02.jpg" alt="Spring Initializr dependencies" style="width:80%; display:block; margin-left:auto; margin-right:auto;" /></a></p>
+
+<p>Now we will click on Generate to download our zip file : <em>base-service.zip</em>, we will uncompress it and leave it ready to be opened with our favorite IDE.</p>
+
+<p><strong>Designing the Service</strong></p>
+
+<p>Before starting to code our application we will design what our application will do, so first lest just look at our movies table loaded in our database, for
+this we will do as been doing before using just the PSQL client to explore the data.</p>
+
+<p>Lest explore the data using PSQL, we will login in our server with our <em>moviesuser</em> user so we need to get it password, we could get it with:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>microk8s.kubectl get secret moviesuser.movies-db-cluster.credentials <span class="nt">-o</span> <span class="s1">'jsonpath={.data.password}'</span> | <span class="nb">base64</span> <span class="nt">-d</span> 
+9oYUFcamSKwjB5Yrg099glLHdqg8C1IkScRfd5TeHTisiuj23FQrx3YEW6fB3ctJ</code></pre></figure>
+
+<p>We will forward the PostgreSQL port 5432 on our master to our localhost port 6432, this will run until we do <em>ctrl+c</em> :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>microk8s.kubectl port-forward movies-db-cluster-0 6432:5432                        
+Forwarding from 127.0.0.1:6432 -&gt; 5432
+Forwarding from <span class="o">[</span>::1]:6432 -&gt; 5432</code></pre></figure>
+
+<p>Finally we can connect to our database with with the provide user and password using PSQL in another
+shell :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>psql <span class="nt">-h</span> localhost <span class="nt">-p</span> 6432 <span class="nt">-U</span> moviesuser movies
+Password <span class="k">for </span>user moviesuser: 
+psql <span class="o">(</span>11.6 <span class="o">(</span>Ubuntu 11.6-1.pgdg18.04+1<span class="o">)</span>, server 11.5 <span class="o">(</span>Ubuntu 11.5-1.pgdg18.04+1<span class="o">))</span>
+SSL connection <span class="o">(</span>protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, bits: 256, compression: off<span class="o">)</span>
+Type <span class="s2">"help"</span> <span class="k">for </span>help.
+
+<span class="nv">movies</span><span class="o">=</span><span class="c"># SELECT * FROM movies LIMIT 10;</span>
+ <span class="nb">id</span> |               title                |                   genres                    
+<span class="nt">----</span>+------------------------------------+---------------------------------------------
+  1 | Toy Story <span class="o">(</span>1995<span class="o">)</span>                   | Adventure|Animation|Children|Comedy|Fantasy
+  2 | Jumanji <span class="o">(</span>1995<span class="o">)</span>                     | Adventure|Children|Fantasy
+  3 | Grumpier Old Men <span class="o">(</span>1995<span class="o">)</span>            | Comedy|Romance
+  4 | Waiting to Exhale <span class="o">(</span>1995<span class="o">)</span>           | Comedy|Drama|Romance
+  5 | Father of the Bride Part II <span class="o">(</span>1995<span class="o">)</span> | Comedy
+  6 | Heat <span class="o">(</span>1995<span class="o">)</span>                        | Action|Crime|Thriller
+  7 | Sabrina <span class="o">(</span>1995<span class="o">)</span>                     | Comedy|Romance
+  8 | Tom and Huck <span class="o">(</span>1995<span class="o">)</span>                | Adventure|Children
+  9 | Sudden Death <span class="o">(</span>1995<span class="o">)</span>                | Action
+ 10 | GoldenEye <span class="o">(</span>1995<span class="o">)</span>                   | Action|Adventure|Thriller
+<span class="o">(</span>10 rows<span class="o">)</span>
+
+<span class="nv">movies</span><span class="o">=</span><span class="c"># \q</span></code></pre></figure>
+
+<p>As we can see we have a in our <em>movies</em> table a column id, as the key of each movie, a column name <em>title</em> that sometimes contains a year and a list of <em>genres</em>, separate with the the character |.</p>
+
+<p>We will do a REST API that returns all the movies from a given genre, but since they are just in a column we need to prepare an special query for it.</p>
+
+<figure class="highlight"><pre><code class="language-sql" data-lang="sql"><span class="k">SELECT</span>
+    <span class="n">id</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">genres</span>
+<span class="k">FROM</span>
+    <span class="n">movies</span>
+<span class="k">WHERE</span> 
+    <span class="s1">'sci-fi'</span> <span class="o">=</span> <span class="k">ANY</span><span class="p">(</span><span class="n">string_to_array</span><span class="p">(</span><span class="k">LOWER</span><span class="p">(</span><span class="n">genres</span><span class="p">),</span><span class="s1">'|'</span><span class="p">))</span></code></pre></figure>
+
+<p>We will use the PostgreSQL function <a href="https://www.postgresql.org/docs/current/functions-array.html" target="_blank">string_to_array</a> and the <a href="https://www.postgresql.org/docs/9.2/functions-subquery.html#FUNCTIONS-SUBQUERY-ANY-SOME" target="_blank">ANY</a> operator for getting all the movies from a given genre, converted to lowercase using the string function <a href="https://www.postgresql.org/docs/9.1/functions-string.html" target="_blank">lower</a>.</p>
+
+<p>This could return thousands of row, for example for sci-fi will be around 3.5k but that is what we like to do in our service.</p>
+
+<p>Let’s check if with just 10 rows in PSQL</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>psql <span class="nt">-h</span> localhost <span class="nt">-p</span> 6432 <span class="nt">-U</span> moviesuser movies
+Password <span class="k">for </span>user moviesuser: 
+psql <span class="o">(</span>11.6 <span class="o">(</span>Ubuntu 11.6-1.pgdg18.04+1<span class="o">)</span>, server 11.5 <span class="o">(</span>Ubuntu 11.5-1.pgdg18.04+1<span class="o">))</span>
+SSL connection <span class="o">(</span>protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, bits: 256, compression: off<span class="o">)</span>
+Type <span class="s2">"help"</span> <span class="k">for </span>help.
+
+<span class="nv">movies</span><span class="o">=&gt;</span> SELECT
+movies-&gt;     <span class="nb">id</span>, title, genres
+movies-&gt; FROM
+movies-&gt;     movies
+movies-&gt; WHERE 
+movies-&gt;     <span class="s1">'sci-fi'</span> <span class="o">=</span> ANY<span class="o">(</span>string_to_array<span class="o">(</span>LOWER<span class="o">(</span>genres<span class="o">)</span>,<span class="s1">'|'</span><span class="o">))</span>
+movies-&gt; LIMIT 10<span class="p">;</span>
+ <span class="nb">id</span>  |                  title                   |                 genres                 
+<span class="nt">-----</span>+------------------------------------------+------------------------------------------
+  24 | Powder <span class="o">(</span>1995<span class="o">)</span>                            | Drama|Sci-Fi
+  32 | Twelve Monkeys <span class="o">(</span>a.k.a. 12 Monkeys<span class="o">)</span> <span class="o">(</span>1995<span class="o">)</span>| Mystery|Sci-Fi|Thriller
+  66 | Lawnmower Man 2: Beyond Cyberspace <span class="o">(</span>1996<span class="o">)</span>| Action|Sci-Fi|Thriller
+  76 | Screamers <span class="o">(</span>1995<span class="o">)</span>                         | Action|Sci-Fi|Thriller
+ 103 | Unforgettable <span class="o">(</span>1996<span class="o">)</span>                     | Mystery|Sci-Fi|Thriller
+ 160 | Congo <span class="o">(</span>1995<span class="o">)</span>                             | Action|Adventure|Mystery|Sci-Fi
+ 172 | Johnny Mnemonic <span class="o">(</span>1995<span class="o">)</span>                   | Action|Sci-Fi|Thriller
+ 173 | Judge Dredd <span class="o">(</span>1995<span class="o">)</span>                       | Action|Crime|Sci-Fi
+ 196 | Species <span class="o">(</span>1995<span class="o">)</span>                           | Horror|Sci-Fi
+ 198 | Strange Days <span class="o">(</span>1995<span class="o">)</span>                      | Action|Crime|Drama|Mystery|Sci-Fi|Thriller
+<span class="o">(</span>10 rows<span class="o">)</span>
+
+<span class="nv">movies</span><span class="o">=&gt;</span> <span class="se">\q</span></code></pre></figure>
+
+<p>The query seems to work, now lets think on our API, we will create an endpoint in the url <em>/movies/genre</em> that will return all movies under that category as an array of JSON object, but this can not be directly the row in our database it should a bit better, we will design a movie JSON like this :</p>
+
+<figure class="highlight"><pre><code class="language-json" data-lang="json"><span class="p">{</span><span class="w">
+    </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"year"</span><span class="p">:</span><span class="w"> </span><span class="mi">1995</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"genres"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"Drama"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"Sci-Fi"</span><span class="w">
+    </span><span class="p">],</span><span class="w">        
+    </span><span class="nl">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Powder"</span><span class="p">,</span><span class="w">        
+</span><span class="p">}</span></code></pre></figure>
+
+<p><strong>Implementing our Service</strong></p>
+
+<p>Back to our Service that was generated before we will open it in our favorite IDE and start adding the code require for our service to work.</p>
+
+<p>First we will create a Plain Old Java Object, POJO, class that represents our Movie JSON Object, we will place it in <em>src/main/java/org/learning/by/example/movies/baseservice/model/Movie.java</em> :</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">baseservice</span><span class="o">.</span><span class="na">model</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Movie</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="nc">Integer</span> <span class="n">id</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="nc">String</span> <span class="n">title</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="nc">Integer</span> <span class="n">year</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">genres</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">Movie</span><span class="o">(</span><span class="kd">final</span> <span class="nc">Integer</span> <span class="n">id</span><span class="o">,</span> <span class="kd">final</span> <span class="nc">String</span> <span class="n">title</span><span class="o">,</span> <span class="kd">final</span> <span class="nc">Integer</span> <span class="n">year</span><span class="o">,</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">genres</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">id</span> <span class="o">=</span> <span class="n">id</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">title</span> <span class="o">=</span> <span class="n">title</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">year</span> <span class="o">=</span> <span class="n">year</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">genres</span> <span class="o">=</span> <span class="n">genres</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">Integer</span> <span class="nf">getId</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">id</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getTitle</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">title</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">Integer</span> <span class="nf">getYear</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">year</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="nf">getGenres</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">genres</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>This class when deserialize will be just as our designed JSON, now we need we will create our repository that will query database on <em>src/main/java/org/learning/by/example/movies/baseservice/repositories/MoviesRepository.java</em> :</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">baseservice</span><span class="o">.</span><span class="na">repositories</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.learning.by.example.movies.baseservice.model.Movie</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.data.jdbc.repository.query.Query</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.data.repository.CrudRepository</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.stereotype.Repository</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
+
+<span class="nd">@Repository</span>
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">MoviesRepository</span> <span class="kd">extends</span> <span class="nc">CrudRepository</span><span class="o">&lt;</span><span class="nc">Movie</span><span class="o">,</span> <span class="nc">Integer</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="nd">@Query</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">"SELECT \n"</span> <span class="o">+</span>
+            <span class="s">"  m.id, m.title, m.genres \n"</span> <span class="o">+</span>
+            <span class="s">" FROM \n"</span> <span class="o">+</span>
+            <span class="s">"  movies as m \n"</span> <span class="o">+</span>
+            <span class="s">" WHERE :genre = ANY(string_to_array(LOWER(m.genres),'|')) \n"</span><span class="o">)</span>
+    <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Movie</span><span class="o">&gt;</span> <span class="nf">findByGenre</span><span class="o">(</span><span class="nc">String</span> <span class="n">genre</span><span class="o">);</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>In this simple repository we will extend from <em>CrudRepository</em> to return a Movie List giving a genre, we will use the query that we design before.</p>
+
+<p>But the output of this query does not mach our <em>Movie Classs</em> so we need to create a mapper that will convert a row from our database, we will place on     src/main/java/org/learning/by/example/movies/baseservice/mapper/MovieMapper.java :</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">baseservice</span><span class="o">.</span><span class="na">mapper</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.learning.by.example.movies.baseservice.model.Movie</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.jdbc.core.RowMapper</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.stereotype.Component</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.sql.ResultSet</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.sql.SQLException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Arrays</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.regex.Matcher</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.regex.Pattern</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.stream.Collectors</span><span class="o">;</span>
+
+<span class="nd">@Component</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MovieMapper</span> <span class="kd">implements</span> <span class="nc">RowMapper</span><span class="o">&lt;</span><span class="nc">Movie</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="c1">// Without escape characters this pattern ins : (.*) \((\d{4})\)</span>
+    <span class="c1">//  (       = START GROUP 1</span>
+    <span class="c1">//  .*      = any set of characters</span>
+    <span class="c1">//  )       = END GROUP 1</span>
+    <span class="c1">//          = space</span>
+    <span class="c1">//  \(      = the character (</span>
+    <span class="c1">//  (       = START GROUP 2</span>
+    <span class="c1">//  d{4}    = four digits, ex 1945</span>
+    <span class="c1">//  )       = END GROUP 2</span>
+    <span class="c1">//  \)      = the character ) </span>
+    <span class="kd">final</span> <span class="kd">static</span> <span class="nc">Pattern</span> <span class="no">TITLE_YEAR_PATTERN</span> <span class="o">=</span> <span class="nc">Pattern</span><span class="o">.</span><span class="na">compile</span><span class="o">(</span><span class="s">"(.*) \\((\\d{4})\\)"</span><span class="o">);</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">Movie</span> <span class="nf">mapRow</span><span class="o">(</span><span class="kd">final</span> <span class="nc">ResultSet</span> <span class="n">resultSet</span><span class="o">,</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">i</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">SQLException</span> <span class="o">{</span>
+        <span class="kd">final</span> <span class="nc">String</span> <span class="n">rowTile</span> <span class="o">=</span> <span class="n">resultSet</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"title"</span><span class="o">);</span>
+
+        <span class="kd">final</span> <span class="nc">String</span> <span class="n">realTitle</span><span class="o">;</span>
+        <span class="kd">final</span> <span class="kt">int</span> <span class="n">year</span><span class="o">;</span>
+
+        <span class="kd">final</span> <span class="nc">Matcher</span> <span class="n">matcher</span> <span class="o">=</span> <span class="no">TITLE_YEAR_PATTERN</span><span class="o">.</span><span class="na">matcher</span><span class="o">(</span><span class="n">rowTile</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">matcher</span><span class="o">.</span><span class="na">find</span><span class="o">())</span> <span class="o">{</span>
+            <span class="n">realTitle</span> <span class="o">=</span> <span class="n">matcher</span><span class="o">.</span><span class="na">group</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+            <span class="n">year</span> <span class="o">=</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">matcher</span><span class="o">.</span><span class="na">group</span><span class="o">(</span><span class="mi">2</span><span class="o">));</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="n">realTitle</span> <span class="o">=</span> <span class="n">rowTile</span><span class="o">;</span>
+            <span class="n">year</span> <span class="o">=</span> <span class="mi">1900</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">final</span> <span class="nc">String</span><span class="o">[]</span> <span class="n">genres</span> <span class="o">=</span> <span class="n">resultSet</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"genres"</span><span class="o">).</span><span class="na">split</span><span class="o">(</span><span class="s">"\\|"</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">genresList</span> <span class="o">=</span> <span class="nc">Arrays</span><span class="o">.</span><span class="na">stream</span><span class="o">(</span><span class="n">genres</span><span class="o">).</span><span class="na">filter</span><span class="o">(</span>
+                <span class="n">genre</span> <span class="o">-&gt;</span> <span class="o">!</span><span class="n">genre</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">()</span>
+        <span class="o">).</span><span class="na">collect</span><span class="o">(</span><span class="nc">Collectors</span><span class="o">.</span><span class="na">toList</span><span class="o">());</span>
+
+        <span class="kd">final</span> <span class="kt">int</span> <span class="n">id</span> <span class="o">=</span> <span class="n">resultSet</span><span class="o">.</span><span class="na">getInt</span><span class="o">(</span><span class="s">"id"</span><span class="o">);</span>
+
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">Movie</span><span class="o">(</span><span class="n">id</span><span class="o">,</span> <span class="n">realTitle</span><span class="o">,</span> <span class="n">year</span><span class="o">,</span> <span class="n">genresList</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>This simple <em>RowMapper</em> will first use a regular expression to get our movie title and year, if it is available, parse the genres and produce a Movie object, however is not enough to have a mapper we need to tell Spring Data JDBC to use it when query for our Movies so we will set this in a new configuration class on src/main/java/org/learning/by/example/movies/baseservice/repositories/MappingConfiguration.java :</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">baseservice</span><span class="o">.</span><span class="na">repositories</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.learning.by.example.movies.baseservice.mapper.MovieMapper</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.learning.by.example.movies.baseservice.model.Movie</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.context.annotation.Configuration</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.data.jdbc.repository.config.DefaultQueryMappingConfiguration</span><span class="o">;</span>
+
+<span class="nd">@Configuration</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MappingConfiguration</span> <span class="kd">extends</span> <span class="nc">DefaultQueryMappingConfiguration</span> <span class="o">{</span>
+    <span class="nc">MappingConfiguration</span><span class="o">(</span><span class="kd">final</span> <span class="nc">MovieMapper</span> <span class="n">movieMapper</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">();</span>
+        <span class="n">registerRowMapper</span><span class="o">(</span><span class="nc">Movie</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">movieMapper</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>In this <em>MappingConfiguration</em> we are registering our MovieMapper for mapping <em>Movies</em> objects, note that we use dependency constructor injection for obtain the
+bean for our <em>MovieMapper</em>.</p>
+
+<p>We will create now a service that will provide movies to who ever request them, to been able to change the implementation of our repository if needed and we will place it on <em>src/main/java/org/learning/by/example/movies/baseservice/service/MovieService.java</em> :</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">baseservice</span><span class="o">.</span><span class="na">service</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.learning.by.example.movies.baseservice.model.Movie</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.learning.by.example.movies.baseservice.repositories.MoviesRepository</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.stereotype.Service</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
+
+<span class="nd">@Service</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MovieService</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="nc">MoviesRepository</span> <span class="n">repository</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">MovieService</span><span class="o">(</span><span class="kd">final</span> <span class="nc">MoviesRepository</span> <span class="n">repository</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">repository</span> <span class="o">=</span> <span class="n">repository</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Movie</span><span class="o">&gt;</span> <span class="nf">getMoviesByGenre</span><span class="o">(</span><span class="kd">final</span> <span class="nc">String</span> <span class="n">genre</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">repository</span><span class="o">.</span><span class="na">findByGenre</span><span class="o">(</span><span class="n">genre</span><span class="o">.</span><span class="na">toLowerCase</span><span class="o">());</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>The <em>MovieService class</em> will as well convert to lowercase the genre, since our repository will be perform the query on lowercase genres.</p>
+
+<p>Now we will create our api using a <em>RestController</em> and we will place it on src/main/java/org/learning/by/example/movies/baseservice/controller/MoviesController.java :</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">baseservice</span><span class="o">.</span><span class="na">controller</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.learning.by.example.movies.baseservice.model.Movie</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.learning.by.example.movies.baseservice.service.MovieService</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.GetMapping</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.PathVariable</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.RestController</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
+
+<span class="nd">@RestController</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MoviesController</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="nc">MovieService</span> <span class="n">movieService</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">MoviesController</span><span class="o">(</span><span class="kd">final</span> <span class="nc">MovieService</span> <span class="n">movieService</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">movieService</span> <span class="o">=</span> <span class="n">movieService</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@GetMapping</span><span class="o">(</span><span class="s">"/movies/{genre}"</span><span class="o">)</span>
+    <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Movie</span><span class="o">&gt;</span> <span class="nf">getMovies</span><span class="o">(</span><span class="nd">@PathVariable</span> <span class="nc">String</span> <span class="n">genre</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">movieService</span><span class="o">.</span><span class="na">getMoviesByGenre</span><span class="o">(</span><span class="n">genre</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>Our <em>MovieController</em> will answer HTTP GET request on /movies/{genre} and return the movies using the <em>MoviesService</em> that will use our <em>MoviesRepository</em>, however we need to stablish the connection to our database but first let thinks how this will run on our k8s cluster.</p>
+
+<p>When the service is running we need to connect to our database we could use the environment variables provide by kubernetes to connect to find the IP address and port, as we did in the <a href="/2019/12/16/jobs-k8s/" target="_blank">last example</a>, this are <em>MOVIES_DB_CLUSTER_SERVICE_HOST</em> and <em>MOVIES_DB_CLUSTER_SERVICE_PORT_POSTGRESQL</em>, but we need as well the credentials that we could inject in our kubernetes deployment, as we did before, in a directory containing a username and password. Finally we need to tell spring witch database driver to use, and the JDBC connection string, for this let’s add to our src/main/resources/application.yml some entries :</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">movies-datasource</span><span class="pi">:</span>
+  <span class="na">driver</span><span class="pi">:</span> <span class="s2">"</span><span class="s">org.postgresql.Driver"</span>
+  <span class="na">connection-string</span><span class="pi">:</span> <span class="s2">"</span><span class="s">jdbc:postgresql://</span><span class="se">\
+</span>    <span class="s">${MOVIES_DB_CLUSTER_SERVICE_HOST}:${MOVIES_DB_CLUSTER_SERVICE_PORT_POSTGRESQL}</span><span class="se">\
+</span>    <span class="s">/movies"</span>
+  <span class="na">credentials</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/etc/movies-db"</span></code></pre></figure>
+
+<p>Let’s get those values using a <em>ConfigurationProperties</em> that will be on src/main/java/org/learning/by/example/movies/baseservice/datasource/DataSourceProperties.java :</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">baseservice</span><span class="o">.</span><span class="na">datasource</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.springframework.boot.context.properties.ConfigurationProperties</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.stereotype.Component</span><span class="o">;</span>
+
+<span class="nd">@Component</span>
+<span class="nd">@ConfigurationProperties</span><span class="o">(</span><span class="s">"movies-datasource"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DataSourceProperties</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getDriver</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">driver</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setDriver</span><span class="o">(</span><span class="nc">String</span> <span class="n">driver</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">driver</span> <span class="o">=</span> <span class="n">driver</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getConnectionString</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">connectionString</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setConnectionString</span><span class="o">(</span><span class="nc">String</span> <span class="n">connectionString</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">connectionString</span> <span class="o">=</span> <span class="n">connectionString</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getCredentials</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">credentials</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setCredentials</span><span class="o">(</span><span class="nc">String</span> <span class="n">credentials</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">credentials</span> <span class="o">=</span> <span class="n">credentials</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">driver</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">connectionString</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">credentials</span><span class="o">;</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>Now that we have our <em>DataSourceProperties</em> we could create a <em>DataSource</em> for our connection on src/main/java/org/learning/by/example/movies/baseservice/datasource/MoviesDataSource.java :</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">baseservice</span><span class="o">.</span><span class="na">datasource</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.commons.logging.Log</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.commons.logging.LogFactory</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.jdbc.datasource.DriverManagerDataSource</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.stereotype.Component</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.nio.file.Files</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.nio.file.Path</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.nio.file.Paths</span><span class="o">;</span>
+
+<span class="nd">@Component</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MoviesDataSource</span> <span class="kd">extends</span> <span class="nc">DriverManagerDataSource</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">Log</span> <span class="n">log</span> <span class="o">=</span> <span class="nc">LogFactory</span><span class="o">.</span><span class="na">getLog</span><span class="o">(</span><span class="nc">MoviesDataSource</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+    <span class="nc">MoviesDataSource</span><span class="o">(</span><span class="kd">final</span> <span class="nc">DataSourceProperties</span> <span class="n">dataSourceProperties</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">();</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setDriverClassName</span><span class="o">(</span><span class="n">dataSourceProperties</span><span class="o">.</span><span class="na">getDriver</span><span class="o">());</span>
+        <span class="n">setUrl</span><span class="o">(</span><span class="n">dataSourceProperties</span><span class="o">.</span><span class="na">getConnectionString</span><span class="o">());</span>
+        <span class="kd">final</span> <span class="nc">String</span> <span class="n">credentials</span> <span class="o">=</span> <span class="n">dataSourceProperties</span><span class="o">.</span><span class="na">getCredentials</span><span class="o">();</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setUsername</span><span class="o">(</span><span class="n">getCredentialValue</span><span class="o">(</span><span class="n">credentials</span><span class="o">,</span> <span class="s">"username"</span><span class="o">));</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setPassword</span><span class="o">(</span><span class="n">getCredentialValue</span><span class="o">(</span><span class="n">credentials</span><span class="o">,</span> <span class="s">"password"</span><span class="o">));</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="nc">String</span> <span class="nf">getCredentialValue</span><span class="o">(</span><span class="kd">final</span> <span class="nc">String</span> <span class="n">credentials</span><span class="o">,</span> <span class="kd">final</span> <span class="nc">String</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">final</span> <span class="nc">Path</span> <span class="n">path</span> <span class="o">=</span> <span class="nc">Paths</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">credentials</span><span class="o">,</span> <span class="n">value</span><span class="o">);</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="nf">String</span><span class="o">(</span><span class="nc">Files</span><span class="o">.</span><span class="na">readAllBytes</span><span class="o">(</span><span class="n">path</span><span class="o">));</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">RuntimeException</span><span class="o">(</span><span class="s">"error getting data source credential value : "</span> <span class="o">+</span> <span class="n">path</span><span class="o">.</span><span class="na">toString</span><span class="o">(),</span> <span class="n">ex</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>We are creating a DriverManagerDataSource with the settings in our application.yml and reading the username and password from our credentials directory.</p>
+
+<p>Finally we will modify our application on src/main/java/org/learning/by/example/movies/baseservice/BaseServiceApplication.java :</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">baseservice</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.springframework.boot.SpringApplication</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.boot.autoconfigure.SpringBootApplication</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.data.jdbc.repository.config.EnableJdbcRepositories</span><span class="o">;</span>
+
+<span class="nd">@SpringBootApplication</span>
+<span class="nd">@EnableJdbcRepositories</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">BaseServiceApplication</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">SpringApplication</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="nc">BaseServiceApplication</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>We just enable JDBC repositories in our application.</p>
+
+<p><em>Note: For make this article brief we haven’t include the unit and integrations tests created for this code, but they are available on the <a href="https://github.com/LearningByExample/movies-base-service" target="_blank">repository</a> for this article.</em></p>
+
+<p><strong>Running our Service in Local</strong></p>
+
+<p>Before start working on deploying the service into our k8s cluster we will run it locally, but since our configuration use a couple of environments variables and some credentials files for this.</p>
+
+<p>First let’s get our user password with :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>microk8s.kubectl get secret moviesuser.movies-db-cluster.credentials <span class="nt">-o</span> <span class="s1">'jsonpath={.data.password}'</span> | <span class="nb">base64</span> <span class="nt">-d</span> 
+9oYUFcamSKwjB5Yrg099glLHdqg8C1IkScRfd5TeHTisiuj23FQrx3YEW6fB3ctJ</code></pre></figure>
+
+<p>Now will we save it to a file named <em>/etc/movies-db/password</em>, we will create as well a file name <em>/etc/movies-db/username</em> that just contains our user : <em>moviesuser</em>.</p>
+
+<p>We will build our microservice with :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>./mvnw clean package</code></pre></figure>
+
+<p>We will forward the PostgreSQL port 5432 on our master to our localhost port 6432, this will run until we do <em>ctrl+c</em> :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>microk8s.kubectl port-forward movies-db-cluster-0 6432:5432
+Forwarding from 127.0.0.1:6432 -&gt; 5432
+Forwarding from <span class="o">[</span>::1]:6432 -&gt; 5432</code></pre></figure>
+
+<p>In a new shell window we could run out service, this will run until we do <em>ctrl+c</em> :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span><span class="nb">export </span><span class="nv">MOVIES_DB_CLUSTER_SERVICE_HOST</span><span class="o">=</span><span class="s2">"localhost"</span>
+<span class="nv">$ </span><span class="nb">export </span><span class="nv">MOVIES_DB_CLUSTER_SERVICE_PORT_POSTGRESQL</span><span class="o">=</span><span class="s2">"6432"</span>
+<span class="nv">$ </span>java <span class="nt">-jar</span> target/base-service-0.0.1-SNAPSHOT.jar</code></pre></figure>
+
+<p>Now we could test our service using any HTPP client, such wget, curl, etc., I going to use <a href="https://httpie.org/" target="_blank">HTTPie</a> instead :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>http :8080/movies/sci-fi       
+HTTP/1.1 200 
+Connection: keep-alive
+Content-Type: application/json
+Date: Wed, 01 Jan 2020 12:13:46 GMT
+Keep-Alive: <span class="nb">timeout</span><span class="o">=</span>60
+Transfer-Encoding: chunked
+
+<span class="o">[</span>
+    <span class="o">{</span>
+        <span class="s2">"genres"</span>: <span class="o">[</span>
+            <span class="s2">"Drama"</span>,
+            <span class="s2">"Sci-Fi"</span>
+        <span class="o">]</span>,
+        <span class="s2">"id"</span>: 24,
+        <span class="s2">"title"</span>: <span class="s2">"Powder"</span>,
+        <span class="s2">"year"</span>: 1995
+    <span class="o">}</span>,
+    <span class="o">{</span>
+        <span class="s2">"genres"</span>: <span class="o">[</span>
+            <span class="s2">"Adventure"</span>,
+            <span class="s2">"Drama"</span>,
+            <span class="s2">"Fantasy"</span>,
+            <span class="s2">"Mystery"</span>,
+            <span class="s2">"Sci-Fi"</span>
+        <span class="o">]</span>,
+        <span class="s2">"id"</span>: 29,
+        <span class="s2">"title"</span>: <span class="s2">"City of Lost Children, The (Cité des enfants perdus, La)"</span>,
+        <span class="s2">"year"</span>: 1995
+    <span class="o">}</span>,
+........
+........
+........
+<span class="o">]</span></code></pre></figure>
+
+<p>This will output thousands of records, these where just some of them.</p>
+
+<p>But since we have as well include <em>Spring Actuator</em> in our dependencies we have two more URLs in our service :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>http :8080/actuator/info
+HTTP/1.1 200 
+Connection: keep-alive
+Content-Type: application/vnd.spring-boot.actuator.v3+json
+Date: Thu, 02 Jan 2020 16:34:58 GMT
+Keep-Alive: <span class="nb">timeout</span><span class="o">=</span>60
+Transfer-Encoding: chunked
+
+<span class="o">{}</span>
+
+<span class="nv">$ </span>http :8080/actuator/health
+HTTP/1.1 200 
+Connection: keep-alive
+Content-Type: application/vnd.spring-boot.actuator.v3+json
+Date: Thu, 02 Jan 2020 16:35:09 GMT
+Keep-Alive: <span class="nb">timeout</span><span class="o">=</span>60
+Transfer-Encoding: chunked
+
+<span class="o">{</span>
+    <span class="s2">"status"</span>: <span class="s2">"UP"</span>
+<span class="o">}</span></code></pre></figure>
+
+<p><strong>Building our Docker Image</strong></p>
+
+<p>Now that we have test that our application runs correctly let’s create a docker image and push it to our local repository that we have in our cluster, first we will create a Dockerfile :</p>
+
+<figure class="highlight"><pre><code class="language-docker" data-lang="docker"><span class="k">FROM</span><span class="s"> openjdk:8-jdk</span>
+
+<span class="k">COPY</span><span class="s"> target/*.jar /usr/app/app.jar</span>
+<span class="k">WORKDIR</span><span class="s"> /usr/app</span>
+
+<span class="k">CMD</span><span class="s"> ["java", "-jar", "app.jar"]</span></code></pre></figure>
+
+<p>Now we will create a small script that build our docker and publish it to the registry, we will name it <em>build.sh</em> :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/bin/sh -</span>
+
+<span class="nb">set</span> <span class="nt">-o</span> errexit
+
+<span class="nb">echo</span> <span class="s2">"doing maven build"</span>
+./mvnw clean package
+<span class="nb">echo</span> <span class="s2">"maven build done"</span>
+
+<span class="nb">echo</span> <span class="s2">"building docker"</span>
+docker build <span class="nb">.</span> <span class="nt">-t</span> localhost:32000/movies-base-service:0.0.1
+<span class="nb">echo</span> <span class="s2">"docker builded"</span>
+
+<span class="nb">echo</span> <span class="s2">"publishing docker"</span>
+docker push localhost:32000/movies-base-service
+<span class="nb">echo</span> <span class="s2">"docker published"</span></code></pre></figure>
+
+<p>Running this script we will build our docker image and push to our local docker registry, but for deploying the image into our cluster we will create a deployment descriptor name <em>deployment.yml</em> :</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">apiVersion</span><span class="pi">:</span> <span class="s">apps/v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Deployment</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+  <span class="na">labels</span><span class="pi">:</span>
+    <span class="na">app</span><span class="pi">:</span> <span class="s">movies-base-service</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">movies-base-service</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">replicas</span><span class="pi">:</span> <span class="m">1</span>
+  <span class="na">selector</span><span class="pi">:</span>
+    <span class="na">matchLabels</span><span class="pi">:</span>
+      <span class="na">app</span><span class="pi">:</span> <span class="s">movies-base-service</span>
+  <span class="na">strategy</span><span class="pi">:</span> <span class="pi">{}</span>
+  <span class="na">template</span><span class="pi">:</span>
+    <span class="na">metadata</span><span class="pi">:</span>
+      <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+      <span class="na">labels</span><span class="pi">:</span>
+        <span class="na">app</span><span class="pi">:</span> <span class="s">movies-base-service</span>
+    <span class="na">spec</span><span class="pi">:</span>
+      <span class="na">containers</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">image</span><span class="pi">:</span> <span class="s">localhost:32000/movies-base-service:0.0.1</span>
+          <span class="na">imagePullPolicy</span><span class="pi">:</span> <span class="s">Always</span>
+          <span class="na">name</span><span class="pi">:</span> <span class="s">movies-base-service</span>
+          <span class="na">resources</span><span class="pi">:</span> <span class="pi">{}</span>
+          <span class="na">readinessProbe</span><span class="pi">:</span>
+            <span class="na">httpGet</span><span class="pi">:</span>
+              <span class="na">path</span><span class="pi">:</span> <span class="s">/actuator/health</span>
+              <span class="na">port</span><span class="pi">:</span> <span class="m">8080</span>
+          <span class="na">livenessProbe</span><span class="pi">:</span>
+            <span class="na">httpGet</span><span class="pi">:</span>
+              <span class="na">path</span><span class="pi">:</span> <span class="s">/actuator/info</span>
+              <span class="na">port</span><span class="pi">:</span> <span class="m">8080</span>
+          <span class="na">volumeMounts</span><span class="pi">:</span>
+            <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">db-credentials</span>
+              <span class="na">mountPath</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/etc/movies-db"</span>
+              <span class="na">readOnly</span><span class="pi">:</span> <span class="no">true</span>
+            <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">tmp</span>
+              <span class="na">mountPath</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/tmp"</span>
+              <span class="na">readOnly</span><span class="pi">:</span> <span class="no">false</span>
+      <span class="na">volumes</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">db-credentials</span>
+          <span class="na">secret</span><span class="pi">:</span>
+            <span class="na">secretName</span><span class="pi">:</span> <span class="s">moviesuser.movies-db-cluster.credentials</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">tmp</span>
+          <span class="na">emptyDir</span><span class="pi">:</span> <span class="pi">{}</span>
+<span class="na">status</span><span class="pi">:</span> <span class="pi">{}</span>
+<span class="nn">---</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Service</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+  <span class="na">labels</span><span class="pi">:</span>
+    <span class="na">app</span><span class="pi">:</span> <span class="s">movies-base-service</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">movies-base-service</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">ports</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">8080-8080</span>
+      <span class="na">port</span><span class="pi">:</span> <span class="m">8080</span>
+      <span class="na">protocol</span><span class="pi">:</span> <span class="s">TCP</span>
+      <span class="na">targetPort</span><span class="pi">:</span> <span class="m">8080</span>
+  <span class="na">selector</span><span class="pi">:</span>
+    <span class="na">app</span><span class="pi">:</span> <span class="s">movies-base-service</span>
+  <span class="na">type</span><span class="pi">:</span> <span class="s">ClusterIP</span>
+<span class="na">status</span><span class="pi">:</span>
+  <span class="na">loadBalancer</span><span class="pi">:</span> <span class="pi">{}</span></code></pre></figure>
+
+<p>In this descriptor we are first deploying our service, we declare our liveness and readiness probes to use our actuator endpoint, we inject our credentials and we mount a temporary directory for our service to use. Them we create a k8s service with a load balancer to been able to call our service and balance between the pods that is available.</p>
+
+<p>Finally we will create another script to deploy our service deploy.sh :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/bin/sh -</span>
+
+<span class="nb">set</span> <span class="nt">-o</span> errexit
+
+<span class="nv">KUBECMD</span><span class="o">=</span><span class="s2">"kubectl"</span>
+<span class="k">if</span> <span class="o">[</span> <span class="nt">-x</span> <span class="s2">"</span><span class="si">$(</span><span class="nb">command</span> <span class="nt">-v</span> microk8s.kubectl<span class="si">)</span><span class="s2">"</span> <span class="o">]</span><span class="p">;</span> <span class="k">then
+  </span><span class="nv">KUBECMD</span><span class="o">=</span><span class="s2">"microk8s.kubectl"</span>
+<span class="k">fi
+
+</span><span class="nb">echo</span> <span class="s2">"deleting previous versions"</span>
+<span class="nv">$KUBECMD</span> delete all <span class="nt">--selector</span><span class="o">=</span><span class="nv">app</span><span class="o">=</span>movies-base-service
+<span class="nb">echo</span> <span class="s2">"previous version deleted"</span>
+
+<span class="nb">echo</span> <span class="s2">"create deployment"</span>
+<span class="nv">$KUBECMD</span> create <span class="nt">-f</span> deployment.yml
+<span class="nb">echo</span> <span class="s2">"deployment created"</span></code></pre></figure>
+
+<p>This script is a bit different we have create in other tu use the standard kubectl or microk8.kubectl if its available, it will delete the deployment and them deploy our service.</p>
+
+<p>We can now build and deploy our service with :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>./build.sh
+<span class="nv">$ </span>./deploy.sh</code></pre></figure>
+
+<p>Now we could check what we have in our cluster for our service with :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>microk8s.kubectl get all <span class="nt">--selector</span><span class="o">=</span><span class="nv">app</span><span class="o">=</span>movies-base-service
+NAME                                       READY   STATUS    RESTARTS   AGE
+pod/movies-base-service-84cf9b8746-pj4xn   1/1     Running   0          4m40s
+
+NAME                          TYPE        CLUSTER-IP       EXTERNAL-IP   PORT<span class="o">(</span>S<span class="o">)</span>    AGE
+service/movies-base-service   ClusterIP   10.152.183.244   &lt;none&gt;        8080/TCP   4m40s
+
+NAME                                  READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/movies-base-service   1/1     1            1           4m40s
+
+NAME                                             DESIRED   CURRENT   READY   AGE
+replicaset.apps/movies-base-service-84cf9b8746   1         1         1       4m40s</code></pre></figure>
+
+<p><strong>Creating a load test</strong></p>
+
+<p>We have our service but in other to understand how it perform we will create an load test, we will start download <a href="https://jmeter.apache.org/" target="_blank">Apache JMeter</a> visiting the download page : <a href="https://jmeter.apache.org/download_jmeter.cgi" target="_blank">https://jmeter.apache.org/download_jmeter.cgi</a></p>
+
+<p>Now let’s unzip it and set in path that we could use :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span><span class="nb">sudo mkdir</span> /opt/jmeter
+<span class="nv">$ </span><span class="nb">cd</span> /opt/jmeter
+<span class="nv">$ </span><span class="nb">sudo </span>unzip ~/Downloads/apache-jmeter<span class="k">*</span>.zip
+<span class="nv">$ </span><span class="nb">sudo ln</span> <span class="nt">-s</span> apache-jmeter-5.2.1 default
+<span class="nv">$ </span><span class="nb">sudo ln</span> <span class="nt">-s</span> /opt/jmeter/default/bin/jmeter /usr/local/bin/jmeter
+<span class="nv">$ </span><span class="nb">sudo chmod</span> <span class="nt">-R</span> ugo+rw /opt/jmeter</code></pre></figure>
+
+<p>With this now we have available jmeter to be use, however if you are using are high dpi screen, such a 4k or a retina display the JMeter UI may be to small to read but you could edit the file <em>/opt/jmeter/default/bin/user.properties</em> and add this:</p>
+
+<figure class="highlight"><pre><code class="language-properties" data-lang="properties"><span class="py">jmeter.hidpi.mode</span><span class="p">=</span><span class="s">true</span>
+<span class="py">jmeter.hidpi.scale.factor</span><span class="p">=</span><span class="s">2.0</span>
+<span class="py">jmeter.toolbar.icons.size</span><span class="p">=</span><span class="s">48x48</span>
+<span class="py">jmeter.tree.icons.size</span><span class="p">=</span><span class="s">32x32</span>
+<span class="py">jsyntaxtextarea.font.family</span><span class="p">=</span><span class="s">Hack</span>
+<span class="py">jsyntaxtextarea.font.size</span><span class="p">=</span><span class="s">14</span></code></pre></figure>
+
+<p>Now we could execute jmeter, it will open we a empty test plan, lest just on <em>Name</em> : <em>k8s service load test</em></p>
+
+<p><a href="/assets/img/captures/base_movies_services_03.jpg" target="_blank"><img src="/assets/img/captures/base_movies_services_03.jpg" alt="JMeter test plan" style="width:80%; display:block; margin-left:auto; margin-right:auto;" /></a></p>
+
+<p>We will add a new thread group, right click on the tree panel on <em>k8s service load test</em> and select : <em>Add &gt; Thread (Users) -&gt; Thread Group</em>. Them we will set <em>Number of Threads (Users)</em> = <em>${__P(NUM_USERS)}</em>, <em>Ramp-up period (seconds)</em> = <em>${__P(RAMP_UP)}</em>, <em>Loop Count</em> = <em>Infinite</em>, <em>Specify Thread lifetime</em> = <em>Checked</em>, <em>Duration (Seconds)</em> = <em>${__P(DURATION)}</em>.</p>
+
+<p><a href="/assets/img/captures/base_movies_services_04.jpg" target="_blank"><img src="/assets/img/captures/base_movies_services_04.jpg" alt="JMeter thread group" style="width:80%; display:block; margin-left:auto; margin-right:auto;" /></a></p>
+
+<p>No we need to add a HTTP request, right click on the tree pane on <em>Thread Group</em> : <em>Add &gt; Sampler &gt; HTTP Request</em>. Them we will set <em>Name</em> = <em>${__P(TEST_URL)}</em>, <em>Server Name or IP</em> = <em>${__P(SERVICE_CLUSTER_IP)}</em>, <em>Port Number</em> = <em>${__P(SERVICE_PORT)}</em>, <em>Method</em> = <em>Get</em>, <em>Path</em> = <em>${__P(TEST_URL)}</em>.</p>
+
+<p><a href="/assets/img/captures/base_movies_services_05.jpg" target="_blank"><img src="/assets/img/captures/base_movies_services_05.jpg" alt="JMeter http request" style="width:80%; display:block; margin-left:auto; margin-right:auto;" /></a></p>
+
+<p>Now we will save our plan on k8s-sv-load-test/load_test.jmx.</p>
+
+<p>For launching our load test we wil create a new script on k8s-sv-load-test/k8s-sv-load-test.sh :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/bin/sh -</span>
+
+<span class="nb">set</span> <span class="nt">-o</span> errexit
+
+<span class="k">if</span> <span class="o">[</span> <span class="nv">$# </span><span class="nt">-ne</span> 5 <span class="o">]</span><span class="p">;</span> <span class="k">then
+  </span><span class="nb">echo</span> <span class="s2">"Illegal number of parameters, usage : "</span>
+  <span class="nb">echo</span> <span class="s2">" "</span>
+  <span class="nb">echo</span> <span class="s2">"  </span><span class="nv">$0</span><span class="s2"> &lt;service&gt; &lt;path&gt; &lt;users&gt; &lt;duration&gt; &lt;ramp up&gt;"</span>
+  <span class="nb">echo</span> <span class="s2">" "</span>
+  <span class="nb">echo</span> <span class="s2">" example: "</span>
+  <span class="nb">echo</span> <span class="s2">"  - </span><span class="nv">$0</span><span class="s2"> k8s-service /get/something 20 300 60"</span>
+  <span class="nb">exit </span>2
+<span class="k">fi
+
+</span><span class="nv">KUBECMD</span><span class="o">=</span><span class="s2">"kubectl"</span>
+<span class="k">if</span> <span class="o">[</span> <span class="nt">-x</span> <span class="s2">"</span><span class="si">$(</span><span class="nb">command</span> <span class="nt">-v</span> microk8s.kubectl<span class="si">)</span><span class="s2">"</span> <span class="o">]</span><span class="p">;</span> <span class="k">then
+  </span><span class="nv">KUBECMD</span><span class="o">=</span><span class="s2">"microk8s.kubectl"</span>
+<span class="k">fi
+
+</span><span class="nv">LOAD_DIR</span><span class="o">=</span><span class="s2">"</span><span class="si">$(</span>
+  <span class="nb">cd</span> <span class="s2">"</span><span class="si">$(</span><span class="nb">dirname</span> <span class="s2">"</span><span class="nv">$0</span><span class="s2">"</span><span class="si">)</span><span class="s2">"</span>
+  <span class="nb">pwd</span> <span class="nt">-P</span>
+<span class="si">)</span><span class="s2">"</span>
+<span class="nv">REPORT_DIR</span><span class="o">=</span><span class="s2">"</span><span class="nv">$LOAD_DIR</span><span class="s2">/report"</span>
+
+<span class="k">if</span> <span class="o">[</span> <span class="nt">-d</span> <span class="s2">"</span><span class="nv">$REPORT_DIR</span><span class="s2">"</span> <span class="o">]</span><span class="p">;</span> <span class="k">then
+  </span><span class="nb">echo</span> <span class="s2">"deleting report directory"</span>
+  <span class="nb">rm</span> <span class="nt">-Rf</span> <span class="s2">"</span><span class="nv">$REPORT_DIR</span><span class="s2">"</span>
+  <span class="nb">echo</span> <span class="s2">"report directory deleted"</span>
+<span class="k">fi
+
+</span><span class="nb">echo</span> <span class="s2">"creating report directory"</span>
+<span class="nb">mkdir</span> <span class="s2">"</span><span class="nv">$REPORT_DIR</span><span class="s2">"</span>
+<span class="nb">echo</span> <span class="s2">"report directory created"</span>
+
+<span class="nv">SERVICE</span><span class="o">=</span><span class="nv">$1</span>
+<span class="nv">TEST_URL</span><span class="o">=</span><span class="nv">$2</span>
+<span class="nv">SERVICE_CLUSTER_IP</span><span class="o">=</span><span class="si">$(</span><span class="nv">$KUBECMD</span> get <span class="s2">"service/</span><span class="nv">$SERVICE</span><span class="s2">"</span> <span class="nt">-o</span> <span class="nv">jsonpath</span><span class="o">=</span><span class="s1">'{.spec.clusterIP}'</span><span class="si">)</span>
+<span class="nv">SERVICE_PORT</span><span class="o">=</span><span class="si">$(</span><span class="nv">$KUBECMD</span> get <span class="s2">"service/</span><span class="nv">$SERVICE</span><span class="s2">"</span> <span class="nt">-o</span> <span class="nv">jsonpath</span><span class="o">=</span><span class="s1">'{.spec.ports.*.targetPort}'</span><span class="si">)</span>
+<span class="nv">NUM_USERS</span><span class="o">=</span><span class="nv">$3</span>
+<span class="nv">DURATION</span><span class="o">=</span><span class="nv">$4</span>
+<span class="nv">RAMP_UP</span><span class="o">=</span><span class="nv">$5</span>
+
+<span class="nb">echo</span> <span class="s2">"launching a load test on http://</span><span class="nv">$SERVICE_CLUSTER_IP</span><span class="s2">:</span><span class="nv">$SERVICE_PORT$TEST_URL</span><span class="s2"> with </span><span class="nv">$NUM_USERS</span><span class="s2"> "</span><span class="se">\</span>
+  <span class="s2">"user(s) during </span><span class="nv">$DURATION</span><span class="s2"> seconds, ramping up during </span><span class="nv">$RAMP_UP</span><span class="s2"> seconds"</span>
+
+<span class="nv">HEAP</span><span class="o">=</span><span class="s2">"-Xms1g -Xmx1g -XX:MaxMetaspaceSize=256m"</span>
+jmeter <span class="nt">-n</span> <span class="nt">-t</span> <span class="s2">"</span><span class="nv">$LOAD_DIR</span><span class="s2">/load_test.jmx"</span> <span class="nt">-l</span> <span class="s2">"</span><span class="nv">$REPORT_DIR</span><span class="s2">/run.jtl"</span> <span class="nt">-e</span> <span class="nt">-o</span> <span class="s2">"</span><span class="nv">$REPORT_DIR</span><span class="s2">"</span> <span class="nt">-j</span> <span class="s2">"</span><span class="nv">$LOAD_DIR</span><span class="s2">/jmeter.log"</span> <span class="se">\</span>
+  <span class="nt">-JSERVICE_CLUSTER_IP</span><span class="o">=</span><span class="s2">"</span><span class="nv">$SERVICE_CLUSTER_IP</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">-JSERVICE_PORT</span><span class="o">=</span><span class="s2">"</span><span class="nv">$SERVICE_PORT</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">-JNUM_USERS</span><span class="o">=</span><span class="s2">"</span><span class="nv">$NUM_USERS</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">-JDURATION</span><span class="o">=</span><span class="s2">"</span><span class="nv">$DURATION</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">-JRAMP_UP</span><span class="o">=</span><span class="s2">"</span><span class="nv">$RAMP_UP</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">-JTEST_URL</span><span class="o">=</span><span class="s2">"</span><span class="nv">$TEST_URL</span><span class="s2">"</span>
+
+<span class="nb">echo</span> <span class="s2">"load test done"</span>
+
+<span class="nv">WEB_REPORT_PATH</span><span class="o">=</span><span class="s2">"file:///</span><span class="nv">$REPORT_DIR</span><span class="s2">/index.html"</span>
+<span class="nb">echo</span> <span class="s2">"report available on </span><span class="nv">$WEB_REPORT_PATH</span><span class="s2">"</span></code></pre></figure>
+
+<p>This is a very generic script that allow to test any k8s that we have in our cluster, for example if we like to launch a load test against our movies service in the actuator/info endpoint during 30s that will ramp up in 1s :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>./k8s-sv-load-test/k8s-sv-load-test.sh movies-base-service /actuator/info 1 30 1
+deleting report directory
+report directory deleted
+creating report directory
+report directory created
+launching a load <span class="nb">test </span>on http://10.152.183.244:8080/actuator/info with 1  user<span class="o">(</span>s<span class="o">)</span> during 30 seconds, ramping up during 1 seconds
+Creating summariser &lt;summary&gt;
+Created the tree successfully using /home/jamedina/Sources/movies-base-service/k8s-sv-load-test/load_test.jmx
+Starting standalone <span class="nb">test</span> @ Thu Jan 02 18:25:14 GMT 2020 <span class="o">(</span>1577989514103<span class="o">)</span>
+Waiting <span class="k">for </span>possible Shutdown/StopTestNow/HeapDump/ThreadDump message on port 4445
+Warning: Nashorn engine is planned to be removed from a future JDK release
+summary +  88707 <span class="k">in </span>00:00:16 <span class="o">=</span> 5632.2/s Avg:     0 Min:     0 Max:    16 Err:     0 <span class="o">(</span>0.00%<span class="o">)</span> Active: 1 Started: 1 Finished: 0
+summary +  91647 <span class="k">in </span>00:00:14 <span class="o">=</span> 6427.8/s Avg:     0 Min:     0 Max:     2 Err:     0 <span class="o">(</span>0.00%<span class="o">)</span> Active: 0 Started: 1 Finished: 1
+summary <span class="o">=</span> 180354 <span class="k">in </span>00:00:30 <span class="o">=</span> 6010.0/s Avg:     0 Min:     0 Max:    16 Err:     0 <span class="o">(</span>0.00%<span class="o">)</span>
+Tidying up ...    @ Thu Jan 02 18:25:44 GMT 2020 <span class="o">(</span>1577989544259<span class="o">)</span>
+... end of run
+load <span class="nb">test </span><span class="k">done
+</span>report available on file:////home/jamedina/Sources/movies-base-service/k8s-sv-load-test/report/index.html</code></pre></figure>
+
+<p>When the test is complet we get a nice report in html, in this example was on <em>file:////home/jamedina/Sources/movies-base-service/k8s-sv-load-test/report/index.html</em></p>
+
+<p><a href="/assets/img/captures/base_movies_services_06.jpg" target="_blank"><img src="/assets/img/captures/base_movies_services_06.jpg" alt="JMeter report" style="width:80%; display:block; margin-left:auto; margin-right:auto;" /></a></p>
+
+<p>But this is a generic script so lets create a more specific to test our movies/genre endpoint on <em>load-test.sh</em> :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/bin/sh -</span>
+
+<span class="nb">set</span> <span class="nt">-o</span> errexit
+
+<span class="k">if</span> <span class="o">[</span> <span class="nv">$# </span><span class="nt">-ne</span> 3 <span class="o">]</span><span class="p">;</span> <span class="k">then
+    </span><span class="nb">echo</span> <span class="s2">"Illegal number of parameters, usage : "</span>
+    <span class="nb">echo</span> <span class="s2">" "</span>
+    <span class="nb">echo</span> <span class="s2">"  </span><span class="nv">$0</span><span class="s2"> &lt;users&gt; &lt;duration&gt; &lt;ramp up&gt;"</span>
+    <span class="nb">echo</span> <span class="s2">" "</span>
+    <span class="nb">echo</span> <span class="s2">" example: "</span>
+    <span class="nb">echo</span> <span class="s2">"  - </span><span class="nv">$0</span><span class="s2"> 20 300 60"</span>
+    <span class="nb">exit </span>2
+<span class="k">fi
+
+</span><span class="nv">SERVICE</span><span class="o">=</span><span class="s2">"movies-base-service"</span>
+<span class="nv">TEST_URL</span><span class="o">=</span><span class="s2">"/movies/sci-fi"</span>
+<span class="nv">NUM_USERS</span><span class="o">=</span><span class="nv">$1</span>
+<span class="nv">DURATION</span><span class="o">=</span><span class="nv">$2</span>
+<span class="nv">RAMP_UP</span><span class="o">=</span><span class="nv">$3</span>
+
+./k8s-sv-load-test/k8s-sv-load-test.sh <span class="nv">$SERVICE</span> <span class="nv">$TEST_URL</span> <span class="nv">$NUM_USERS</span> <span class="nv">$DURATION</span> <span class="nv">$RAMP_UP</span></code></pre></figure>
+
+<p>Now that we have our script ready we could launch it with</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"> ./load-test.sh 1 30 1
+deleting report directory
+report directory deleted
+creating report directory
+report directory created
+launching a load <span class="nb">test </span>on http://10.152.183.252:8080/movies/sci-fi with 1  user<span class="o">(</span>s<span class="o">)</span> during 30 seconds, ramping up during 1 seconds
+Creating summariser &lt;summary&gt;
+Created the tree successfully using /home/jamedina/src/movies-base-service/k8s-sv-load-test/load_test.jmx
+Starting standalone <span class="nb">test</span> @ Sat Jan 11 08:46:22 GMT 2020 <span class="o">(</span>1578732382783<span class="o">)</span>
+Waiting <span class="k">for </span>possible Shutdown/StopTestNow/HeapDump/ThreadDump message on port 4445
+Warning: Nashorn engine is planned to be removed from a future JDK release
+summary +    164 <span class="k">in </span>00:00:07 <span class="o">=</span>   23.2/s Avg:    42 Min:    40 Max:    65 Err:     0 <span class="o">(</span>0.00%<span class="o">)</span> Active: 1 Started: 1 Finished: 0
+summary +    570 <span class="k">in </span>00:00:23 <span class="o">=</span>   24.8/s Avg:    40 Min:    38 Max:    59 Err:     0 <span class="o">(</span>0.00%<span class="o">)</span> Active: 0 Started: 1 Finished: 1
+summary <span class="o">=</span>    734 <span class="k">in </span>00:00:30 <span class="o">=</span>   24.4/s Avg:    40 Min:    38 Max:    65 Err:     0 <span class="o">(</span>0.00%<span class="o">)</span>
+Tidying up ...    @ Sat Jan 11 08:46:52 GMT 2020 <span class="o">(</span>1578732412977<span class="o">)</span>
+... end of run
+load <span class="nb">test </span><span class="k">done
+</span>report available on file:////home/jamedina/src/movies-base-service/k8s-sv-load-test/report/index.html</code></pre></figure>
+
+<p>And this is the report that we get</p>
+
+<p><a href="/assets/img/captures/base_movies_services_07.jpg" target="_blank"><img src="/assets/img/captures/base_movies_services_07.jpg" alt="JMeter report on sci-fi movies" style="width:80%; display:block; margin-left:auto; margin-right:auto;" /></a></p>
+
+<p><strong>Getting data from Grafana</strong></p>
+
+<p>Now that we have done a simple test we could go to Grafana and look at the graph for this small test</p>
+
+<p><a href="/assets/img/captures/base_movies_services_08.jpg" target="_blank"><img src="/assets/img/captures/base_movies_services_08.jpg" alt="Grafana first test" style="width:80%; display:block; margin-left:auto; margin-right:auto;" /></a></p>
+
+<p>We could see in this test that initial we have a small increase of CPU and them a peak, this was quite rapidly because our ramp up period was just one second, 
+them we see a dropdown after our test.</p>
+
+<p>In terms of memory we see how slightly increase and remain unmodified during the test.</p>
+
+<p><strong>Scaling</strong></p>
+
+<p>For the next test we will need to increase and decrease the replicas of our service, we will use an small script for this mater name scale.sh</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/bin/sh -</span>
+
+<span class="nb">set</span> <span class="nt">-o</span> errexit
+
+<span class="k">if</span> <span class="o">[</span> <span class="nv">$# </span><span class="nt">-ne</span> 2 <span class="o">]</span><span class="p">;</span> <span class="k">then
+  </span><span class="nb">echo</span> <span class="s2">"Illegal number of parameters, usage : "</span>
+  <span class="nb">echo</span> <span class="s2">" "</span>
+  <span class="nb">echo</span> <span class="s2">"  </span><span class="nv">$0</span><span class="s2"> &lt;k8-deployment-name&gt; &lt;replicas&gt;"</span>
+  <span class="nb">echo</span> <span class="s2">" "</span>
+  <span class="nb">echo</span> <span class="s2">" examples: "</span>
+  <span class="nb">echo</span> <span class="s2">"  - </span><span class="nv">$0</span><span class="s2"> my-deployment 5"</span>
+  <span class="nb">echo</span> <span class="s2">"  - </span><span class="nv">$0</span><span class="s2"> my-deployment 0"</span>
+  <span class="nb">exit </span>2
+<span class="k">fi
+
+</span><span class="nv">KUBECMD</span><span class="o">=</span><span class="s2">"kubectl"</span>
+<span class="k">if</span> <span class="o">[</span> <span class="nt">-x</span> <span class="s2">"</span><span class="si">$(</span><span class="nb">command</span> <span class="nt">-v</span> microk8s.kubectl<span class="si">)</span><span class="s2">"</span> <span class="o">]</span><span class="p">;</span> <span class="k">then
+  </span><span class="nv">KUBECMD</span><span class="o">=</span><span class="s2">"microk8s.kubectl"</span>
+<span class="k">fi
+
+</span><span class="nv">DEPLOYMENT_NAME</span><span class="o">=</span><span class="s2">"</span><span class="nv">$1</span><span class="s2">"</span>
+<span class="nv">WANTED_REPLICAS</span><span class="o">=</span><span class="s2">"</span><span class="nv">$2</span><span class="s2">"</span>
+<span class="nv">REPLICAS</span><span class="o">=</span><span class="s2">"0"</span>
+<span class="nv">PREVIOUS_REPLICAS</span><span class="o">=</span><span class="s2">"-1"</span>
+
+replicas<span class="o">()</span> <span class="o">{</span>
+  <span class="nv">REPLICAS</span><span class="o">=</span><span class="si">$(</span><span class="nv">$KUBECMD</span> get <span class="s2">"deployment/</span><span class="nv">$DEPLOYMENT_NAME</span><span class="s2">"</span> <span class="nt">-o</span> <span class="nv">jsonpath</span><span class="o">=</span><span class="s1">'{.status.readyReplicas}'</span><span class="si">)</span>
+  <span class="k">if </span><span class="nb">test</span> <span class="nt">-z</span> <span class="s2">"</span><span class="nv">$REPLICAS</span><span class="s2">"</span><span class="p">;</span> <span class="k">then
+    </span><span class="nv">REPLICAS</span><span class="o">=</span><span class="s2">"0"</span>
+  <span class="k">fi</span>
+<span class="o">}</span>
+
+<span class="nb">echo</span> <span class="s2">"checking deployment: </span><span class="nv">$DEPLOYMENT_NAME</span><span class="s2">"</span>
+
+replicas
+<span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$REPLICAS</span><span class="s2">"</span> <span class="nt">-eq</span> <span class="s2">"</span><span class="nv">$WANTED_REPLICAS</span><span class="s2">"</span> <span class="o">]</span><span class="p">;</span> <span class="k">then
+  </span><span class="nb">echo</span> <span class="s2">"we dont need to scale allready got </span><span class="nv">$REPLICAS</span><span class="s2"> replicas ready"</span>
+  <span class="nb">exit </span>0
+<span class="k">fi
+
+</span><span class="nb">echo</span> <span class="s2">"scaling deployment: </span><span class="nv">$DEPLOYMENT_NAME</span><span class="s2"> to </span><span class="nv">$WANTED_REPLICAS</span><span class="s2"> replicas"</span>
+
+<span class="nv">$KUBECMD</span> scale deployment/movies-base-service <span class="nt">--replicas</span> <span class="s2">"</span><span class="nv">$WANTED_REPLICAS</span><span class="s2">"</span>
+
+<span class="nv">START</span><span class="o">=</span><span class="si">$(</span><span class="nb">date</span> +%s.%N<span class="si">)</span>
+
+<span class="k">while </span><span class="nb">true</span><span class="p">;</span> <span class="k">do
+  if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$REPLICAS</span><span class="s2">"</span> <span class="o">!=</span> <span class="s2">"</span><span class="nv">$PREVIOUS_REPLICAS</span><span class="s2">"</span> <span class="o">]</span><span class="p">;</span> <span class="k">then
+    </span><span class="nb">echo</span> <span class="s2">"waiting for scaling: got </span><span class="nv">$REPLICAS</span><span class="s2"> replicas, want </span><span class="nv">$WANTED_REPLICAS</span><span class="s2">"</span>
+    <span class="nv">PREVIOUS_REPLICAS</span><span class="o">=</span><span class="s2">"</span><span class="nv">$REPLICAS</span><span class="s2">"</span>
+  <span class="k">fi
+  if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$REPLICAS</span><span class="s2">"</span> <span class="nt">-eq</span> <span class="s2">"</span><span class="nv">$WANTED_REPLICAS</span><span class="s2">"</span> <span class="o">]</span><span class="p">;</span> <span class="k">then
+    </span><span class="nv">END</span><span class="o">=</span><span class="si">$(</span><span class="nb">date</span> +%s.%N<span class="si">)</span>
+    <span class="nv">DIFF</span><span class="o">=</span><span class="si">$(</span><span class="nb">echo</span> <span class="s2">"</span><span class="nv">$END</span><span class="s2"> - </span><span class="nv">$START</span><span class="s2">"</span> | bc<span class="si">)</span>
+    <span class="nb">echo</span> <span class="s2">"scaling complete, </span><span class="nv">$REPLICAS</span><span class="s2"> ready, in </span><span class="nv">$DIFF</span><span class="s2"> seconds"</span>
+
+    <span class="nb">exit </span>0
+  <span class="k">fi
+  </span>replicas
+<span class="k">done</span></code></pre></figure>
+
+<p>This script will tell K8s to scale our replica to a number and wait until we have the number of replicas that we ask for.</p>
+
+<p>First let’s scale our application to 0 replicas.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>./scale.sh movies-base-service 0
+checking deployment: movies-base-service
+scaling deployment: movies-base-service to 0 replicas
+deployment.apps/movies-base-service scaled
+waiting <span class="k">for </span>scaling: got 1 replicas, want 0
+waiting <span class="k">for </span>scaling: got 0 replicas, want 0
+scaling <span class="nb">complete</span>, 0 ready, <span class="k">in</span> .057501722 seconds</code></pre></figure>
+
+<p>Not let’s scale our service to 5 replicas.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>./scale.sh movies-base-service 5
+checking deployment: movies-base-service
+scaling deployment: movies-base-service to 5 replicas
+deployment.apps/movies-base-service scaled
+waiting <span class="k">for </span>scaling: got 0 replicas, want 5
+waiting <span class="k">for </span>scaling: got 1 replicas, want 5
+waiting <span class="k">for </span>scaling: got 2 replicas, want 5
+waiting <span class="k">for </span>scaling: got 3 replicas, want 5
+waiting <span class="k">for </span>scaling: got 4 replicas, want 5
+waiting <span class="k">for </span>scaling: got 5 replicas, want 5
+scaling <span class="nb">complete</span>, 5 ready, <span class="k">in </span>15.111852160 seconds</code></pre></figure>
+
+<p>And now we will repeat our test but with <em>10</em> concurrent users :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>./load-test.sh 10 30 1          
+deleting report directory
+report directory deleted
+creating report directory
+report directory created
+launching a load <span class="nb">test </span>on http://10.152.183.252:8080/movies/sci-fi with 10  user<span class="o">(</span>s<span class="o">)</span> during 30 seconds, ramping up during 1 seconds
+Creating summariser &lt;summary&gt;
+Created the tree successfully using /home/jamedina/src/movies-base-service/k8s-sv-load-test/load_test.jmx
+Starting standalone <span class="nb">test</span> @ Sat Jan 11 09:36:12 GMT 2020 <span class="o">(</span>1578735372194<span class="o">)</span>
+Waiting <span class="k">for </span>possible Shutdown/StopTestNow/HeapDump/ThreadDump message on port 4445
+Warning: Nashorn engine is planned to be removed from a future JDK release
+summary +    486 <span class="k">in </span>00:00:18 <span class="o">=</span>   27.5/s Avg:   347 Min:    44 Max:  1118 Err:     0 <span class="o">(</span>0.00%<span class="o">)</span> Active: 10 Started: 10 Finished: 0
+summary +    327 <span class="k">in </span>00:00:13 <span class="o">=</span>   25.1/s Avg:   401 Min:   108 Max:  1204 Err:     0 <span class="o">(</span>0.00%<span class="o">)</span> Active: 0 Started: 10 Finished: 10
+summary <span class="o">=</span>    813 <span class="k">in </span>00:00:31 <span class="o">=</span>   26.5/s Avg:   369 Min:    44 Max:  1204 Err:     0 <span class="o">(</span>0.00%<span class="o">)</span>
+Tidying up ...    @ Sat Jan 11 09:36:43 GMT 2020 <span class="o">(</span>1578735403018<span class="o">)</span>
+... end of run
+load <span class="nb">test </span><span class="k">done
+</span>report available on file:////home/jamedina/src/movies-base-service/k8s-sv-load-test/report/index.html</code></pre></figure>
+
+<p>And this is the report that we got :</p>
+
+<p><a href="/assets/img/captures/base_movies_services_09.jpg" target="_blank"><img src="/assets/img/captures/base_movies_services_09.jpg" alt="Report 10 users 5 pods" style="width:80%; display:block; margin-left:auto; margin-right:auto;" /></a></p>
+
+<p>We like to get now the data from Grafana but we will create a copy of the <em>Pods</em> dashboard and name “movies” then we will edit the template to get our al movies pods :</p>
+
+<p><a href="/assets/img/captures/base_movies_services_10.jpg" target="_blank"><img src="/assets/img/captures/base_movies_services_10.jpg" alt="Edit movies dashboard" style="width:80%; display:block; margin-left:auto; margin-right:auto;" /></a></p>
+
+<p>Finally we will get from Grafana the graph for our 5 pods 10 users test :</p>
+
+<p><a href="/assets/img/captures/base_movies_services_11.jpg" target="_blank"><img src="/assets/img/captures/base_movies_services_11.jpg" alt="Edit movies dashboard" style="width:80%; display:block; margin-left:auto; margin-right:auto;" /></a></p>
+
+<p><strong>Getting our measure</strong></p>
+
+<p>Now that we have this tools ready we will defined how we are going to measure this base service, and hopefuly futher services on the nexst parts for the series. We know that we have dozen of different metrics to get from our tools but we are going some very simple with just few data points, and we are not focus on a particular runtime, so they will be not JVM metrics, because we will not haven in all the parts of this series.</p>
+
+<p>We will do this procedure with 1, 10, 25 and 50 concurrent users and 1 replica :</p>
+
+<ul>
+  <li>Scale the replicas to 0</li>
+  <li>Stop our cluster</li>
+  <li>Start our cluster</li>
+  <li>Scale to desired number replicas</li>
+  <li>Run the test for the desire set of concurrent users during 10 minutes with a ramp up of 1 minute</li>
+  <li>If all request are OK (HTTP response code is 200) :
+    <ul>
+      <li>Get from the JMeter report :
+        <ul>
+          <li>Average response time</li>
+          <li>Transactions per second</li>
+        </ul>
+      </li>
+      <li>Get from Grafana
+        <ul>
+          <li>Max CPU Usage</li>
+          <li>Max Memory Usage</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>If some request are not OK (HTTP response code is not 200)
+    <ul>
+      <li>We will increase the desire number of replicas to one more</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Then we will repeat this procedure until we got the results for 100 concurrent users.</p>
+
+<p>We will scale down our replicas and restart our cluster to guarantee that each test is a fresh run, including the database load and connections.</p>
+
+<p><strong>The Results</strong></p>
+
+<p>This are the results for this first example in the series, if you repeat the steps you may get different numbers because they depend on the cluster and the computer that is launching the tests.</p>
+
+<table class="display data-table compact cell-border">
+  <thead>
+    <tr>
+      <th>C. Users</th>
+      <th>Pods</th>
+      <th>ART</th>
+      <th>TPS</th>
+      <th>Max CPU</th>
+      <th>Max MEM</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="dt-body-right">1</td>
+      <td class="dt-body-right">1</td>
+      <td class="dt-body-right">39.16</td>
+      <td class="dt-body-right">25.49</td>
+      <td class="dt-body-right">403</td>
+      <td class="dt-body-right">474</td>
+    </tr>
+    <tr>
+      <td class="dt-body-right">10</td>
+      <td class="dt-body-right">1</td>
+      <td class="dt-body-right">570.47</td>
+      <td class="dt-body-right">16.73</td>
+      <td class="dt-body-right">916</td>
+      <td class="dt-body-right">487</td>
+    </tr>
+    <tr>
+      <td class="dt-body-right">25</td>
+      <td class="dt-body-right">3</td>
+      <td class="dt-body-right">1615.82</td>
+      <td class="dt-body-right">14.72</td>
+      <td class="dt-body-right">1049</td>
+      <td class="dt-body-right">1454</td>
+    </tr>
+    <tr>
+      <td class="dt-body-right">50</td>
+      <td class="dt-body-right">5</td>
+      <td class="dt-body-right">3190.98</td>
+      <td class="dt-body-right">14.89</td>
+      <td class="dt-body-right">1351</td>
+      <td class="dt-body-right">2499</td>
+    </tr>
+  </tbody>
+</table>
+<p>Java 8  - Spring Boot 2.0 - Web - Spring Web - Spring Data JDBC	default settings, unoptimized</p>
+
+<p>With this will close this first article, next we will try to optimize this first service and compare the results with the base.</p>
+
+<p><em>Note: The full code of this service is available at this <a href="https://github.com/LearningByExample/movies-base-service" target="_blank">repository</a>.</em></p>
+
+<p><strong>Resources</strong></p>
+
+<ul>
+  <li><a href="https://docs.spring.io/spring-data/jdbc/docs/current/reference/html/#jdbc.query-methods" target="_blank">https://docs.spring.io/spring-data/jdbc/docs/current/reference/html/#jdbc.query-methods</a></li>
+  <li><a href="https://www.baeldung.com/spring-jdbc-jdbctemplate" target="_blank">https://www.baeldung.com/spring-jdbc-jdbctemplate</a></li>
+  <li><a href="https://hub.docker.com/_/openjdk" target="_blank">https://hub.docker.com/_/openjdk</a></li>
+  <li><a href="https://spring.io/guides/gs/spring-boot-docker/" target="_blank">https://spring.io/guides/gs/spring-boot-docker/</a></li>
+  <li><a href="https://spring.io/guides/gs/spring-boot-kubernetes/" target="_blank">https://spring.io/guides/gs/spring-boot-kubernetes/</a></li>
+  <li><a href="https://www.baeldung.com/spring-boot-kubernetes-self-healing-apps" target="_blank">https://www.baeldung.com/spring-boot-kubernetes-self-healing-apps</a></li>
+  <li><a href="http://jmeter.apache.org/usermanual/hints_and_tips.html#hidpi" target="_blank">http://jmeter.apache.org/usermanual/hints_and_tips.html#hidpi</a></li>
+  <li><a href="https://jmeter.apache.org/usermanual/best-practices.html" target="_blank">https://jmeter.apache.org/usermanual/best-practices.html</a></li>
+</ul>
+
+    
+
+    <div id="disqus_thread"></div>
+    <script>
+
+    /**
+    *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+    *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+
+    var disqus_config = function () {
+    this.page.url = "https://juan-medina.com/2020/01/11/optimizing-k8s-sv-01/";
+    this.page.identifier = "/2020/01/11/optimizing-k8s-sv-01/"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    this.page.title = "Optimizing Kubernetes Services - Part 1 &#58 Base service";
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = '//juan-medina-com.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+    
+
+    </div>
+  </section>
+
+  <section class="profile">
+    <div class="profile__card">
+      <div class="profile__img">
+        <figure class="absolute-bg" style="background-image: url('/assets/img/pp.jpg');"></figure>
+      </div>
+      <div class="profile__container">
+        <p><b>About Juan Medina</b><br/> I'm just a normal geek that code all kind of stuff, from complex corporate applications to games.<br/> <br/> Games, music, movies and traveling are my escape pods.</p>
+        
+          <ul class="profile__social">
+            
+              <li><a class="fa fa-lg fa-envelope-o" href="mailto:mail@juan-medina.com"></a></li>
+            
+            
+              <li><a class="fa fa-lg fa-address-card" href="https://juan-medina.com/cv" target="_blank"></a></li>
+            
+              <li><a class="fa fa-lg fa-github" href="https://github.com/juan-medina" target="_blank"></a></li>
+            
+              <li><a class="fa fa-lg fa-twitter" href="https://twitter.com/JuanMedinaCode" target="_blank"></a></li>
+            
+              <li><a class="fa fa-lg fa-stack-overflow" href="http://stackoverflow.com/users/7910403/juan-medina" target="_blank"></a></li>
+            
+          </ul>
+        
+      </div>
+    </div>
+  </section>
+
+</article>
+
+
+  <section class="next">
+    <a class="next__link" href="/2019/12/16/jobs-k8s/" style="background-image: url('/assets/img/gears.jpg');">
+      <div class="next__container">
+        <span>Read Next</span>
+        <h2>Creating Jobs in Kubernetes</h2>
+      </div>
+    </a>
+  </section>
+
+
+    </main>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/rellax/1.0.0/rellax.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+<script type="text/javascript" src="/assets/js/app.js"></script>
+
+
+  </body>
+
+</html>
