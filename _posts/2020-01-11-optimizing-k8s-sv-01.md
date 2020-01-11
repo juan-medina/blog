@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Optimizing Kubernetes Services - Part 1 &#58 Base service
-date: 2019-12-28 00:00:00
+date: 2020-01-11 23:00:00
 author: Juan Medina
 comments: true
 categories: [Cloud,Programming]
