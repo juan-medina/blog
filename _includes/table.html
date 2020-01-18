@@ -1,0 +1,39 @@
+{% assign numbers = '0,1,2,3,4,5,6,7,8,9,.' | split: ',' %} 
+
+{% assign table = include.table %}
+<table class="display data-table compact cell-border">
+    <thead>
+      <tr>
+        {% for header in table.headers %}
+        <th>{{ header }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody> 
+      {% for row in table.rows %}
+      <tr>
+        {% for col in row.cols %}
+
+            {% assign is_number = true %}            
+            {% capture i %}{{col}}{% endcapture %}
+            {% assign length = i | size | minus: 1 %}
+            {% for letter in (0..length) %}
+            {% assign digit = i | slice: letter %}            
+            {% if numbers contains digit %}
+            {% else %}
+            {% assign is_number = false %}
+            {% endif %}
+            {% endfor %}       
+
+            {% if is_number %}
+            <td class="dt-body-right">{{ col }}</td>
+            {% else %}
+            <td class="dt-body-left">{{ col }}</td>
+            {% endif %}
+        
+        {% endfor %}        
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {{ table.legend }}

@@ -1,0 +1,195 @@
+tables:
+  table-1:
+    legend: Java 8  - Spring Boot 2.2.2 - Spring Web - Spring Data JDBC default settings, unoptimized
+    headers:
+    - C. Users
+    - Pods
+    - ART
+    - TPS
+    - Max CPU
+    - Max MEM
+    rows:
+      - cols :
+        - 1
+        - 1	
+        - 39.16	
+        - 25.49	
+        - 403
+        - 474
+      - cols :
+        - 10
+        - 1
+        - 570.47
+        - 16.73
+        - 916
+        - 487
+      - cols :
+        - 25
+        - 3
+        - 1615.82
+        - 14.72
+        - 1049
+        - 1454
+      - cols :
+        - 50
+        - 5
+        - 3190.98
+        - 14.89
+        - 1351
+        - 2499
+  table-2:
+    legend: Java 11
+    headers:
+    - Step
+    - C. Users
+    - Pods
+    - ART
+    - TPS
+    - Max CPU
+    - Max MEM
+    rows:
+      - cols :
+        - "01 base"
+        - 10
+        - 1
+        - 570.47
+        - 16.73
+        - 916
+        - 487  
+      - cols :
+        - 02 Java 11
+        - 10
+        - 1
+        - 517.01
+        - 18.47
+        - 875
+        - 918
+  table-3:
+    legend: jlink
+    headers:
+    - Step
+    - C. Users
+    - Pods
+    - ART
+    - TPS
+    - Max CPU
+    - Max MEM
+    rows:
+      - cols :
+        - 01 base
+        - 10
+        - 1
+        - 570.47
+        - 16.73
+        - 916
+        - 487  
+      - cols :
+        - 02 Java 11
+        - 10
+        - 1
+        - 517.01
+        - 18.47
+        - 875
+        - 918  
+      - cols :
+        - 03 jlink
+        - 10
+        - 1
+        - 518.97
+        - 18.41
+        - 875
+        - 787
+  table-4:
+    legend: parallel gc
+    headers:
+    - Step
+    - C. Users
+    - Pods
+    - ART
+    - TPS
+    - Max CPU
+    - Max MEM
+    rows:
+      - cols :
+        - 01 base
+        - 10
+        - 1
+        - 570.47
+        - 16.73
+        - 916
+        - 487  
+      - cols :
+        - 02 Java 11
+        - 10
+        - 1
+        - 517.01
+        - 18.47
+        - 875
+        - 918  
+      - cols :
+        - 03 jlink
+        - 10
+        - 1
+        - 518.97
+        - 18.41
+        - 875
+        - 787            
+      - cols :
+        - 04 parallel gc
+        - 10
+        - 1
+        - 505.59
+        - 18.88
+        - 781
+        - 4065
+  table-5:
+    legend: heap
+    headers:
+    - Step
+    - C. Users
+    - Pods
+    - ART
+    - TPS
+    - Max CPU
+    - Max MEM
+    rows:
+      - cols :
+        - 01 base
+        - 10
+        - 1
+        - 570.47
+        - 16.73
+        - 916
+        - 487  
+      - cols :
+        - 02 Java 11
+        - 10
+        - 1
+        - 517.01
+        - 18.47
+        - 875
+        - 918  
+      - cols :
+        - 03 jlink
+        - 10
+        - 1
+        - 518.97
+        - 18.41
+        - 875
+        - 787            
+      - cols :
+        - 04 parallel gc
+        - 10
+        - 1
+        - 505.59
+        - 18.88
+        - 781
+        - 4065      
+      - cols :
+        - 05 heap
+        - 10
+        - 1
+        - 468.28
+        - 20.39
+        - 800
+        - 1148
