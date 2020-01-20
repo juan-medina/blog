@@ -218,9 +218,11 @@ Now we will run our performance test as before to get  :
 
 {% include table.html table=site.data.optimizing-k8s-sv-02.tables.table-3 %}
 
-**Changing the garbage collector**
+We could see that there is not major changes using a JRE build with jlink, our docker is just smaller, that will help when we need to install a image into our cluster but will not benefit in overall to response time or even the memory that we use.
 
-When we have run our service we let java to choose which Java Collector to use, in Java 8 the default garbage collector is the parallel gc but since Java 9 the default garbage collector is G1, however we could change the one that we use.
+**Checking the Memory Usage**
+
+The things that sound a bit odd and we will try to explain next is why we are using so much memory, so we need a tool to understand this futher so we will use [VisualVM](https://visualvm.github.io/){:target="_blank"}, but first we will need to modify our deployment in order been able to pass parameters to the JVM when we start our service, and we will to enable the JMX port that we will use.
 
 First we will modify our Dockerfile : 
 
@@ -275,7 +277,11 @@ spec:
           resources: {}
           env:
             - name: "JAVA_OPTS"
-              value: "-XX:+UseParallelGC"
+              value: >-
+                -Dcom.sun.management.jmxremote 
+                -Dcom.sun.management.jmxremote.port=12345 
+                -Dcom.sun.management.jmxremote.authenticate=false 
+                -Dcom.sun.management.jmxremote.ssl=false
           readinessProbe:
             httpGet:
               path: /actuator/health
@@ -319,13 +325,101 @@ status:
   loadBalancer: {}
 {% endhighlight %}
 
-We need to build and deploy our application, to repeat our load test and getting this results : 
+But in order to use JMX we need to add to our jlink.sh the *jdk.management.agent* module : 
 
-{% include table.html table=site.data.optimizing-k8s-sv-02.tables.table-4 %}
+{% highlight bash %}
+#!/bin/sh -
 
-As we could see now we have a much better ART, TPS and Max CPU, however the Max MEM has increase drastically, in this is because our garbage collector is not so efficient freeing memory but is more efficient for our performance. However we have not configured yet how much heap we need.
+set -o errexit
 
-We will modify our deployment to increase our heap : 
+BASE_DIR="$(
+  cd "$(dirname "$0")"
+  pwd -P
+)"
+
+DEPS_DIR="$BASE_DIR/deps"
+
+mkdir -p "$DEPS_DIR"
+
+echo "extracting jar"
+cd "$DEPS_DIR"
+jar -xf ../*.jar
+echo "jar extracted"
+
+echo "generate JVM modules list"
+EX_JVM_DEPS="jdk.crypto.ec,jdk.management.agent"
+JVM_DEPS=$(jdeps -s --multi-release 11 -recursive -cp BOOT-INF/lib/*.jar BOOT-INF/classes | \
+  grep -Po '(java|jdk)\..*' | \
+  sort -u | \
+  tr '\n' ',')
+MODULES="$JVM_DEPS$EX_JVM_DEPS"
+echo "$MODULES"
+echo "JVM modules list generated"
+
+echo "doing jlink"
+jlink \
+    --verbose \
+    --module-path "$JAVA_HOME/jmods", \
+    --add-modules "$MODULES" \
+    --compress 2 \
+    --no-header-files \
+    --no-man-pages \
+    --strip-debug \
+    --output "$DEPS_DIR/jre-jlink"
+
+echo "jlink done"
+
+cd "$BASE_DIR"
+{% endhighlight %}
+
+Not we will and deploy our application.
+
+{% highlight bash %}
+$ ./build.sh
+$ ./deploy.sh
+{% endhighlight %}
+
+Now we will forward our port 12345 for the pod to our localhost :
+
+{% highlight bash %}
+$ microk8s.kubectl get pod --selector=app=movies-spring-web   
+NAME                                 READY   STATUS    RESTARTS   AGE
+movies-spring-web-6554d5fd68-kxvxg   1/1     Running   0          7m52s
+
+$ microk8s.kubectl port-forward movies-spring-web-6554d5fd68-kxvxg 12345:12345
+Forwarding from 127.0.0.1:12345 -> 12345
+Forwarding from [::1]:12345 -> 12345
+{% endhighlight %}
+
+Now we should open VisualVM and add a JMX connection to our service on *locahost:12345* :
+
+[![VisualVM ](/assets/img/captures/movies_spring_web_01.jpg){:style="width:80%; display:block; margin-left:auto; margin-right:auto;"}](/assets/img/captures/movies_spring_web_01.jpg){:target="_blank"}
+
+Now we could click on our application and the select the tab monitor to see some graphs, I choose to only see CPU and threads : 
+
+[![VisualVM ](/assets/img/captures/movies_spring_web_02.jpg){:style="width:80%; display:block; margin-left:auto; margin-right:auto;"}](/assets/img/captures/movies_spring_web_02.jpg){:target="_blank"}
+
+As we could see our heap is about 1GB, with a maximun of 16GB however we are only using 80M at peak, we could see in the CPU that our garbage collector is almost doing nothing until he enter a cleaning cycle the an small CPU usage and our heap usage drops.
+
+In this moment we do not have any traffic on the service, lest run our load test for a couple of minutes. 
+
+{% highlight bash %}
+$ ./load-test.sh 10 120 30
+{% endhighlight %}
+
+I'll leave a couple of minutes after the test to wait that the garbage collector start again and grab more data from VisualVM : 
+
+[![VisualVM ](/assets/img/captures/movies_spring_web_03.jpg){:style="width:80%; display:block; margin-left:auto; margin-right:auto;"}](/assets/img/captures/movies_spring_web_03.jpg){:target="_blank"}
+
+As we could see know we use around 435M of heap, and the gc busy during our test, them we could see how drops afterwards.
+
+Let's make a bit of sense on what we have seen so far. 
+
+First we do not specify any memory limit on the deployment of our containers so that's the reason that our maximum heap is set to 16G, them even without using much initial heap but the JVM is prepare to use a full G if need, up to 16G if needs more. 
+
+Our garbage collector is trying to do it best to keep up and clean memory when he could.
+
+To just test some limit we could run more test with different loads but I think that with 450M should be ok and starting with 250M, so I going to change our VM options in our deployment : 
 
 {% highlight yaml %}
 apiVersion: apps/v1
@@ -354,7 +448,13 @@ spec:
           resources: {}
           env:
             - name: "JAVA_OPTS"
-              value: "-XX:+UseParallelGC -Xms1g -Xmx1g"
+              value: >-
+                -Xms250m
+                -Xmx450m
+                -Dcom.sun.management.jmxremote
+                -Dcom.sun.management.jmxremote.port=12345
+                -Dcom.sun.management.jmxremote.authenticate=false
+                -Dcom.sun.management.jmxremote.ssl=false
           readinessProbe:
             httpGet:
               path: /actuator/health
@@ -398,9 +498,151 @@ status:
   loadBalancer: {}
 {% endhighlight %}
 
-We have increase our heap to 1gb, let's run again our load test : 
+We do not need to build our application again, since we are not changing our docker just deploy it : 
 
-{% include table.html table=site.data.optimizing-k8s-sv-02.tables.table-5 %}
+{% highlight bash %}
+$ ./deploy.sh
+{% endhighlight %}
+
+Now we will forward the port again them connect with VisualVM and repeat the test for get a new graph : 
+
+[![VisualVM ](/assets/img/captures/movies_spring_web_04.jpg){:style="width:80%; display:block; margin-left:auto; margin-right:auto;"}](/assets/img/captures/movies_spring_web_04.jpg){:target="_blank"}
+
+Now we could see that our memory is better utilize, let's now restart our cluster and run our performance test again to check how it perform in comparison with the previous tests, first we modify our deployment to remove the jmx port but keep the heap configuration: 
+
+{% highlight yaml %}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: movies-spring-web
+  name: movies-spring-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: movies-spring-web
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: movies-spring-web
+    spec:
+      containers:
+        - image: localhost:32000/movies-spring-web:0.0.1
+          imagePullPolicy: Always
+          name: movies-spring-web
+          resources: {}
+          env:
+            - name: "JAVA_OPTS"
+              value: >-
+                -Xms250m
+                -Xmx450m
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+          livenessProbe:
+            httpGet:
+              path: /actuator/info
+              port: 8080
+          volumeMounts:
+            - name: db-credentials
+              mountPath: "/etc/movies-db"
+              readOnly: true
+            - name: tmp
+              mountPath: "/tmp"
+              readOnly: false
+      volumes:
+        - name: db-credentials
+          secret:
+            secretName: moviesuser.movies-db-cluster.credentials
+        - name: tmp
+          emptyDir: {}
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: movies-spring-web
+  name: movies-spring-web
+spec:
+  ports:
+    - name: 8080-8080
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: movies-spring-web
+  type: ClusterIP
+status:
+  loadBalancer: {}
+{% endhighlight %}
+
+
+We will remove the jdk.management.agent module as well from our jlink.sh :
+
+{% highlight bash %}
+#!/bin/sh -
+
+set -o errexit
+
+BASE_DIR="$(
+  cd "$(dirname "$0")"
+  pwd -P
+)"
+
+DEPS_DIR="$BASE_DIR/deps"
+
+mkdir -p "$DEPS_DIR"
+
+echo "extracting jar"
+cd "$DEPS_DIR"
+jar -xf ../*.jar
+echo "jar extracted"
+
+echo "generate JVM modules list"
+EX_JVM_DEPS="jdk.crypto.ec"
+JVM_DEPS=$(jdeps -s --multi-release 11 -recursive -cp BOOT-INF/lib/*.jar BOOT-INF/classes | \
+  grep -Po '(java|jdk)\..*' | \
+  sort -u | \
+  tr '\n' ',')
+MODULES="$JVM_DEPS$EX_JVM_DEPS"
+echo "$MODULES"
+echo "JVM modules list generated"
+
+echo "doing jlink"
+jlink \
+    --verbose \
+    --module-path "$JAVA_HOME/jmods", \
+    --add-modules "$MODULES" \
+    --compress 2 \
+    --no-header-files \
+    --no-man-pages \
+    --strip-debug \
+    --output "$DEPS_DIR/jre-jlink"
+
+echo "jlink done"
+
+cd "$BASE_DIR"
+{% endhighlight %}
+
+Then we build & deploy our service :
+
+{% highlight bash %}
+$ ./build.sh
+$ ./deploy.sh
+{% endhighlight %}
+
+And now we follow the procedure, including scaling and restart to perform a clean test : 
+
+{% include table.html table=site.data.optimizing-k8s-sv-02.tables.table-4 %}
+
+**Changing the garbage collector**
 
 _Note: The full code of this service is available at this [repository](https://github.com/LearningByExample/movies-spring-web){:target="_blank"}._
 
@@ -409,3 +651,5 @@ _Note: The full code of this service is available at this [repository](https://g
 - [https://spring.io/guides/topicals/spring-boot-docker](https://spring.io/guides/topicals/spring-boot-docker){:target="_blank"}
 - https://docs.gigaspaces.com/xap/14.0/rn/java11-guidelines.html
 - https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/
+- https://spring.io/blog/2015/12/10/spring-boot-memory-performance
+- https://stackoverflow.com/a/30070428
