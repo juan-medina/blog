@@ -644,6 +644,94 @@ And now we follow the procedure, including scaling and restart to perform a clea
 
 **Changing the garbage collector**
 
+All the test that we have done so far are using the G1 garbage collector, this is the default since Java 9, however we could change the one that we use changing in our deployment the environment variables to tell the JVM which one to use.
+
+For enabling the parallel garbage collector we will edit our deployment.yml : 
+
+{% highlight yaml %}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: movies-spring-web
+  name: movies-spring-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: movies-spring-web
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: movies-spring-web
+    spec:
+      containers:
+        - image: localhost:32000/movies-spring-web:0.0.1
+          imagePullPolicy: Always
+          name: movies-spring-web
+          resources: {}
+          env:
+            - name: "JAVA_OPTS"
+              value: >-
+                -XX:+UseParallelGC
+                -Xms250m
+                -Xmx450m
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+          livenessProbe:
+            httpGet:
+              path: /actuator/info
+              port: 8080
+          volumeMounts:
+            - name: db-credentials
+              mountPath: "/etc/movies-db"
+              readOnly: true
+            - name: tmp
+              mountPath: "/tmp"
+              readOnly: false
+      volumes:
+        - name: db-credentials
+          secret:
+            secretName: moviesuser.movies-db-cluster.credentials
+        - name: tmp
+          emptyDir: {}
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: movies-spring-web
+  name: movies-spring-web
+spec:
+  ports:
+    - name: 8080-8080
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: movies-spring-web
+  type: ClusterIP
+status:
+  loadBalancer: {}
+{% endhighlight %}
+
+If we run our load test again this is the number that we get : 
+
+{% include table.html table=site.data.optimizing-k8s-sv-02.tables.table-5 %}
+
+We could see that parallel is even better than G1 as overall, but may need to understand this.
+
+G1 is really good to have a predictable pauses when doing garbage collection, and he is continuously working on do part of the work without producing pauses. parallel in other hand is just waiting to certain thresholds to actually start doing the cleaning and them pause unpredictable, however the overall performance is better. Finally G1 is really for bigger heaps and that's is not the case in in our service.
+
+This number will vary a lot depending or what your service does, for example if you have tons of static data G1 may be better fit.
+
 _Note: The full code of this service is available at this [repository](https://github.com/LearningByExample/movies-spring-web){:target="_blank"}._
 
 **Resources**
@@ -653,3 +741,4 @@ _Note: The full code of this service is available at this [repository](https://g
 - https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/
 - https://spring.io/blog/2015/12/10/spring-boot-memory-performance
 - https://stackoverflow.com/a/30070428
+- https://www.optaplanner.org/blog/2015/07/31/WhatIsTheFastestGarbageCollectorInJava8.html
