@@ -1,0 +1,4417 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Optimizing Kubernetes Services - Part 2 &amp;#58 Spring Web | Juan Medina Personal Blog</title>
+  <meta name="author" content="Juan Medina">
+  <meta name="description" content="Personal blog from Juan Medina">
+  <meta property="og:title" content="Optimizing Kubernetes Services - Part 2 &amp;#58 Spring Web | Juan Medina Personal Blog">
+  <meta property="og:url" content="http://juan-medina.com/2020/01/22/optimizing-k8s-sv-02/">
+  <meta property="og:site_name" content="Juan Medina Personal Blog">
+  <meta property="og:description" content="Personal blog from Juan Medina">
+  <meta property="og:image" content="http://juan-medina.com/assets/img/graph.jpg">
+  <meta property="og:type" content="blog">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:description" content="Personal blog from Juan Medina">
+  <meta name="twitter:title" content="Optimizing Kubernetes Services - Part 2 &amp;#58 Spring Web | Juan Medina Personal Blog">
+  <meta name="twitter:url" content="http://juan-medina.com/2020/01/22/optimizing-k8s-sv-02/">
+  <meta name="twitter:site" content="Juan Medina Personal Blog">
+  <meta name="twitter:creator" content="@JuanMedinaCode">
+  <meta name="twitter:domain" content="http://juan-medina.com">
+  <meta property="twitter:image" content="http://juan-medina.com/assets/img/graph.jpg">
+
+  <!-- ****** faviconit.com favicons ****** -->
+  <link rel="shortcut icon" href="/favicon/favicon.ico">
+  <link rel="icon" sizes="16x16 32x32 64x64" href="/favicon/favicon.ico">
+  <link rel="icon" type="image/png" sizes="196x196" href="/favicon/favicon-192.png">
+  <link rel="icon" type="image/png" sizes="160x160" href="/favicon/favicon-160.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon/favicon-96.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="/favicon/favicon-64.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16.png">
+  <link rel="apple-touch-icon" href="/favicon/favicon-57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/favicon/favicon-114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/favicon/favicon-72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/favicon/favicon-144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/favicon/favicon-60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/favicon/favicon-120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/favicon/favicon-76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/favicon/favicon-152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon/favicon-180.png">
+  
+  <meta name="msapplication-TileColor" content="#FFFFFF">
+  <meta name="msapplication-TileImage" content="/favicon-144.png">
+  <meta name="msapplication-config" content="/browserconfig.xml">
+  <!-- ****** faviconit.com favicons ****** -->
+
+  <link type="application/atom+xml" rel="alternate" href="http://juan-medina.com/feed.xml" title="Juan Medina Personal Blog" />
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata|Lora|Space+Mono:700">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/syntax.css">
+
+  <link rel="alternate" type="application/rss+xml" title="Juan Medina Personal Blog" href="http://juan-medina.com/feed.xml">
+  <link rel="canonical" href="http://juan-medina.com/2020/01/22/optimizing-k8s-sv-02/">
+
+
+  <script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
+  <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+
+  
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-71726617-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+  
+
+  <script type="text/javascript" class="init">
+    $(document).ready(function() {
+      $('.data-table').DataTable( {
+        "paging"    : false,
+        "info"      : false,
+        "searching" : false,
+      } );
+    });
+  </script>
+    
+</head>
+
+  <body>
+
+    <main>
+      <article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="section-padding--lg mast rellax" data-rellax-speed="-4">
+    <a class="nav nav--white" href="/">
+      <i class="fa fa-lg fa-arrow-left"></i>
+      <span>Back to Posts</span>
+    </a>
+    <figure class="absolute-bg mast__img" style="background-image: url('/assets/img/graph.jpg');"></figure>
+    <div class="mast__container">
+      <span><time datetime="2020-01-22T23:00:00+00:00" itemprop="datePublished">Jan 22, 2020</time></span>
+      <h1 itemprop="name headline">Optimizing Kubernetes Services - Part 2 &#58 Spring Web</h1>
+      
+        <span>Posted in
+          
+            <a class="nav--white" href="/category/cloud">Cloud</a>, 
+          
+            <a class="nav--white" href="/category/programming">Programming</a>
+          
+        </span>
+      
+      <span></span>
+    </div>
+  </header>
+
+  <section class="section-padding bg-grey" itemprop="articleBody">
+    <div class="post">
+      <p>Some days ago we start this series of article with our <a href="/2020/01/11/optimizing-k8s-sv-01/" target="_blank">base example</a>, now we have baseline that we could use to optimize the service.</p>
+
+<p>These are the number that we got, the ones that we will like to improve :</p>
+
+<table class="display data-table compact cell-border">
+    <thead>
+      <tr>
+        
+        <th>C. Users</th>
+        
+        <th>Pods</th>
+        
+        <th>ART</th>
+        
+        <th>TPS</th>
+        
+        <th>Max CPU</th>
+        
+        <th>Max MEM</th>
+        
+      </tr>
+    </thead>
+    <tbody> 
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">39.16</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">25.49</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">403</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">474</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">570.47</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">16.73</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">916</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">487</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">25</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">3</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1615.82</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">14.72</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1049</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1454</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">50</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">5</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">3190.98</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">14.89</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1351</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">2499</td>
+            
+        
+                
+      </tr>
+      
+    </tbody>
+  </table>
+<p>Java 8  - Spring Boot 2.2.2 - Spring Web - Spring Data JDBC default settings, unoptimized</p>
+
+<p><strong>Moving from Java 8 to Java 11</strong></p>
+
+<p>For this example we will first clone our <a href="https://github.com/LearningByExample/movies-base-service" target="_blank">original project</a> :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>git clone https://github.com/LearningByExample/movies-spring-web.git movies-spring-web</code></pre></figure>
+
+<p>Now we will rename all references in code, scripts, yaml and packages from <em>movies-base-service</em> to <em>movies-spring-web</em></p>
+
+<p>Them we will modify our <em>pom.xml</em>  to use Java 11 :</p>
+
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml">    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;java.version&gt;</span>11<span class="nt">&lt;/java.version&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span></code></pre></figure>
+
+<p>Finally we will change our Dockerfile to use the Java 11 base image :</p>
+
+<figure class="highlight"><pre><code class="language-docker" data-lang="docker"><span class="k">FROM</span><span class="s"> openjdk:11-jdk</span>
+
+<span class="k">COPY</span><span class="s"> target/*.jar /usr/app/app.jar</span>
+<span class="k">WORKDIR</span><span class="s"> /usr/app</span>
+
+<span class="k">CMD</span><span class="s"> ["java", "-jar", "app.jar"]</span></code></pre></figure>
+
+<p>With this changes we will build and deploy our new service :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>./build.sh
+<span class="nv">$ </span>./deploy.sh</code></pre></figure>
+
+<p>We could now check that is deployed in our local cluster :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>microk8s.kubectl get all <span class="nt">--selector</span><span class="o">=</span><span class="nv">app</span><span class="o">=</span>movies-spring-web
+NAME                                     READY   STATUS    RESTARTS   AGE
+pod/movies-spring-web-66b94f8479-mmmxw   1/1     Running   0          17s
+
+NAME                        TYPE        CLUSTER-IP       EXTERNAL-IP   PORT<span class="o">(</span>S<span class="o">)</span>    AGE
+service/movies-spring-web   ClusterIP   10.152.183.195   &lt;none&gt;        8080/TCP   17s
+
+NAME                                READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/movies-spring-web   1/1     1            1           17s
+
+NAME                                           DESIRED   CURRENT   READY   AGE
+replicaset.apps/movies-spring-web-66b94f8479   1         1         1       17s</code></pre></figure>
+
+<p>We could check that our service is running correctly with <a href="https://httpie.org/" target="_blank">HTTPie</a> :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>http 10.152.183.195:8080/movies/sci-fi
+HTTP/1.1 200
+Connection: keep-alive
+Content-Type: application/json
+Date: Sat, 18 Jan 2020 12:20:31 GMT
+Keep-Alive: <span class="nb">timeout</span><span class="o">=</span>60
+Transfer-Encoding: chunked
+
+<span class="o">[</span>
+    <span class="o">{</span>
+        <span class="s2">"genres"</span>: <span class="o">[</span>
+            <span class="s2">"Drama"</span>,
+            <span class="s2">"Sci-Fi"</span>
+        <span class="o">]</span>,
+        <span class="s2">"id"</span>: 24,
+        <span class="s2">"title"</span>: <span class="s2">"Powder"</span>,
+        <span class="s2">"year"</span>: 1995
+    <span class="o">}</span>,
+    <span class="o">{</span>
+        <span class="s2">"genres"</span>: <span class="o">[</span>
+            <span class="s2">"Adventure"</span>,
+            <span class="s2">"Drama"</span>,
+            <span class="s2">"Fantasy"</span>,
+            <span class="s2">"Mystery"</span>,
+            <span class="s2">"Sci-Fi"</span>
+        <span class="o">]</span>,
+        <span class="s2">"id"</span>: 29,
+        <span class="s2">"title"</span>: <span class="s2">"City of Lost Children, The (Cité des enfants perdus, La)"</span>,
+        <span class="s2">"year"</span>: 1995
+    <span class="o">}</span>,
+........
+........
+........
+<span class="o">]</span></code></pre></figure>
+
+<p>With this we could do our load test following exactly the procedure that we describe in our <a href="/2020/01/11/optimizing-k8s-sv-01/" target="_blank">previous example</a>, but this time only for 10 concurrent users.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>./load-test.sh 10 600 60</code></pre></figure>
+
+<p>Doing this we will get this results from the JMeter report and Grafana :</p>
+
+<table class="display data-table compact cell-border">
+    <thead>
+      <tr>
+        
+        <th>Step</th>
+        
+        <th>C. Users</th>
+        
+        <th>Pods</th>
+        
+        <th>ART</th>
+        
+        <th>TPS</th>
+        
+        <th>Max CPU</th>
+        
+        <th>Max MEM</th>
+        
+      </tr>
+    </thead>
+    <tbody> 
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">01 base</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">570.47</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">16.73</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">916</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">487</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">02 Java 11</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">517.01</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">18.47</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">875</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">918</td>
+            
+        
+                
+      </tr>
+      
+    </tbody>
+  </table>
+<p>Java 11</p>
+
+<p>With this we could see that we have a better ART, TPS and Max CPU but we have increase the memory usage.</p>
+
+<p><strong>Creating a optimal JRE</strong></p>
+
+<p>One thing that we haven’t check so far is the size of our image, that may not be important for a performance perspective but it is for how fast our cluster could get install the image, let’s check it out with :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>docker image <span class="nb">ls </span>localhost:32000/movies-spring-web:0.0.1
+REPOSITORY                          TAG                 IMAGE ID            CREATED             SIZE
+localhost:32000/movies-spring-web   0.0.1               491c3e0b1fdf        37 minutes ago      628MB</code></pre></figure>
+
+<p>In java 11 we could use <a href="Jlink" target="_blank">jlink</a> to generate a optimize JRE distribution that will contains only what our application needs, for this we will create an script named jlink.sh :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/bin/sh -</span>
+
+<span class="nb">set</span> <span class="nt">-o</span> errexit
+
+<span class="nv">BASE_DIR</span><span class="o">=</span><span class="s2">"</span><span class="si">$(</span>
+  <span class="nb">cd</span> <span class="s2">"</span><span class="si">$(</span><span class="nb">dirname</span> <span class="s2">"</span><span class="nv">$0</span><span class="s2">"</span><span class="si">)</span><span class="s2">"</span>
+  <span class="nb">pwd</span> <span class="nt">-P</span>
+<span class="si">)</span><span class="s2">"</span>
+
+<span class="nv">DEPS_DIR</span><span class="o">=</span><span class="s2">"</span><span class="nv">$BASE_DIR</span><span class="s2">/deps"</span>
+
+<span class="nb">mkdir</span> <span class="nt">-p</span> <span class="s2">"</span><span class="nv">$DEPS_DIR</span><span class="s2">"</span>
+
+<span class="nb">echo</span> <span class="s2">"extracting jar"</span>
+<span class="nb">cd</span> <span class="s2">"</span><span class="nv">$DEPS_DIR</span><span class="s2">"</span>
+jar <span class="nt">-xf</span> ../<span class="k">*</span>.jar
+<span class="nb">echo</span> <span class="s2">"jar extracted"</span>
+
+<span class="nb">echo</span> <span class="s2">"generate JVM modules list"</span>
+<span class="nv">EX_JVM_DEPS</span><span class="o">=</span><span class="s2">"jdk.crypto.ec"</span>
+<span class="nv">JVM_DEPS</span><span class="o">=</span><span class="si">$(</span>jdeps <span class="nt">-s</span> <span class="nt">--multi-release</span> 11 <span class="nt">-recursive</span> <span class="nt">-cp</span> BOOT-INF/lib/<span class="k">*</span>.jar BOOT-INF/classes | <span class="se">\</span>
+  <span class="nb">grep</span> <span class="nt">-Po</span> <span class="s1">'(java|jdk)\..*'</span> | <span class="se">\</span>
+  <span class="nb">sort</span> <span class="nt">-u</span> | <span class="se">\</span>
+  <span class="nb">tr</span> <span class="s1">'\n'</span> <span class="s1">','</span><span class="si">)</span>
+<span class="nv">MODULES</span><span class="o">=</span><span class="s2">"</span><span class="nv">$JVM_DEPS$EX_JVM_DEPS</span><span class="s2">"</span>
+<span class="nb">echo</span> <span class="s2">"</span><span class="nv">$MODULES</span><span class="s2">"</span>
+<span class="nb">echo</span> <span class="s2">"JVM modules list generated"</span>
+
+<span class="nb">echo</span> <span class="s2">"doing jlink"</span>
+jlink <span class="se">\</span>
+    <span class="nt">--verbose</span> <span class="se">\</span>
+    <span class="nt">--module-path</span> <span class="s2">"</span><span class="nv">$JAVA_HOME</span><span class="s2">/jmods"</span>, <span class="se">\</span>
+    <span class="nt">--add-modules</span> <span class="s2">"</span><span class="nv">$MODULES</span><span class="s2">"</span> <span class="se">\</span>
+    <span class="nt">--compress</span> 2 <span class="se">\</span>
+    <span class="nt">--no-header-files</span> <span class="se">\</span>
+    <span class="nt">--no-man-pages</span> <span class="se">\</span>
+    <span class="nt">--strip-debug</span> <span class="se">\</span>
+    <span class="nt">--output</span> <span class="s2">"</span><span class="nv">$DEPS_DIR</span><span class="s2">/jre-jlink"</span>
+
+<span class="nb">echo</span> <span class="s2">"jlink done"</span>
+
+<span class="nb">cd</span> <span class="s2">"</span><span class="nv">$BASE_DIR</span><span class="s2">"</span></code></pre></figure>
+
+<p>In this script we will uncompress our jar, use <a href="https://docs.oracle.com/javase/8/docs/technotes/tools/unix/jdeps.html" target="_blank">jdeps</a> to find witch modules are in use, we will add additionally <em>jdk.crypto.ec</em> since we require to connect via ssl to our PostgreSQL cluster, and then produce a optimize JRE image using jlink.</p>
+
+<p>Now we will modify our Dockerfile to perform a multi-stage build :</p>
+
+<figure class="highlight"><pre><code class="language-docker" data-lang="docker"><span class="k">FROM</span><span class="s"> openjdk:11 AS builder</span>
+
+<span class="k">COPY</span><span class="s"> target/*.jar /app/app.jar</span>
+<span class="k">COPY</span><span class="s"> jlink.sh /app/jlink.sh</span>
+
+<span class="k">WORKDIR</span><span class="s"> /app</span>
+<span class="k">RUN </span>./jlink.sh
+
+<span class="k">FROM</span><span class="s"> openjdk:11-jre-slim</span>
+
+<span class="k">RUN </span><span class="nb">rm</span> <span class="nt">-rf</span> /usr/local/openjdk-11
+<span class="k">COPY</span><span class="s"> --from=builder /app/deps/jre-jlink /usr/local/openjdk-11</span>
+<span class="k">COPY</span><span class="s"> --from=builder /app/app.jar /app/app.jar</span>
+
+<span class="k">WORKDIR</span><span class="s"> /app</span>
+
+<span class="k">CMD</span><span class="s"> ["java", "-jar", "app.jar"]</span></code></pre></figure>
+
+<p>In this docker file we create a intermediate container named builder base on the openjdk 11 image, we will use this container to extract our application jar and invoke our jlink.sh script.</p>
+
+<p>Them our Dockerfile will create a image base on the JRE 11 slim and will add our application and replace the provide JRE with the one that we created with jlink in the builder image. We use the base JRE image since our custom JRE requires libraries and configuration that are already present in that image.</p>
+
+<p>We could build our container as before and the check the image size :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>docker image <span class="nb">ls </span>localhost:32000/movies-spring-web:0.0.1
+REPOSITORY                          TAG                 IMAGE ID            CREATED             SIZE
+localhost:32000/movies-spring-web   0.0.1               3fc95b166643        10 seconds ago      279MB</code></pre></figure>
+
+<p>Now we will run our performance test as before to get  :</p>
+
+<table class="display data-table compact cell-border">
+    <thead>
+      <tr>
+        
+        <th>Step</th>
+        
+        <th>C. Users</th>
+        
+        <th>Pods</th>
+        
+        <th>ART</th>
+        
+        <th>TPS</th>
+        
+        <th>Max CPU</th>
+        
+        <th>Max MEM</th>
+        
+      </tr>
+    </thead>
+    <tbody> 
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">01 base</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">570.47</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">16.73</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">916</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">487</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">02 Java 11</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">517.01</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">18.47</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">875</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">918</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">03 jlink</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">518.97</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">18.41</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">875</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">787</td>
+            
+        
+                
+      </tr>
+      
+    </tbody>
+  </table>
+<p>jlink</p>
+
+<p>We could see that there is not major changes using a JRE build with jlink, our docker is just smaller, that will help when we need to install a image into our cluster but will not benefit in overall to response time or even the memory that we use.</p>
+
+<p><strong>Checking the Memory Usage</strong></p>
+
+<p>The things that sound a bit odd and we will try to explain next is why we are using so much memory, so we need a tool to understand this futher so we will use <a href="https://visualvm.github.io/" target="_blank">VisualVM</a>, but first we will need to modify our deployment in order been able to pass parameters to the JVM when we start our service, and we will to enable the JMX port that we will use.</p>
+
+<p>First we will modify our Dockerfile :</p>
+
+<figure class="highlight"><pre><code class="language-docker" data-lang="docker"><span class="k">FROM</span><span class="s"> openjdk:11 AS builder</span>
+
+<span class="k">COPY</span><span class="s"> target/*.jar /app/app.jar</span>
+<span class="k">COPY</span><span class="s"> jlink.sh /app/jlink.sh</span>
+
+<span class="k">WORKDIR</span><span class="s"> /app</span>
+<span class="k">RUN </span>./jlink.sh
+
+<span class="k">FROM</span><span class="s"> openjdk:11-jre-slim</span>
+
+<span class="k">RUN </span><span class="nb">rm</span> <span class="nt">-rf</span> /usr/local/openjdk-11
+<span class="k">COPY</span><span class="s"> --from=builder /app/deps/jre-jlink /usr/local/openjdk-11</span>
+<span class="k">COPY</span><span class="s"> --from=builder /app/app.jar /app/app.jar</span>
+
+<span class="k">WORKDIR</span><span class="s"> /app</span>
+
+<span class="k">ENTRYPOINT</span><span class="s"> ["sh", "-c", "java ${JAVA_OPTS} -jar /app/app.jar"]</span></code></pre></figure>
+
+<p>We will have now an environment variable named <em>JAVA_OPTS</em> to set additional parameters when running our java service.</p>
+
+<p>Now we will modify our deployment.yml :</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">apiVersion</span><span class="pi">:</span> <span class="s">apps/v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Deployment</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+  <span class="na">labels</span><span class="pi">:</span>
+    <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">replicas</span><span class="pi">:</span> <span class="m">1</span>
+  <span class="na">selector</span><span class="pi">:</span>
+    <span class="na">matchLabels</span><span class="pi">:</span>
+      <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
+  <span class="na">strategy</span><span class="pi">:</span> <span class="pi">{}</span>
+  <span class="na">template</span><span class="pi">:</span>
+    <span class="na">metadata</span><span class="pi">:</span>
+      <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+      <span class="na">labels</span><span class="pi">:</span>
+        <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
+    <span class="na">spec</span><span class="pi">:</span>
+      <span class="na">containers</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">image</span><span class="pi">:</span> <span class="s">localhost:32000/movies-spring-web:0.0.1</span>
+          <span class="na">imagePullPolicy</span><span class="pi">:</span> <span class="s">Always</span>
+          <span class="na">name</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
+          <span class="na">resources</span><span class="pi">:</span> <span class="pi">{}</span>
+          <span class="na">env</span><span class="pi">:</span>
+            <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s2">"</span><span class="s">JAVA_OPTS"</span>
+              <span class="na">value</span><span class="pi">:</span> <span class="pi">&gt;-</span>
+                <span class="s">-Dcom.sun.management.jmxremote</span>
+                <span class="s">-Dcom.sun.management.jmxremote.port=12345</span>
+                <span class="s">-Dcom.sun.management.jmxremote.authenticate=false</span>
+                <span class="s">-Dcom.sun.management.jmxremote.ssl=false</span>
+          <span class="na">readinessProbe</span><span class="pi">:</span>
+            <span class="na">httpGet</span><span class="pi">:</span>
+              <span class="na">path</span><span class="pi">:</span> <span class="s">/actuator/health</span>
+              <span class="na">port</span><span class="pi">:</span> <span class="m">8080</span>
+          <span class="na">livenessProbe</span><span class="pi">:</span>
+            <span class="na">httpGet</span><span class="pi">:</span>
+              <span class="na">path</span><span class="pi">:</span> <span class="s">/actuator/info</span>
+              <span class="na">port</span><span class="pi">:</span> <span class="m">8080</span>
+          <span class="na">volumeMounts</span><span class="pi">:</span>
+            <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">db-credentials</span>
+              <span class="na">mountPath</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/etc/movies-db"</span>
+              <span class="na">readOnly</span><span class="pi">:</span> <span class="no">true</span>
+            <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">tmp</span>
+              <span class="na">mountPath</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/tmp"</span>
+              <span class="na">readOnly</span><span class="pi">:</span> <span class="no">false</span>
+      <span class="na">volumes</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">db-credentials</span>
+          <span class="na">secret</span><span class="pi">:</span>
+            <span class="na">secretName</span><span class="pi">:</span> <span class="s">moviesuser.movies-db-cluster.credentials</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">tmp</span>
+          <span class="na">emptyDir</span><span class="pi">:</span> <span class="pi">{}</span>
+<span class="na">status</span><span class="pi">:</span> <span class="pi">{}</span>
+<span class="nn">---</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Service</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+  <span class="na">labels</span><span class="pi">:</span>
+    <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">ports</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">8080-8080</span>
+      <span class="na">port</span><span class="pi">:</span> <span class="m">8080</span>
+      <span class="na">protocol</span><span class="pi">:</span> <span class="s">TCP</span>
+      <span class="na">targetPort</span><span class="pi">:</span> <span class="m">8080</span>
+  <span class="na">selector</span><span class="pi">:</span>
+    <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
+  <span class="na">type</span><span class="pi">:</span> <span class="s">ClusterIP</span>
+<span class="na">status</span><span class="pi">:</span>
+  <span class="na">loadBalancer</span><span class="pi">:</span> <span class="pi">{}</span></code></pre></figure>
+
+<p>But in order to use JMX we need to add to our jlink.sh the <em>jdk.management.agent</em> module :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/bin/sh -</span>
+
+<span class="nb">set</span> <span class="nt">-o</span> errexit
+
+<span class="nv">BASE_DIR</span><span class="o">=</span><span class="s2">"</span><span class="si">$(</span>
+  <span class="nb">cd</span> <span class="s2">"</span><span class="si">$(</span><span class="nb">dirname</span> <span class="s2">"</span><span class="nv">$0</span><span class="s2">"</span><span class="si">)</span><span class="s2">"</span>
+  <span class="nb">pwd</span> <span class="nt">-P</span>
+<span class="si">)</span><span class="s2">"</span>
+
+<span class="nv">DEPS_DIR</span><span class="o">=</span><span class="s2">"</span><span class="nv">$BASE_DIR</span><span class="s2">/deps"</span>
+
+<span class="nb">mkdir</span> <span class="nt">-p</span> <span class="s2">"</span><span class="nv">$DEPS_DIR</span><span class="s2">"</span>
+
+<span class="nb">echo</span> <span class="s2">"extracting jar"</span>
+<span class="nb">cd</span> <span class="s2">"</span><span class="nv">$DEPS_DIR</span><span class="s2">"</span>
+jar <span class="nt">-xf</span> ../<span class="k">*</span>.jar
+<span class="nb">echo</span> <span class="s2">"jar extracted"</span>
+
+<span class="nb">echo</span> <span class="s2">"generate JVM modules list"</span>
+<span class="nv">EX_JVM_DEPS</span><span class="o">=</span><span class="s2">"jdk.crypto.ec,jdk.management.agent"</span>
+<span class="nv">JVM_DEPS</span><span class="o">=</span><span class="si">$(</span>jdeps <span class="nt">-s</span> <span class="nt">--multi-release</span> 11 <span class="nt">-recursive</span> <span class="nt">-cp</span> BOOT-INF/lib/<span class="k">*</span>.jar BOOT-INF/classes | <span class="se">\</span>
+  <span class="nb">grep</span> <span class="nt">-Po</span> <span class="s1">'(java|jdk)\..*'</span> | <span class="se">\</span>
+  <span class="nb">sort</span> <span class="nt">-u</span> | <span class="se">\</span>
+  <span class="nb">tr</span> <span class="s1">'\n'</span> <span class="s1">','</span><span class="si">)</span>
+<span class="nv">MODULES</span><span class="o">=</span><span class="s2">"</span><span class="nv">$JVM_DEPS$EX_JVM_DEPS</span><span class="s2">"</span>
+<span class="nb">echo</span> <span class="s2">"</span><span class="nv">$MODULES</span><span class="s2">"</span>
+<span class="nb">echo</span> <span class="s2">"JVM modules list generated"</span>
+
+<span class="nb">echo</span> <span class="s2">"doing jlink"</span>
+jlink <span class="se">\</span>
+    <span class="nt">--verbose</span> <span class="se">\</span>
+    <span class="nt">--module-path</span> <span class="s2">"</span><span class="nv">$JAVA_HOME</span><span class="s2">/jmods"</span>, <span class="se">\</span>
+    <span class="nt">--add-modules</span> <span class="s2">"</span><span class="nv">$MODULES</span><span class="s2">"</span> <span class="se">\</span>
+    <span class="nt">--compress</span> 2 <span class="se">\</span>
+    <span class="nt">--no-header-files</span> <span class="se">\</span>
+    <span class="nt">--no-man-pages</span> <span class="se">\</span>
+    <span class="nt">--strip-debug</span> <span class="se">\</span>
+    <span class="nt">--output</span> <span class="s2">"</span><span class="nv">$DEPS_DIR</span><span class="s2">/jre-jlink"</span>
+
+<span class="nb">echo</span> <span class="s2">"jlink done"</span>
+
+<span class="nb">cd</span> <span class="s2">"</span><span class="nv">$BASE_DIR</span><span class="s2">"</span></code></pre></figure>
+
+<p>Not we will and deploy our application.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>./build.sh
+<span class="nv">$ </span>./deploy.sh</code></pre></figure>
+
+<p>Now we will forward our port 12345 for the pod to our localhost :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>microk8s.kubectl get pod <span class="nt">--selector</span><span class="o">=</span><span class="nv">app</span><span class="o">=</span>movies-spring-web
+NAME                                 READY   STATUS    RESTARTS   AGE
+movies-spring-web-6554d5fd68-kxvxg   1/1     Running   0          7m52s
+
+<span class="nv">$ </span>microk8s.kubectl port-forward movies-spring-web-6554d5fd68-kxvxg 12345:12345
+Forwarding from 127.0.0.1:12345 -&gt; 12345
+Forwarding from <span class="o">[</span>::1]:12345 -&gt; 12345</code></pre></figure>
+
+<p>Now we should open VisualVM and add a JMX connection to our service on <em>locahost:12345</em> :</p>
+
+<p><a href="/assets/img/captures/movies_spring_web_01.jpg" target="_blank"><img src="/assets/img/captures/movies_spring_web_01.jpg" alt="VisualVM " style="width:80%; display:block; margin-left:auto; margin-right:auto;" /></a></p>
+
+<p>Now we could click on our application and the select the tab monitor to see some graphs, I choose to only see CPU and threads :</p>
+
+<p><a href="/assets/img/captures/movies_spring_web_02.jpg" target="_blank"><img src="/assets/img/captures/movies_spring_web_02.jpg" alt="VisualVM " style="width:80%; display:block; margin-left:auto; margin-right:auto;" /></a></p>
+
+<p>As we could see our heap is about 1GB, with a maximun of 16GB however we are only using 80M at peak, we could see in the CPU that our garbage collector is almost doing nothing until he enter a cleaning cycle the an small CPU usage and our heap usage drops.</p>
+
+<p>In this moment we do not have any traffic on the service, lest run our load test for a couple of minutes.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>./load-test.sh 10 120 30</code></pre></figure>
+
+<p>I’ll leave a couple of minutes after the test to wait that the garbage collector start again and grab more data from VisualVM :</p>
+
+<p><a href="/assets/img/captures/movies_spring_web_03.jpg" target="_blank"><img src="/assets/img/captures/movies_spring_web_03.jpg" alt="VisualVM " style="width:80%; display:block; margin-left:auto; margin-right:auto;" /></a></p>
+
+<p>As we could see know we use around 435M of heap, and the gc busy during our test, them we could see how drops afterwards.</p>
+
+<p>Let’s make a bit of sense on what we have seen so far.</p>
+
+<p>First we do not specify any memory limit on the deployment of our containers so that’s the reason that our maximum heap is set to 16G, them even without using much initial heap but the JVM is prepare to use a full G if need, up to 16G if needs more.</p>
+
+<p>Our garbage collector is trying to do it best to keep up and clean memory when he could.</p>
+
+<p>To just test some limit we could run more test with different loads but I think that with 450M should be ok and starting with 250M, so I going to change our VM options in our deployment :</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">apiVersion</span><span class="pi">:</span> <span class="s">apps/v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Deployment</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+  <span class="na">labels</span><span class="pi">:</span>
+    <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">replicas</span><span class="pi">:</span> <span class="m">1</span>
+  <span class="na">selector</span><span class="pi">:</span>
+    <span class="na">matchLabels</span><span class="pi">:</span>
+      <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
+  <span class="na">strategy</span><span class="pi">:</span> <span class="pi">{}</span>
+  <span class="na">template</span><span class="pi">:</span>
+    <span class="na">metadata</span><span class="pi">:</span>
+      <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+      <span class="na">labels</span><span class="pi">:</span>
+        <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
+    <span class="na">spec</span><span class="pi">:</span>
+      <span class="na">containers</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">image</span><span class="pi">:</span> <span class="s">localhost:32000/movies-spring-web:0.0.1</span>
+          <span class="na">imagePullPolicy</span><span class="pi">:</span> <span class="s">Always</span>
+          <span class="na">name</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
+          <span class="na">resources</span><span class="pi">:</span> <span class="pi">{}</span>
+          <span class="na">env</span><span class="pi">:</span>
+            <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s2">"</span><span class="s">JAVA_OPTS"</span>
+              <span class="na">value</span><span class="pi">:</span> <span class="pi">&gt;-</span>
+                <span class="s">-Xms250m</span>
+                <span class="s">-Xmx450m</span>
+                <span class="s">-Dcom.sun.management.jmxremote</span>
+                <span class="s">-Dcom.sun.management.jmxremote.port=12345</span>
+                <span class="s">-Dcom.sun.management.jmxremote.authenticate=false</span>
+                <span class="s">-Dcom.sun.management.jmxremote.ssl=false</span>
+          <span class="na">readinessProbe</span><span class="pi">:</span>
+            <span class="na">httpGet</span><span class="pi">:</span>
+              <span class="na">path</span><span class="pi">:</span> <span class="s">/actuator/health</span>
+              <span class="na">port</span><span class="pi">:</span> <span class="m">8080</span>
+          <span class="na">livenessProbe</span><span class="pi">:</span>
+            <span class="na">httpGet</span><span class="pi">:</span>
+              <span class="na">path</span><span class="pi">:</span> <span class="s">/actuator/info</span>
+              <span class="na">port</span><span class="pi">:</span> <span class="m">8080</span>
+          <span class="na">volumeMounts</span><span class="pi">:</span>
+            <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">db-credentials</span>
+              <span class="na">mountPath</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/etc/movies-db"</span>
+              <span class="na">readOnly</span><span class="pi">:</span> <span class="no">true</span>
+            <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">tmp</span>
+              <span class="na">mountPath</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/tmp"</span>
+              <span class="na">readOnly</span><span class="pi">:</span> <span class="no">false</span>
+      <span class="na">volumes</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">db-credentials</span>
+          <span class="na">secret</span><span class="pi">:</span>
+            <span class="na">secretName</span><span class="pi">:</span> <span class="s">moviesuser.movies-db-cluster.credentials</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">tmp</span>
+          <span class="na">emptyDir</span><span class="pi">:</span> <span class="pi">{}</span>
+<span class="na">status</span><span class="pi">:</span> <span class="pi">{}</span>
+<span class="nn">---</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Service</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+  <span class="na">labels</span><span class="pi">:</span>
+    <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">ports</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">8080-8080</span>
+      <span class="na">port</span><span class="pi">:</span> <span class="m">8080</span>
+      <span class="na">protocol</span><span class="pi">:</span> <span class="s">TCP</span>
+      <span class="na">targetPort</span><span class="pi">:</span> <span class="m">8080</span>
+  <span class="na">selector</span><span class="pi">:</span>
+    <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
+  <span class="na">type</span><span class="pi">:</span> <span class="s">ClusterIP</span>
+<span class="na">status</span><span class="pi">:</span>
+  <span class="na">loadBalancer</span><span class="pi">:</span> <span class="pi">{}</span></code></pre></figure>
+
+<p>We do not need to build our application again, since we are not changing our docker just deploy it :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>./deploy.sh</code></pre></figure>
+
+<p>Now we will forward the port again them connect with VisualVM and repeat the test for get a new graph :</p>
+
+<p><a href="/assets/img/captures/movies_spring_web_04.jpg" target="_blank"><img src="/assets/img/captures/movies_spring_web_04.jpg" alt="VisualVM " style="width:80%; display:block; margin-left:auto; margin-right:auto;" /></a></p>
+
+<p>Now we could see that our memory is better utilize, let’s now restart our cluster and run our performance test again to check how it perform in comparison with the previous tests, first we modify our deployment to remove the jmx port but keep the heap configuration:</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">apiVersion</span><span class="pi">:</span> <span class="s">apps/v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Deployment</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+  <span class="na">labels</span><span class="pi">:</span>
+    <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">replicas</span><span class="pi">:</span> <span class="m">1</span>
+  <span class="na">selector</span><span class="pi">:</span>
+    <span class="na">matchLabels</span><span class="pi">:</span>
+      <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
+  <span class="na">strategy</span><span class="pi">:</span> <span class="pi">{}</span>
+  <span class="na">template</span><span class="pi">:</span>
+    <span class="na">metadata</span><span class="pi">:</span>
+      <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+      <span class="na">labels</span><span class="pi">:</span>
+        <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
+    <span class="na">spec</span><span class="pi">:</span>
+      <span class="na">containers</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">image</span><span class="pi">:</span> <span class="s">localhost:32000/movies-spring-web:0.0.1</span>
+          <span class="na">imagePullPolicy</span><span class="pi">:</span> <span class="s">Always</span>
+          <span class="na">name</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
+          <span class="na">resources</span><span class="pi">:</span> <span class="pi">{}</span>
+          <span class="na">env</span><span class="pi">:</span>
+            <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s2">"</span><span class="s">JAVA_OPTS"</span>
+              <span class="na">value</span><span class="pi">:</span> <span class="pi">&gt;-</span>
+                <span class="s">-Xms250m</span>
+                <span class="s">-Xmx450m</span>
+          <span class="na">readinessProbe</span><span class="pi">:</span>
+            <span class="na">httpGet</span><span class="pi">:</span>
+              <span class="na">path</span><span class="pi">:</span> <span class="s">/actuator/health</span>
+              <span class="na">port</span><span class="pi">:</span> <span class="m">8080</span>
+          <span class="na">livenessProbe</span><span class="pi">:</span>
+            <span class="na">httpGet</span><span class="pi">:</span>
+              <span class="na">path</span><span class="pi">:</span> <span class="s">/actuator/info</span>
+              <span class="na">port</span><span class="pi">:</span> <span class="m">8080</span>
+          <span class="na">volumeMounts</span><span class="pi">:</span>
+            <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">db-credentials</span>
+              <span class="na">mountPath</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/etc/movies-db"</span>
+              <span class="na">readOnly</span><span class="pi">:</span> <span class="no">true</span>
+            <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">tmp</span>
+              <span class="na">mountPath</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/tmp"</span>
+              <span class="na">readOnly</span><span class="pi">:</span> <span class="no">false</span>
+      <span class="na">volumes</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">db-credentials</span>
+          <span class="na">secret</span><span class="pi">:</span>
+            <span class="na">secretName</span><span class="pi">:</span> <span class="s">moviesuser.movies-db-cluster.credentials</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">tmp</span>
+          <span class="na">emptyDir</span><span class="pi">:</span> <span class="pi">{}</span>
+<span class="na">status</span><span class="pi">:</span> <span class="pi">{}</span>
+<span class="nn">---</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Service</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+  <span class="na">labels</span><span class="pi">:</span>
+    <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">ports</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">8080-8080</span>
+      <span class="na">port</span><span class="pi">:</span> <span class="m">8080</span>
+      <span class="na">protocol</span><span class="pi">:</span> <span class="s">TCP</span>
+      <span class="na">targetPort</span><span class="pi">:</span> <span class="m">8080</span>
+  <span class="na">selector</span><span class="pi">:</span>
+    <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
+  <span class="na">type</span><span class="pi">:</span> <span class="s">ClusterIP</span>
+<span class="na">status</span><span class="pi">:</span>
+  <span class="na">loadBalancer</span><span class="pi">:</span> <span class="pi">{}</span></code></pre></figure>
+
+<p>We will remove the jdk.management.agent module as well from our jlink.sh :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/bin/sh -</span>
+
+<span class="nb">set</span> <span class="nt">-o</span> errexit
+
+<span class="nv">BASE_DIR</span><span class="o">=</span><span class="s2">"</span><span class="si">$(</span>
+  <span class="nb">cd</span> <span class="s2">"</span><span class="si">$(</span><span class="nb">dirname</span> <span class="s2">"</span><span class="nv">$0</span><span class="s2">"</span><span class="si">)</span><span class="s2">"</span>
+  <span class="nb">pwd</span> <span class="nt">-P</span>
+<span class="si">)</span><span class="s2">"</span>
+
+<span class="nv">DEPS_DIR</span><span class="o">=</span><span class="s2">"</span><span class="nv">$BASE_DIR</span><span class="s2">/deps"</span>
+
+<span class="nb">mkdir</span> <span class="nt">-p</span> <span class="s2">"</span><span class="nv">$DEPS_DIR</span><span class="s2">"</span>
+
+<span class="nb">echo</span> <span class="s2">"extracting jar"</span>
+<span class="nb">cd</span> <span class="s2">"</span><span class="nv">$DEPS_DIR</span><span class="s2">"</span>
+jar <span class="nt">-xf</span> ../<span class="k">*</span>.jar
+<span class="nb">echo</span> <span class="s2">"jar extracted"</span>
+
+<span class="nb">echo</span> <span class="s2">"generate JVM modules list"</span>
+<span class="nv">EX_JVM_DEPS</span><span class="o">=</span><span class="s2">"jdk.crypto.ec"</span>
+<span class="nv">JVM_DEPS</span><span class="o">=</span><span class="si">$(</span>jdeps <span class="nt">-s</span> <span class="nt">--multi-release</span> 11 <span class="nt">-recursive</span> <span class="nt">-cp</span> BOOT-INF/lib/<span class="k">*</span>.jar BOOT-INF/classes | <span class="se">\</span>
+  <span class="nb">grep</span> <span class="nt">-Po</span> <span class="s1">'(java|jdk)\..*'</span> | <span class="se">\</span>
+  <span class="nb">sort</span> <span class="nt">-u</span> | <span class="se">\</span>
+  <span class="nb">tr</span> <span class="s1">'\n'</span> <span class="s1">','</span><span class="si">)</span>
+<span class="nv">MODULES</span><span class="o">=</span><span class="s2">"</span><span class="nv">$JVM_DEPS$EX_JVM_DEPS</span><span class="s2">"</span>
+<span class="nb">echo</span> <span class="s2">"</span><span class="nv">$MODULES</span><span class="s2">"</span>
+<span class="nb">echo</span> <span class="s2">"JVM modules list generated"</span>
+
+<span class="nb">echo</span> <span class="s2">"doing jlink"</span>
+jlink <span class="se">\</span>
+    <span class="nt">--verbose</span> <span class="se">\</span>
+    <span class="nt">--module-path</span> <span class="s2">"</span><span class="nv">$JAVA_HOME</span><span class="s2">/jmods"</span>, <span class="se">\</span>
+    <span class="nt">--add-modules</span> <span class="s2">"</span><span class="nv">$MODULES</span><span class="s2">"</span> <span class="se">\</span>
+    <span class="nt">--compress</span> 2 <span class="se">\</span>
+    <span class="nt">--no-header-files</span> <span class="se">\</span>
+    <span class="nt">--no-man-pages</span> <span class="se">\</span>
+    <span class="nt">--strip-debug</span> <span class="se">\</span>
+    <span class="nt">--output</span> <span class="s2">"</span><span class="nv">$DEPS_DIR</span><span class="s2">/jre-jlink"</span>
+
+<span class="nb">echo</span> <span class="s2">"jlink done"</span>
+
+<span class="nb">cd</span> <span class="s2">"</span><span class="nv">$BASE_DIR</span><span class="s2">"</span></code></pre></figure>
+
+<p>Then we build &amp; deploy our service :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>./build.sh
+<span class="nv">$ </span>./deploy.sh</code></pre></figure>
+
+<p>And now we follow the procedure, including scaling and restart to perform a clean test :</p>
+
+<table class="display data-table compact cell-border">
+    <thead>
+      <tr>
+        
+        <th>Step</th>
+        
+        <th>C. Users</th>
+        
+        <th>Pods</th>
+        
+        <th>ART</th>
+        
+        <th>TPS</th>
+        
+        <th>Max CPU</th>
+        
+        <th>Max MEM</th>
+        
+      </tr>
+    </thead>
+    <tbody> 
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">01 base</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">570.47</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">16.73</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">916</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">487</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">02 Java 11</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">517.01</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">18.47</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">875</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">918</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">03 jlink</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">518.97</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">18.41</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">875</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">787</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">04 heap</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">451.73</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">21.13</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">816</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">633</td>
+            
+        
+                
+      </tr>
+      
+    </tbody>
+  </table>
+<p>heap changes</p>
+
+<p><strong>Changing the garbage collector</strong></p>
+
+<p>All the test that we have done so far are using the G1 garbage collector, this is the default since Java 9, however we could change the one that we use changing in our deployment the environment variables to tell the JVM which one to use.</p>
+
+<p>For enabling the parallel garbage collector we will edit our deployment.yml :</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">apiVersion</span><span class="pi">:</span> <span class="s">apps/v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Deployment</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+  <span class="na">labels</span><span class="pi">:</span>
+    <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">replicas</span><span class="pi">:</span> <span class="m">1</span>
+  <span class="na">selector</span><span class="pi">:</span>
+    <span class="na">matchLabels</span><span class="pi">:</span>
+      <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
+  <span class="na">strategy</span><span class="pi">:</span> <span class="pi">{}</span>
+  <span class="na">template</span><span class="pi">:</span>
+    <span class="na">metadata</span><span class="pi">:</span>
+      <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+      <span class="na">labels</span><span class="pi">:</span>
+        <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
+    <span class="na">spec</span><span class="pi">:</span>
+      <span class="na">containers</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">image</span><span class="pi">:</span> <span class="s">localhost:32000/movies-spring-web:0.0.1</span>
+          <span class="na">imagePullPolicy</span><span class="pi">:</span> <span class="s">Always</span>
+          <span class="na">name</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
+          <span class="na">resources</span><span class="pi">:</span> <span class="pi">{}</span>
+          <span class="na">env</span><span class="pi">:</span>
+            <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s2">"</span><span class="s">JAVA_OPTS"</span>
+              <span class="na">value</span><span class="pi">:</span> <span class="pi">&gt;-</span>
+                <span class="s">-XX:+UseParallelGC</span>
+                <span class="s">-Xms250m</span>
+                <span class="s">-Xmx450m</span>
+          <span class="na">readinessProbe</span><span class="pi">:</span>
+            <span class="na">httpGet</span><span class="pi">:</span>
+              <span class="na">path</span><span class="pi">:</span> <span class="s">/actuator/health</span>
+              <span class="na">port</span><span class="pi">:</span> <span class="m">8080</span>
+          <span class="na">livenessProbe</span><span class="pi">:</span>
+            <span class="na">httpGet</span><span class="pi">:</span>
+              <span class="na">path</span><span class="pi">:</span> <span class="s">/actuator/info</span>
+              <span class="na">port</span><span class="pi">:</span> <span class="m">8080</span>
+          <span class="na">volumeMounts</span><span class="pi">:</span>
+            <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">db-credentials</span>
+              <span class="na">mountPath</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/etc/movies-db"</span>
+              <span class="na">readOnly</span><span class="pi">:</span> <span class="no">true</span>
+            <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">tmp</span>
+              <span class="na">mountPath</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/tmp"</span>
+              <span class="na">readOnly</span><span class="pi">:</span> <span class="no">false</span>
+      <span class="na">volumes</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">db-credentials</span>
+          <span class="na">secret</span><span class="pi">:</span>
+            <span class="na">secretName</span><span class="pi">:</span> <span class="s">moviesuser.movies-db-cluster.credentials</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">tmp</span>
+          <span class="na">emptyDir</span><span class="pi">:</span> <span class="pi">{}</span>
+<span class="na">status</span><span class="pi">:</span> <span class="pi">{}</span>
+<span class="nn">---</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Service</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+  <span class="na">labels</span><span class="pi">:</span>
+    <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">ports</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">8080-8080</span>
+      <span class="na">port</span><span class="pi">:</span> <span class="m">8080</span>
+      <span class="na">protocol</span><span class="pi">:</span> <span class="s">TCP</span>
+      <span class="na">targetPort</span><span class="pi">:</span> <span class="m">8080</span>
+  <span class="na">selector</span><span class="pi">:</span>
+    <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
+  <span class="na">type</span><span class="pi">:</span> <span class="s">ClusterIP</span>
+<span class="na">status</span><span class="pi">:</span>
+  <span class="na">loadBalancer</span><span class="pi">:</span> <span class="pi">{}</span></code></pre></figure>
+
+<p>If we run our load test again this is the number that we get :</p>
+
+<table class="display data-table compact cell-border">
+    <thead>
+      <tr>
+        
+        <th>Step</th>
+        
+        <th>C. Users</th>
+        
+        <th>Pods</th>
+        
+        <th>ART</th>
+        
+        <th>TPS</th>
+        
+        <th>Max CPU</th>
+        
+        <th>Max MEM</th>
+        
+      </tr>
+    </thead>
+    <tbody> 
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">01 base</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">570.47</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">16.73</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">916</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">487</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">02 Java 11</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">517.01</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">18.47</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">875</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">918</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">03 jlink</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">518.97</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">18.41</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">875</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">787</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">04 heap</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">451.73</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">21.13</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">816</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">633</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">05 parallel GC</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">450.85</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">21.17</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">799</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">626</td>
+            
+        
+                
+      </tr>
+      
+    </tbody>
+  </table>
+<p>parallel gc</p>
+
+<p>We could see that parallel is even better than G1 as overall, but may need to understand this.</p>
+
+<p>G1 is really good to have a predictable pauses when doing garbage collection, and he is continuously working on do part of the work without producing pauses. parallel in other hand is just waiting to certain thresholds to actually start doing the cleaning and them pause unpredictable, however the overall performance is better. Finally G1 is really for bigger heaps and that’s is not the case in in our service.</p>
+
+<p>This number will vary a lot depending or what your service does, for example if you have tons of static data G1 may be better fit.</p>
+
+<p><em>Connection pool</em></p>
+
+<p>So far we haven take into account how our service is connected to the database, to check it out let’s connect to our database and find it out.</p>
+
+<p>First we will forward the master of our database to a local port with :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>microk8s.kubectl port-forward movies-db-cluster-0 6432:5432
+Forwarding from 127.0.0.1:6432 -&gt; 5432
+Forwarding from <span class="o">[</span>::1]:6432 -&gt; 5432</code></pre></figure>
+
+<p>Now we will get the password from our moviesdba user :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>microk8s.kubectl get secret moviesdba.movies-db-cluster.credentials <span class="nt">-o</span> <span class="s1">'jsonpath={.data.password}'</span> | <span class="nb">base64</span> <span class="nt">-d</span>
+k1lYa8DJ6SeXSBY8lsvacEP1BmCRAYTrAk6HuGC9wP8aK1va7Q5voX1Ih6VrWNUA</code></pre></figure>
+
+<p>Finally we will use PSQL to connect to our database :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span> psql <span class="nt">-h</span> localhost <span class="nt">-p</span> 6432 <span class="nt">-U</span> moviesdba movies
+Password <span class="k">for </span>user moviesdba: 
+psql <span class="o">(</span>11.6 <span class="o">(</span>Ubuntu 11.6-1.pgdg18.04+1<span class="o">))</span>
+SSL connection <span class="o">(</span>protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, bits: 256, compression: off<span class="o">)</span>
+Type <span class="s2">"help"</span> <span class="k">for </span>help.
+
+<span class="nv">movies</span><span class="o">=</span><span class="c"># </span></code></pre></figure>
+
+<p>For knowing how many active connection for our moviesuser we have we could do :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">movies</span><span class="o">=</span><span class="c"># select count(*) from pg_stat_activity where pg_stat_activity.usename='moviesuser';</span>
+ count 
+<span class="nt">-------</span>
+     0
+<span class="o">(</span>1 row<span class="o">)</span></code></pre></figure>
+
+<p>If we run our load test and when is running we execute the same command we will see something like :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">movies</span><span class="o">=</span><span class="c"># select count(*) from pg_stat_activity where pg_stat_activity.usename='moviesuser';</span>
+ count 
+<span class="nt">-------</span>
+    10
+<span class="o">(</span>1 row<span class="o">)</span></code></pre></figure>
+
+<p>First we will modify our application.yml to define our pool :</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">movies-datasource</span><span class="pi">:</span>
+  <span class="na">driver</span><span class="pi">:</span> <span class="s2">"</span><span class="s">org.postgresql.Driver"</span>
+  <span class="na">connection-string</span><span class="pi">:</span> <span class="s2">"</span><span class="s">jdbc:postgresql://</span><span class="se">\
+</span>    <span class="s">${MOVIES_DB_CLUSTER_SERVICE_HOST}:${MOVIES_DB_CLUSTER_SERVICE_PORT_POSTGRESQL}</span><span class="se">\
+</span>    <span class="s">/movies"</span>
+  <span class="na">credentials</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/etc/movies-db"</span>
+  <span class="na">read-only </span><span class="pi">:</span> <span class="no">true</span>
+  <span class="na">pool </span><span class="pi">:</span>
+    <span class="na">min-connections </span><span class="pi">:</span> <span class="m">1</span>
+    <span class="na">max-connections </span><span class="pi">:</span> <span class="s">3</span></code></pre></figure>
+
+<p>Now we will modify our DataSourceProperties class :</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">spring</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">datasource</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.springframework.boot.context.properties.ConfigurationProperties</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.stereotype.Component</span><span class="o">;</span>
+
+<span class="nd">@Component</span>
+<span class="nd">@ConfigurationProperties</span><span class="o">(</span><span class="s">"movies-datasource"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DataSourceProperties</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getDriver</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">driver</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setDriver</span><span class="o">(</span><span class="nc">String</span> <span class="n">driver</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">driver</span> <span class="o">=</span> <span class="n">driver</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getConnectionString</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">connectionString</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setConnectionString</span><span class="o">(</span><span class="nc">String</span> <span class="n">connectionString</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">connectionString</span> <span class="o">=</span> <span class="n">connectionString</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getCredentials</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">credentials</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setCredentials</span><span class="o">(</span><span class="nc">String</span> <span class="n">credentials</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">credentials</span> <span class="o">=</span> <span class="n">credentials</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">Boolean</span> <span class="nf">getReadOnly</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">readOnly</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setReadOnly</span><span class="o">(</span><span class="nc">Boolean</span> <span class="n">readOnly</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">readOnly</span> <span class="o">=</span> <span class="n">readOnly</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">PoolConfig</span> <span class="nf">getPool</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">pool</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setPool</span><span class="o">(</span><span class="nc">PoolConfig</span> <span class="n">pool</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">pool</span> <span class="o">=</span> <span class="n">pool</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">driver</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">connectionString</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">credentials</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">Boolean</span> <span class="n">readOnly</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">PoolConfig</span> <span class="n">pool</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">class</span> <span class="nc">PoolConfig</span> <span class="o">{</span>
+        <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getMinConnections</span><span class="o">()</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">minConnections</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setMinConnections</span><span class="o">(</span><span class="kt">int</span> <span class="n">minConnections</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">minConnections</span> <span class="o">=</span> <span class="n">minConnections</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getMaxConnections</span><span class="o">()</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">maxConnections</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setMaxConnections</span><span class="o">(</span><span class="kt">int</span> <span class="n">maxConnections</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">maxConnections</span> <span class="o">=</span> <span class="n">maxConnections</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">private</span> <span class="kt">int</span> <span class="n">minConnections</span><span class="o">;</span>
+        <span class="kd">private</span> <span class="kt">int</span> <span class="n">maxConnections</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span></code></pre></figure>
+
+<p>And finally our MoviesDataSource class</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">spring</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">datasource</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">com.zaxxer.hikari.HikariDataSource</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.commons.logging.Log</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.commons.logging.LogFactory</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.stereotype.Component</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.nio.file.Files</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.nio.file.Path</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.nio.file.Paths</span><span class="o">;</span>
+
+<span class="nd">@Component</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MoviesDataSource</span> <span class="kd">extends</span> <span class="nc">HikariDataSource</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">Log</span> <span class="n">log</span> <span class="o">=</span> <span class="nc">LogFactory</span><span class="o">.</span><span class="na">getLog</span><span class="o">(</span><span class="nc">MoviesDataSource</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+    <span class="nc">MoviesDataSource</span><span class="o">(</span><span class="kd">final</span> <span class="nc">DataSourceProperties</span> <span class="n">dataSourceProperties</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">();</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setDriverClassName</span><span class="o">(</span><span class="n">dataSourceProperties</span><span class="o">.</span><span class="na">getDriver</span><span class="o">());</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setJdbcUrl</span><span class="o">(</span><span class="n">dataSourceProperties</span><span class="o">.</span><span class="na">getConnectionString</span><span class="o">());</span>
+        <span class="kd">final</span> <span class="nc">String</span> <span class="n">credentials</span> <span class="o">=</span> <span class="n">dataSourceProperties</span><span class="o">.</span><span class="na">getCredentials</span><span class="o">();</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setUsername</span><span class="o">(</span><span class="n">getCredentialValue</span><span class="o">(</span><span class="n">credentials</span><span class="o">,</span> <span class="s">"username"</span><span class="o">));</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setPassword</span><span class="o">(</span><span class="n">getCredentialValue</span><span class="o">(</span><span class="n">credentials</span><span class="o">,</span> <span class="s">"password"</span><span class="o">));</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setReadOnly</span><span class="o">(</span><span class="n">dataSourceProperties</span><span class="o">.</span><span class="na">getReadOnly</span><span class="o">());</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setMinimumIdle</span><span class="o">(</span><span class="n">dataSourceProperties</span><span class="o">.</span><span class="na">getPool</span><span class="o">().</span><span class="na">getMinConnections</span><span class="o">());</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setMaximumPoolSize</span><span class="o">(</span><span class="n">dataSourceProperties</span><span class="o">.</span><span class="na">getPool</span><span class="o">().</span><span class="na">getMaxConnections</span><span class="o">());</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">setConnectionTestQuery</span><span class="o">(</span><span class="s">"SELECT 1"</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="nc">String</span> <span class="nf">getCredentialValue</span><span class="o">(</span><span class="kd">final</span> <span class="nc">String</span> <span class="n">credentials</span><span class="o">,</span> <span class="kd">final</span> <span class="nc">String</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">final</span> <span class="nc">Path</span> <span class="n">path</span> <span class="o">=</span> <span class="nc">Paths</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">credentials</span><span class="o">,</span> <span class="n">value</span><span class="o">);</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="nf">String</span><span class="o">(</span><span class="nc">Files</span><span class="o">.</span><span class="na">readAllBytes</span><span class="o">(</span><span class="n">path</span><span class="o">));</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">RuntimeException</span><span class="o">(</span><span class="s">"error getting data source credential value : "</span> <span class="o">+</span> <span class="n">path</span><span class="o">.</span><span class="na">toString</span><span class="o">(),</span> <span class="n">ex</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>No we could build and deploy our service again to repeat our test :</p>
+
+<table class="display data-table compact cell-border">
+    <thead>
+      <tr>
+        
+        <th>Step</th>
+        
+        <th>C. Users</th>
+        
+        <th>Pods</th>
+        
+        <th>ART</th>
+        
+        <th>TPS</th>
+        
+        <th>Max CPU</th>
+        
+        <th>Max MEM</th>
+        
+      </tr>
+    </thead>
+    <tbody> 
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">01 base</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">570.47</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">16.73</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">916</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">487</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">02 Java 11</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">517.01</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">18.47</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">875</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">918</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">03 jlink</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">518.97</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">18.41</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">875</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">787</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">04 heap</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">451.73</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">21.13</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">816</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">633</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">05 parallel GC</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">450.85</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">21.17</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">799</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">626</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">06 connection pool</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">129.0</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">85.49</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">625</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">363</td>
+            
+        
+                
+      </tr>
+      
+    </tbody>
+  </table>
+<p>connection pool</p>
+
+<p>We have improve our service further since we now reuse our connections.</p>
+
+<p><em>Final Touches</em></p>
+
+<p>Now we will finalize our optimizing we will change some more settings, first we will modify our POM to disable Logback and enable log4j2 that have better performance.</p>
+
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;exclusions&gt;</span>
+        <span class="nt">&lt;exclusion&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-logging<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;/exclusion&gt;</span>
+    <span class="nt">&lt;/exclusions&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+<span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-log4j2<span class="nt">&lt;/artifactId&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span></code></pre></figure>
+
+<p>We will set log to error disable the spring banner an disable JMX adding to our application.yaml :</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">logging</span><span class="pi">:</span>
+  <span class="na">level</span><span class="pi">:</span>
+    <span class="na">ROOT</span><span class="pi">:</span> <span class="s">ERROR</span>
+<span class="na">spring</span><span class="pi">:</span>
+  <span class="na">main</span><span class="pi">:</span>
+    <span class="na">banner-mode</span><span class="pi">:</span> <span class="s">off</span>
+  <span class="na">jmx</span><span class="pi">:</span>
+    <span class="na">enabled</span><span class="pi">:</span> <span class="no">false</span></code></pre></figure>
+
+<p>Now let’s run a new run with our final changes :</p>
+
+<table class="display data-table compact cell-border">
+    <thead>
+      <tr>
+        
+        <th>Step</th>
+        
+        <th>C. Users</th>
+        
+        <th>Pods</th>
+        
+        <th>ART</th>
+        
+        <th>TPS</th>
+        
+        <th>Max CPU</th>
+        
+        <th>Max MEM</th>
+        
+      </tr>
+    </thead>
+    <tbody> 
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">01 base</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">570.47</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">16.73</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">916</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">487</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">02 Java 11</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">517.01</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">18.47</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">875</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">918</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">03 jlink</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">518.97</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">18.41</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">875</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">787</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">04 heap</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">451.73</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">21.13</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">816</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">633</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">05 parallel GC</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">450.85</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">21.17</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">799</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">626</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">06 connection pool</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">129.0</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">85.49</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">625</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">363</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">07 final</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">111.61</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">85.53</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">626</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">350</td>
+            
+        
+                
+      </tr>
+      
+    </tbody>
+  </table>
+<p>final</p>
+
+<p><strong>Running the complete set</strong></p>
+
+<p>With this we are ready to run our final test running the full set, let’s do it so :</p>
+
+<table class="display data-table compact cell-border">
+    <thead>
+      <tr>
+        
+        <th>C. Users</th>
+        
+        <th>Pods</th>
+        
+        <th>ART</th>
+        
+        <th>TPS</th>
+        
+        <th>Max CPU</th>
+        
+        <th>Max MEM</th>
+        
+        <th>Service</th>
+        
+      </tr>
+    </thead>
+    <tbody> 
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">39.16</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">25.49</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">403</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">474</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">01 Base</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">34.61</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">28.85</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">209</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">252</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">02 Spring Web</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">570.47</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">16.73</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">916</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">487</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">01 Base</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">111.61</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">85.53</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">626</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">350</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">02 Spring Web</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">25</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">3</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1615.82</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">14.72</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1049</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1454</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">01 Base</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">25</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">266.03</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">89.44</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">686</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">369</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">02 Spring Web</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">50</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">5</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">3190.98</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">14.89</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1351</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">2499</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">01 Base</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">50</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">3</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1982.03</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">23.95</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">774</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1060</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">02 Spring Web</td>
+            
+        
+                
+      </tr>
+      
+    </tbody>
+  </table>
+<p>01 Base = Java 8 - Spring Boot 2.2.2 - Spring Web - Spring Data JDBC default settings, unoptimized <br />02 Spring Web = Java 11 - Spring Boot 2.2.2 - Spring Web - Spring Data JDBC optimized</p>
+
+<p><strong>Conclusions</strong></p>
+
+<p>With this optimization we have drastically improve our service, it use less CPU and Memory and we need to have less pods running for been able to support the same amount of concurrent users with an improve response time.</p>
+
+<p>In the next chapters of this series we will start to use other frameworks to measure them against our results.</p>
+
+<p><em>Note: The full code of this service is available at this <a href="https://github.com/LearningByExample/movies-spring-web" target="_blank">repository</a>.</em></p>
+
+<p><strong>Resources</strong></p>
+
+<ul>
+  <li><a href="https://spring.io/guides/topicals/spring-boot-docker" target="_blank">https://spring.io/guides/topicals/spring-boot-docker</a></li>
+  <li><a href="https://docs.gigaspaces.com/xap/14.0/rn/java11-guidelines.html">https://docs.gigaspaces.com/xap/14.0/rn/java11-guidelines.html</a></li>
+  <li><a href="https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/" target="_blank">https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/</a></li>
+  <li><a href="https://spring.io/blog/2015/12/10/spring-boot-memory-performance">https://spring.io/blog/2015/12/10/spring-boot-memory-performance</a></li>
+  <li><a href="https://stackoverflow.com/a/30070428" target="_blank">https://stackoverflow.com/a/30070428</a></li>
+  <li><a href="https://www.optaplanner.org/blog/2015/07/31/WhatIsTheFastestGarbageCollectorInJava8.html" target="_blank">https://www.optaplanner.org/blog/2015/07/31/WhatIsTheFastestGarbageCollectorInJava8.html</a></li>
+  <li><a href="https://spring.io/blog/2018/12/12/how-fast-is-spring" target="_blank">https://spring.io/blog/2018/12/12/how-fast-is-spring</a></li>
+</ul>
+
+    
+
+    <div id="disqus_thread"></div>
+    <script>
+
+    /**
+    *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+    *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+
+    var disqus_config = function () {
+    this.page.url = "https://juan-medina.com/2020/01/22/optimizing-k8s-sv-02/";
+    this.page.identifier = "/2020/01/22/optimizing-k8s-sv-02/"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    this.page.title = "Optimizing Kubernetes Services - Part 2 &#58 Spring Web";
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = '//juan-medina-com.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+    
+
+    </div>
+  </section>
+
+  <section class="profile">
+    <div class="profile__card">
+      <div class="profile__img">
+        <figure class="absolute-bg" style="background-image: url('/assets/img/pp.jpg');"></figure>
+      </div>
+      <div class="profile__container">
+        <p><b>About Juan Medina</b><br/> I'm just a normal geek that code all kind of stuff, from complex corporate applications to games.<br/> <br/> Games, music, movies and traveling are my escape pods.</p>
+        
+          <ul class="profile__social">
+            
+              <li><a class="fa fa-lg fa-envelope-o" href="mailto:mail@juan-medina.com"></a></li>
+            
+            
+              <li><a class="fa fa-lg fa-address-card" href="https://juan-medina.com/cv" target="_blank"></a></li>
+            
+              <li><a class="fa fa-lg fa-github" href="https://github.com/juan-medina" target="_blank"></a></li>
+            
+              <li><a class="fa fa-lg fa-twitter" href="https://twitter.com/JuanMedinaCode" target="_blank"></a></li>
+            
+              <li><a class="fa fa-lg fa-stack-overflow" href="http://stackoverflow.com/users/7910403/juan-medina" target="_blank"></a></li>
+            
+          </ul>
+        
+      </div>
+    </div>
+  </section>
+
+</article>
+
+
+  <section class="next">
+    <a class="next__link" href="/2020/01/11/optimizing-k8s-sv-01/" style="background-image: url('/assets/img/graph.jpg');">
+      <div class="next__container">
+        <span>Read Next</span>
+        <h2>Optimizing Kubernetes Services - Part 1 &#58 Base service</h2>
+      </div>
+    </a>
+  </section>
+
+
+    </main>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/rellax/1.0.0/rellax.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+<script type="text/javascript" src="/assets/js/app.js"></script>
+
+
+  </body>
+
+</html>

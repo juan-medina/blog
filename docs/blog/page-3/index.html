@@ -95,6 +95,8 @@
       <section class="previews">
   <div>
     
+      <figure class="absolute-bg preview__img" style="background-image: url('/assets/img/reactor.jpg');"></figure>
+    
       <figure class="absolute-bg preview__img" style="background-image: url('/assets/img/kotlin.jpg');"></figure>
     
       <figure class="absolute-bg preview__img" style="background-image: url('/assets/img/Functional-Prog.png');"></figure>
@@ -102,8 +104,6 @@
       <figure class="absolute-bg preview__img" style="background-image: url('/assets/img/tdd.jpg');"></figure>
     
       <figure class="absolute-bg preview__img" style="background-image: url('/assets/img/jekyll.png');"></figure>
-    
-      <figure class="absolute-bg preview__img" style="background-image: url('/assets/img/super-laydock.png');"></figure>
     
     <div class="previews__container">
       <span>Welcome to</span>
@@ -121,6 +121,15 @@
 
     <div class="tab">
       <ul itemscope itemtype="http://schema.org/Blog">
+        
+          <li class="preview" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+            <a class="preview__link" href="/2017/06/04/reactive-kotlin-vs-java/" itemprop="url">
+              <span class="preview__date" itemprop="datePublished" datetime="2017-06-04T09:00:00+01:00">Jun 4, 2017</span>
+              <h2 class="preview__header" itemprop="name">Reactive Kotlin vs Java</h2>
+              <p class="preview__excerpt" itemprop="description">For me the best way to learn something is by example, so instead to create HelloWords I’ve been translating my Java Reactive Spring 5 Webflux example into Kotlin, and now...</p>
+              <span class="preview__more">Read More</span>
+            </a>
+          </li>
         
           <li class="preview" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
             <a class="preview__link" href="/2017/05/23/why-functional-programming-kotlin/" itemprop="url">
@@ -154,15 +163,6 @@
               <span class="preview__date" itemprop="datePublished" datetime="2017-02-20T17:54:23+00:00">Feb 20, 2017</span>
               <h2 class="preview__header" itemprop="name">Jekyll</h2>
               <p class="preview__excerpt" itemprop="description">I’ve recreated my personal blog using Jekyll and so far I loving. And it’s not only because how powerful and customizable Jekyll is, is the first time that I feeling...</p>
-              <span class="preview__more">Read More</span>
-            </a>
-          </li>
-        
-          <li class="preview" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-            <a class="preview__link" href="/2016/02/23/new-super-laydock/" itemprop="url">
-              <span class="preview__date" itemprop="datePublished" datetime="2016-02-23T21:19:00+00:00">Feb 23, 2016</span>
-              <h2 class="preview__header" itemprop="name">New Super Laydock</h2>
-              <p class="preview__excerpt" itemprop="description">So today I’ve speak  with my graphics designer to start the new game development, and originally I was interested in to do a remake of Rune Master 2 for MSX2, here...</p>
               <span class="preview__more">Read More</span>
             </a>
           </li>
@@ -215,7 +215,7 @@
           
           <div class="card__container">
             <h2 class="card__header">Programming</h2>
-            <p class="card__count">16 Posts</p>
+            <p class="card__count">17 Posts</p>
             <span class="card__more">View All</span>
           </div>
         </a>
@@ -269,7 +269,7 @@
           
           <div class="card__container">
             <h2 class="card__header">Cloud</h2>
-            <p class="card__count">4 Posts</p>
+            <p class="card__count">5 Posts</p>
             <span class="card__more">View All</span>
           </div>
         </a>
