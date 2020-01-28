@@ -26,7 +26,7 @@ layout: default
   <section class="section-padding bg-grey" itemprop="articleBody">
     <div class="post">
       {{ content }}
-    {% if page.comments %}
+    {% if page.comments and site.comments %}
 
     <div id="disqus_thread"></div>
     <script>

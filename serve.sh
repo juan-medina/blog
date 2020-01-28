@@ -2,4 +2,4 @@
 
 set -o errexit
 
-bundle exec jekyll serve -d docs --watch --drafts
+bundle exec jekyll serve -d docs --watch --drafts --config=_config.yml,_draft.yml
