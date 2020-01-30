@@ -1,0 +1,2445 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Optimizing Kubernetes Services - Part 3 &amp;#58 Spring WebFlux | Juan Medina Personal Blog</title>
+  <meta name="author" content="Juan Medina">
+  <meta name="description" content="Personal blog from Juan Medina">
+  <meta property="og:title" content="Optimizing Kubernetes Services - Part 3 &amp;#58 Spring WebFlux | Juan Medina Personal Blog">
+  <meta property="og:url" content="http://juan-medina.com/2020/01/29/optimizing-k8s-sv-03/">
+  <meta property="og:site_name" content="Juan Medina Personal Blog">
+  <meta property="og:description" content="Personal blog from Juan Medina">
+  <meta property="og:image" content="http://juan-medina.com/assets/img/graph.jpg">
+  <meta property="og:type" content="blog">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:description" content="Personal blog from Juan Medina">
+  <meta name="twitter:title" content="Optimizing Kubernetes Services - Part 3 &amp;#58 Spring WebFlux | Juan Medina Personal Blog">
+  <meta name="twitter:url" content="http://juan-medina.com/2020/01/29/optimizing-k8s-sv-03/">
+  <meta name="twitter:site" content="Juan Medina Personal Blog">
+  <meta name="twitter:creator" content="@JuanMedinaCode">
+  <meta name="twitter:domain" content="http://juan-medina.com">
+  <meta property="twitter:image" content="http://juan-medina.com/assets/img/graph.jpg">
+
+  <!-- ****** faviconit.com favicons ****** -->
+  <link rel="shortcut icon" href="/favicon/favicon.ico">
+  <link rel="icon" sizes="16x16 32x32 64x64" href="/favicon/favicon.ico">
+  <link rel="icon" type="image/png" sizes="196x196" href="/favicon/favicon-192.png">
+  <link rel="icon" type="image/png" sizes="160x160" href="/favicon/favicon-160.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon/favicon-96.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="/favicon/favicon-64.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16.png">
+  <link rel="apple-touch-icon" href="/favicon/favicon-57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/favicon/favicon-114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/favicon/favicon-72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/favicon/favicon-144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/favicon/favicon-60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/favicon/favicon-120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/favicon/favicon-76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/favicon/favicon-152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon/favicon-180.png">
+  
+  <meta name="msapplication-TileColor" content="#FFFFFF">
+  <meta name="msapplication-TileImage" content="/favicon-144.png">
+  <meta name="msapplication-config" content="/browserconfig.xml">
+  <!-- ****** faviconit.com favicons ****** -->
+
+  <link type="application/atom+xml" rel="alternate" href="http://juan-medina.com/feed.xml" title="Juan Medina Personal Blog" />
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata|Lora|Space+Mono:700">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/syntax.css">
+
+  <link rel="alternate" type="application/rss+xml" title="Juan Medina Personal Blog" href="http://juan-medina.com/feed.xml">
+  <link rel="canonical" href="http://juan-medina.com/2020/01/29/optimizing-k8s-sv-03/">
+
+
+  <script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
+  <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+
+  
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-71726617-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+  
+
+  <script type="text/javascript" class="init">
+    $(document).ready(function() {
+      $('.data-table').DataTable( {
+        "paging"    : false,
+        "info"      : false,
+        "searching" : false,
+      } );
+    });
+  </script>
+    
+</head>
+
+  <body>
+
+    <main>
+      <article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="section-padding--lg mast rellax" data-rellax-speed="-4">
+    <a class="nav nav--white" href="/">
+      <i class="fa fa-lg fa-arrow-left"></i>
+      <span>Back to Posts</span>
+    </a>
+    <figure class="absolute-bg mast__img" style="background-image: url('/assets/img/graph.jpg');"></figure>
+    <div class="mast__container">
+      <span><time datetime="2020-01-29T23:00:00+00:00" itemprop="datePublished">Jan 29, 2020</time></span>
+      <h1 itemprop="name headline">Optimizing Kubernetes Services - Part 3 &#58 Spring WebFlux</h1>
+      
+        <span>Posted in
+          
+            <a class="nav--white" href="/category/cloud">Cloud</a>, 
+          
+            <a class="nav--white" href="/category/programming">Programming</a>
+          
+        </span>
+      
+      <span></span>
+    </div>
+  </header>
+
+  <section class="section-padding bg-grey" itemprop="articleBody">
+    <div class="post">
+      <p>Some days ago we did an optimized version of our series with <a href="/2020/01/22/optimizing-k8s-sv-02/" target="_blank">Spring Web</a>, now we will try to improve further the numbers using a reactive platform, for this we will use <a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/web-reactive.html" target="_blank">Spring WebFlux</a> and <a href="https://r2dbc.io/" target="_blank">R2DBC</a>.</p>
+
+<p>Here, as a reference, are the numbers that we got so far :</p>
+
+<table class="display data-table compact cell-border">
+    <thead>
+      <tr>
+        
+        <th>C. Users</th>
+        
+        <th>Pods</th>
+        
+        <th>ART</th>
+        
+        <th>TPS</th>
+        
+        <th>Max CPU</th>
+        
+        <th>Max MEM</th>
+        
+        <th>Service</th>
+        
+      </tr>
+    </thead>
+    <tbody> 
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">39.16</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">25.49</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">403</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">474</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">01 Base</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">34.61</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">28.85</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">209</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">252</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">02 Spring Web</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">570.47</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">16.73</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">916</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">487</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">01 Base</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">111.61</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">85.53</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">626</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">350</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">02 Spring Web</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">25</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">3</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1615.82</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">14.72</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1049</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1454</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">01 Base</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">25</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">266.03</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">89.44</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">686</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">369</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">02 Spring Web</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">50</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">5</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">3190.98</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">14.89</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1351</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">2499</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">01 Base</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">50</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">3</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1982.03</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">23.95</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">774</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1060</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">02 Spring Web</td>
+            
+        
+                
+      </tr>
+      
+    </tbody>
+  </table>
+<p>01 Base = Java 8 - Spring Boot 2.2.2 - Spring Web - Spring Data JDBC default settings, unoptimized <br />02 Spring Web = Java 11 - Spring Boot 2.2.2 - Spring Web - Spring Data JDBC optimized <br /></p>
+
+<p><strong>Bootstrapping a Spring Boot application</strong></p>
+
+<p>We are going to use Spring Initializr <a href="https://start.spring.io/" target="_blank">https://start.spring.io/</a> to quickly bootstrap our application.</p>
+
+<p>We will create a <em>Maven Project</em> using <em>Java 1</em> and <em>Spring Boot</em> version <em>2.2.4</em>, we will set the <em>Group</em> to be <em>org.learning.by.example.movies</em>, and the <em>Artifact</em> to <em>spring-webflux</em>, the rest of the values should be automatically populated.</p>
+
+<p><a href="/assets/img/captures/movies_spring_webflux_01.jpg" target="_blank"><img src="/assets/img/captures/movies_spring_webflux_01.jpg" alt="Spring Initializr setup" style="width:80%; display:block; margin-left:auto; margin-right:auto;" /></a></p>
+
+<p>For dependencies we will search and add :</p>
+<ul>
+  <li>Spring Reactive Web</li>
+  <li>Spring Data R2DBC [Experimental]</li>
+  <li>PostgreSQL Driver</li>
+  <li>Spring Boot Actuator</li>
+</ul>
+
+<p><a href="/assets/img/captures/movies_spring_webflux_02.jpg" target="_blank"><img src="/assets/img/captures/movies_spring_webflux_02.jpg" alt="Spring Initializr dependencies" style="width:80%; display:block; margin-left:auto; margin-right:auto;" /></a></p>
+
+<p>Now we will click on Generate to download our zip file : <em>spring-webflux.zip</em>, we will uncompress it and leave it ready to be opened with our favorite IDE.</p>
+
+<p><strong>Creating a Reactive repository</strong></p>
+
+<p>First we will create our POJO that we will use to retrive a movie.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">springwebflux</span><span class="o">.</span><span class="na">model</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Objects</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Movie</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="nc">Integer</span> <span class="n">id</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="nc">String</span> <span class="n">title</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="nc">Integer</span> <span class="n">year</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">genres</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">Movie</span><span class="o">(</span><span class="kd">final</span> <span class="nc">Integer</span> <span class="n">id</span><span class="o">,</span> <span class="kd">final</span> <span class="nc">String</span> <span class="n">title</span><span class="o">,</span> <span class="kd">final</span> <span class="nc">Integer</span> <span class="n">year</span><span class="o">,</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">genres</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">id</span> <span class="o">=</span> <span class="n">id</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">title</span> <span class="o">=</span> <span class="n">title</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">year</span> <span class="o">=</span> <span class="n">year</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">genres</span> <span class="o">=</span> <span class="n">genres</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">Integer</span> <span class="nf">getId</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">id</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getTitle</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">title</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">Integer</span> <span class="nf">getYear</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">year</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="nf">getGenres</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">genres</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>This is identical as we did in our JDBC example.</p>
+
+<p>Now we will create our reactive repository.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">springwebflux</span><span class="o">.</span><span class="na">repositories</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.learning.by.example.movies.springwebflux.model.Movie</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.data.r2dbc.repository.Query</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.data.repository.reactive.ReactiveCrudRepository</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.stereotype.Repository</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">reactor.core.publisher.Flux</span><span class="o">;</span>
+
+<span class="nd">@Repository</span>
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">MoviesRepository</span> <span class="kd">extends</span> <span class="nc">ReactiveCrudRepository</span><span class="o">&lt;</span><span class="nc">Movie</span><span class="o">,</span> <span class="nc">Integer</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="nd">@Query</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">"SELECT \n"</span> <span class="o">+</span>
+            <span class="s">"  m.id, m.title, m.genres \n"</span> <span class="o">+</span>
+            <span class="s">" FROM \n"</span> <span class="o">+</span>
+            <span class="s">"  movies as m \n"</span> <span class="o">+</span>
+            <span class="s">" WHERE :genre = ANY(string_to_array(LOWER(m.genres),'|')) \n"</span><span class="o">)</span>
+    <span class="nc">Flux</span><span class="o">&lt;</span><span class="nc">Movie</span><span class="o">&gt;</span> <span class="nf">findByGenre</span><span class="o">(</span><span class="nc">String</span> <span class="n">genre</span><span class="o">);</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>This is very similar of the JDBC repository that we create before.</p>
+
+<p>Now we need to create a converter.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">springwebflux</span><span class="o">.</span><span class="na">converter</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">io.r2dbc.spi.Row</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.learning.by.example.movies.springwebflux.model.Movie</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.core.convert.converter.Converter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.stereotype.Component</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.Arrays</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Objects</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.regex.Matcher</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.regex.Pattern</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.stream.Collectors</span><span class="o">;</span>
+
+<span class="nd">@Component</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MovieReadConverter</span> <span class="kd">implements</span> <span class="nc">Converter</span><span class="o">&lt;</span><span class="nc">Row</span><span class="o">,</span> <span class="nc">Movie</span><span class="o">&gt;</span> <span class="o">{</span>
+
+    <span class="c1">// Without escape characters this pattern ins : (.*) \((\d{4})\)</span>
+    <span class="c1">//  (       = START GROUP 1</span>
+    <span class="c1">//  .*      = any set of characters</span>
+    <span class="c1">//  )       = END GROUP 1</span>
+    <span class="c1">//          = space</span>
+    <span class="c1">//  \(      = the character (</span>
+    <span class="c1">//  (       = START GROUP 2</span>
+    <span class="c1">//  d{4}    = four digits, ex 1945</span>
+    <span class="c1">//  )       = END GROUP 2</span>
+    <span class="c1">//  \)      = the character )</span>
+    <span class="kd">final</span> <span class="kd">static</span> <span class="nc">Pattern</span> <span class="no">TITLE_YEAR_PATTERN</span> <span class="o">=</span> <span class="nc">Pattern</span><span class="o">.</span><span class="na">compile</span><span class="o">(</span><span class="s">"(.*) \\((\\d{4})\\)"</span><span class="o">);</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">Movie</span> <span class="nf">convert</span><span class="o">(</span><span class="nc">Row</span> <span class="n">row</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">final</span> <span class="nc">String</span> <span class="n">rowTile</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"title"</span><span class="o">,</span> <span class="nc">String</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+        <span class="kd">final</span> <span class="nc">String</span> <span class="n">realTitle</span><span class="o">;</span>
+        <span class="kd">final</span> <span class="kt">int</span> <span class="n">year</span><span class="o">;</span>
+
+        <span class="kd">final</span> <span class="nc">Matcher</span> <span class="n">matcher</span> <span class="o">=</span> <span class="no">TITLE_YEAR_PATTERN</span><span class="o">.</span><span class="na">matcher</span><span class="o">(</span><span class="nc">Objects</span><span class="o">.</span><span class="na">requireNonNull</span><span class="o">(</span><span class="n">rowTile</span><span class="o">));</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">matcher</span><span class="o">.</span><span class="na">find</span><span class="o">())</span> <span class="o">{</span>
+            <span class="n">realTitle</span> <span class="o">=</span> <span class="n">matcher</span><span class="o">.</span><span class="na">group</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+            <span class="n">year</span> <span class="o">=</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">matcher</span><span class="o">.</span><span class="na">group</span><span class="o">(</span><span class="mi">2</span><span class="o">));</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="n">realTitle</span> <span class="o">=</span> <span class="n">rowTile</span><span class="o">;</span>
+            <span class="n">year</span> <span class="o">=</span> <span class="mi">1900</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">final</span> <span class="nc">String</span><span class="o">[]</span> <span class="n">genres</span> <span class="o">=</span> <span class="nc">Objects</span><span class="o">.</span><span class="na">requireNonNull</span><span class="o">(</span><span class="n">row</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"genres"</span><span class="o">,</span> <span class="nc">String</span><span class="o">.</span><span class="na">class</span><span class="o">)).</span><span class="na">split</span><span class="o">(</span><span class="s">"\\|"</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">genresList</span> <span class="o">=</span> <span class="nc">Arrays</span><span class="o">.</span><span class="na">stream</span><span class="o">(</span><span class="n">genres</span><span class="o">).</span><span class="na">filter</span><span class="o">(</span>
+                <span class="n">genre</span> <span class="o">-&gt;</span> <span class="o">!</span><span class="n">genre</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">()</span>
+        <span class="o">).</span><span class="na">collect</span><span class="o">(</span><span class="nc">Collectors</span><span class="o">.</span><span class="na">toList</span><span class="o">());</span>
+
+        <span class="kd">final</span> <span class="kt">int</span> <span class="n">id</span> <span class="o">=</span> <span class="nc">Objects</span><span class="o">.</span><span class="na">requireNonNull</span><span class="o">(</span><span class="n">row</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"id"</span><span class="o">,</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">class</span><span class="o">));</span>
+
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">Movie</span><span class="o">(</span><span class="n">id</span><span class="o">,</span> <span class="n">realTitle</span><span class="o">,</span> <span class="n">year</span><span class="o">,</span> <span class="n">genresList</span><span class="o">);</span>
+
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>This is doing almost what our mapper was doing for JDBC.</p>
+
+<p>Next we will need to create a <em>ConfigurationProperties</em> to have our database configuration.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">springwebflux</span><span class="o">.</span><span class="na">datasource</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.springframework.boot.context.properties.ConfigurationProperties</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.stereotype.Component</span><span class="o">;</span>
+
+<span class="nd">@Component</span>
+<span class="nd">@ConfigurationProperties</span><span class="o">(</span><span class="s">"movies-datasource"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DataSourceProperties</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">protocol</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">credentials</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">host</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">Integer</span> <span class="n">port</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">database</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">Boolean</span> <span class="n">readOnly</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">PoolConfig</span> <span class="n">pool</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getProtocol</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">protocol</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setProtocol</span><span class="o">(</span><span class="nc">String</span> <span class="n">protocol</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">protocol</span> <span class="o">=</span> <span class="n">protocol</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getCredentials</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">credentials</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setCredentials</span><span class="o">(</span><span class="nc">String</span> <span class="n">credentials</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">credentials</span> <span class="o">=</span> <span class="n">credentials</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getHost</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">host</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setHost</span><span class="o">(</span><span class="nc">String</span> <span class="n">host</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">host</span> <span class="o">=</span> <span class="n">host</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">Integer</span> <span class="nf">getPort</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">port</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setPort</span><span class="o">(</span><span class="nc">Integer</span> <span class="n">port</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">port</span> <span class="o">=</span> <span class="n">port</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getDatabase</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">database</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setDatabase</span><span class="o">(</span><span class="nc">String</span> <span class="n">database</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">database</span> <span class="o">=</span> <span class="n">database</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">Boolean</span> <span class="nf">getReadOnly</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">readOnly</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setReadOnly</span><span class="o">(</span><span class="nc">Boolean</span> <span class="n">readOnly</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">readOnly</span> <span class="o">=</span> <span class="n">readOnly</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">PoolConfig</span> <span class="nf">getPool</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">pool</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setPool</span><span class="o">(</span><span class="nc">PoolConfig</span> <span class="n">pool</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">pool</span> <span class="o">=</span> <span class="n">pool</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">class</span> <span class="nc">PoolConfig</span> <span class="o">{</span>
+        <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getMinConnections</span><span class="o">()</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">minConnections</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setMinConnections</span><span class="o">(</span><span class="kt">int</span> <span class="n">minConnections</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">minConnections</span> <span class="o">=</span> <span class="n">minConnections</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getMaxConnections</span><span class="o">()</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">maxConnections</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setMaxConnections</span><span class="o">(</span><span class="kt">int</span> <span class="n">maxConnections</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">maxConnections</span> <span class="o">=</span> <span class="n">maxConnections</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="kd">private</span> <span class="kt">int</span> <span class="n">minConnections</span><span class="o">;</span>
+        <span class="kd">private</span> <span class="kt">int</span> <span class="n">maxConnections</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>This is very similar to our JDBC example however we are not use a JDBC string so will be set the host, port and database in separate variables.</p>
+
+<p>Finally we will setup our data base configuration.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">springwebflux</span><span class="o">.</span><span class="na">datasource</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">io.r2dbc.spi.ConnectionFactories</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">io.r2dbc.spi.ConnectionFactory</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">io.r2dbc.spi.ConnectionFactoryOptions</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">io.r2dbc.spi.Option</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.learning.by.example.movies.springwebflux.converter.MovieReadConverter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.context.annotation.Bean</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.context.annotation.Configuration</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.core.convert.converter.Converter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.data.r2dbc.config.AbstractR2dbcConfiguration</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.data.r2dbc.convert.R2dbcCustomConversions</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.nio.file.Files</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.nio.file.Path</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.nio.file.Paths</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.ArrayList</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.HashMap</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Map</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">static</span> <span class="n">io</span><span class="o">.</span><span class="na">r2dbc</span><span class="o">.</span><span class="na">pool</span><span class="o">.</span><span class="na">PoolingConnectionFactoryProvider</span><span class="o">.*;</span>
+<span class="kn">import</span> <span class="nn">static</span> <span class="n">io</span><span class="o">.</span><span class="na">r2dbc</span><span class="o">.</span><span class="na">spi</span><span class="o">.</span><span class="na">ConnectionFactoryOptions</span><span class="o">.*;</span>
+
+<span class="nd">@Configuration</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MoviesDataSource</span> <span class="kd">extends</span> <span class="nc">AbstractR2dbcConfiguration</span> <span class="o">{</span>
+    <span class="kd">final</span> <span class="nc">DataSourceProperties</span> <span class="n">dataSourceProperties</span><span class="o">;</span>
+    <span class="kd">final</span> <span class="nc">MovieReadConverter</span> <span class="n">movieReadConverter</span><span class="o">;</span>
+    <span class="kd">final</span> <span class="nc">String</span> <span class="n">userName</span><span class="o">;</span>
+    <span class="kd">final</span> <span class="nc">String</span> <span class="n">password</span><span class="o">;</span>
+
+    <span class="nc">MoviesDataSource</span><span class="o">(</span><span class="kd">final</span> <span class="nc">DataSourceProperties</span> <span class="n">dataSourceProperties</span><span class="o">,</span> <span class="kd">final</span> <span class="nc">MovieReadConverter</span> <span class="n">movieReadConverter</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">();</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">dataSourceProperties</span> <span class="o">=</span> <span class="n">dataSourceProperties</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">movieReadConverter</span> <span class="o">=</span> <span class="n">movieReadConverter</span><span class="o">;</span>
+        <span class="kd">final</span> <span class="nc">String</span> <span class="n">credentials</span> <span class="o">=</span> <span class="n">dataSourceProperties</span><span class="o">.</span><span class="na">getCredentials</span><span class="o">();</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">userName</span> <span class="o">=</span> <span class="n">getCredentialValue</span><span class="o">(</span><span class="n">credentials</span><span class="o">,</span> <span class="s">"username"</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">password</span> <span class="o">=</span> <span class="n">getCredentialValue</span><span class="o">(</span><span class="n">credentials</span><span class="o">,</span> <span class="s">"password"</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="nc">String</span> <span class="nf">getCredentialValue</span><span class="o">(</span><span class="kd">final</span> <span class="nc">String</span> <span class="n">credentials</span><span class="o">,</span> <span class="kd">final</span> <span class="nc">String</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">final</span> <span class="nc">Path</span> <span class="n">path</span> <span class="o">=</span> <span class="nc">Paths</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">credentials</span><span class="o">,</span> <span class="n">value</span><span class="o">);</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="nf">String</span><span class="o">(</span><span class="nc">Files</span><span class="o">.</span><span class="na">readAllBytes</span><span class="o">(</span><span class="n">path</span><span class="o">));</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">RuntimeException</span><span class="o">(</span><span class="s">"error getting data source credential value : "</span> <span class="o">+</span> <span class="n">path</span><span class="o">.</span><span class="na">toString</span><span class="o">(),</span> <span class="n">ex</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+
+    <span class="nd">@Override</span>
+    <span class="nd">@Bean</span>
+    <span class="kd">public</span> <span class="nc">R2dbcCustomConversions</span> <span class="nf">r2dbcCustomConversions</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Converter</span><span class="o">&lt;?,</span> <span class="o">?&gt;&gt;</span> <span class="n">converterList</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;&gt;();</span>
+        <span class="n">converterList</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">movieReadConverter</span><span class="o">);</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">R2dbcCustomConversions</span><span class="o">(</span><span class="n">getStoreConversions</span><span class="o">(),</span> <span class="n">converterList</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="nd">@Bean</span>
+    <span class="kd">public</span> <span class="nc">ConnectionFactory</span> <span class="nf">connectionFactory</span><span class="o">()</span> <span class="o">{</span>
+
+        <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="n">options</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashMap</span><span class="o">&lt;&gt;();</span>
+        <span class="n">options</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"default_transaction_read_only"</span><span class="o">,</span> <span class="n">dataSourceProperties</span><span class="o">.</span><span class="na">getReadOnly</span><span class="o">().</span><span class="na">toString</span><span class="o">());</span>
+
+        <span class="k">return</span> <span class="nc">ConnectionFactories</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">ConnectionFactoryOptions</span><span class="o">.</span><span class="na">builder</span><span class="o">()</span>
+                <span class="o">.</span><span class="na">option</span><span class="o">(</span><span class="no">PROTOCOL</span><span class="o">,</span> <span class="n">dataSourceProperties</span><span class="o">.</span><span class="na">getProtocol</span><span class="o">())</span>
+                <span class="o">.</span><span class="na">option</span><span class="o">(</span><span class="no">DRIVER</span><span class="o">,</span> <span class="no">POOLING_DRIVER</span><span class="o">)</span>
+                <span class="o">.</span><span class="na">option</span><span class="o">(</span><span class="no">HOST</span><span class="o">,</span> <span class="n">dataSourceProperties</span><span class="o">.</span><span class="na">getHost</span><span class="o">())</span>
+                <span class="o">.</span><span class="na">option</span><span class="o">(</span><span class="no">PORT</span><span class="o">,</span> <span class="n">dataSourceProperties</span><span class="o">.</span><span class="na">getPort</span><span class="o">())</span>
+                <span class="o">.</span><span class="na">option</span><span class="o">(</span><span class="no">USER</span><span class="o">,</span> <span class="n">userName</span><span class="o">)</span>
+                <span class="o">.</span><span class="na">option</span><span class="o">(</span><span class="no">PASSWORD</span><span class="o">,</span> <span class="n">password</span><span class="o">)</span>
+                <span class="o">.</span><span class="na">option</span><span class="o">(</span><span class="no">SSL</span><span class="o">,</span> <span class="kc">true</span><span class="o">)</span>
+                <span class="o">.</span><span class="na">option</span><span class="o">(</span><span class="nc">Option</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="s">"sslMode"</span><span class="o">),</span> <span class="s">"allow"</span><span class="o">)</span>
+                <span class="o">.</span><span class="na">option</span><span class="o">(</span><span class="no">DATABASE</span><span class="o">,</span> <span class="n">dataSourceProperties</span><span class="o">.</span><span class="na">getDatabase</span><span class="o">())</span>
+                <span class="o">.</span><span class="na">option</span><span class="o">(</span><span class="no">INITIAL_SIZE</span><span class="o">,</span> <span class="n">dataSourceProperties</span><span class="o">.</span><span class="na">getPool</span><span class="o">().</span><span class="na">getMinConnections</span><span class="o">())</span>
+                <span class="o">.</span><span class="na">option</span><span class="o">(</span><span class="no">MAX_SIZE</span><span class="o">,</span> <span class="n">dataSourceProperties</span><span class="o">.</span><span class="na">getPool</span><span class="o">().</span><span class="na">getMaxConnections</span><span class="o">())</span>
+                <span class="o">.</span><span class="na">option</span><span class="o">(</span><span class="no">VALIDATION_QUERY</span><span class="o">,</span> <span class="s">"SELECT 1"</span><span class="o">)</span>
+                <span class="o">.</span><span class="na">option</span><span class="o">(</span><span class="nc">Option</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="s">"options"</span><span class="o">),</span> <span class="n">options</span><span class="o">)</span>
+                <span class="o">.</span><span class="na">build</span><span class="o">());</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>This is how setup a connection to our database with a connection pool and set our converter.</p>
+
+<p><strong>Creating our Routes</strong></p>
+
+<p>We wil continue creating our router</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">springwebflux</span><span class="o">.</span><span class="na">router</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.learning.by.example.movies.springwebflux.handler.MovieHandler</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.context.annotation.Bean</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.stereotype.Component</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.web.reactive.config.EnableWebFlux</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.web.reactive.function.server.RouterFunction</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.web.reactive.function.server.ServerResponse</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">static</span> <span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">reactive</span><span class="o">.</span><span class="na">function</span><span class="o">.</span><span class="na">server</span><span class="o">.</span><span class="na">RequestPredicates</span><span class="o">.</span><span class="na">GET</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">static</span> <span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">reactive</span><span class="o">.</span><span class="na">function</span><span class="o">.</span><span class="na">server</span><span class="o">.</span><span class="na">RouterFunctions</span><span class="o">.</span><span class="na">route</span><span class="o">;</span>
+
+<span class="nd">@Component</span>
+<span class="nd">@EnableWebFlux</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MovieRouter</span> <span class="o">{</span>
+
+    <span class="kd">final</span> <span class="nc">MovieHandler</span> <span class="n">movieHandler</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">MovieRouter</span><span class="o">(</span><span class="kd">final</span> <span class="nc">MovieHandler</span> <span class="n">movieHandler</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">movieHandler</span> <span class="o">=</span> <span class="n">movieHandler</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Bean</span>
+    <span class="nc">RouterFunction</span><span class="o">&lt;</span><span class="nc">ServerResponse</span><span class="o">&gt;</span> <span class="nf">movies</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="nf">route</span><span class="o">(</span><span class="no">GET</span><span class="o">(</span><span class="s">"/movies/{genre}"</span><span class="o">),</span> <span class="nl">movieHandler:</span><span class="o">:</span><span class="n">getMovies</span><span class="o">);</span>
+    <span class="o">}</span>
+
+<span class="o">}</span></code></pre></figure>
+
+<p>As we could see this is a simple RouterFunction for our /movies/genre URL.</p>
+
+<p>Next will be the handler.</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">springwebflux</span><span class="o">.</span><span class="na">handler</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.learning.by.example.movies.springwebflux.model.Movie</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.learning.by.example.movies.springwebflux.repositories.MoviesRepository</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.stereotype.Component</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.web.reactive.function.server.ServerRequest</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.web.reactive.function.server.ServerResponse</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">reactor.core.publisher.Flux</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">reactor.core.publisher.Mono</span><span class="o">;</span>
+
+<span class="nd">@Component</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MovieHandler</span> <span class="o">{</span>
+    <span class="kd">final</span> <span class="nc">MoviesRepository</span> <span class="n">moviesRepository</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">MovieHandler</span><span class="o">(</span><span class="kd">final</span> <span class="nc">MoviesRepository</span> <span class="n">moviesRepository</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">moviesRepository</span> <span class="o">=</span> <span class="n">moviesRepository</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">Mono</span><span class="o">&lt;</span><span class="nc">ServerResponse</span><span class="o">&gt;</span> <span class="nf">getMovies</span><span class="o">(</span><span class="kd">final</span> <span class="nc">ServerRequest</span> <span class="n">request</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">final</span> <span class="nc">String</span> <span class="n">genre</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">pathVariable</span><span class="o">(</span><span class="s">"genre"</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="nc">Flux</span><span class="o">&lt;</span><span class="nc">Movie</span><span class="o">&gt;</span> <span class="n">movies</span> <span class="o">=</span> <span class="n">moviesRepository</span><span class="o">.</span><span class="na">findByGenre</span><span class="o">(</span><span class="n">genre</span><span class="o">.</span><span class="na">toLowerCase</span><span class="o">());</span>
+        <span class="k">return</span> <span class="nc">ServerResponse</span><span class="o">.</span><span class="na">ok</span><span class="o">().</span><span class="na">body</span><span class="o">(</span><span class="n">movies</span><span class="o">,</span> <span class="nc">Movie</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>The handler is using the repository to retrieve the movies and return the response back to the router.</p>
+
+<p>Finally we will setup our configuration in our application.yml</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">movies-datasource</span><span class="pi">:</span>
+  <span class="na">protocol</span><span class="pi">:</span> <span class="s2">"</span><span class="s">postgresql"</span>
+  <span class="na">host</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${MOVIES_DB_CLUSTER_SERVICE_HOST}"</span>
+  <span class="na">port</span><span class="pi">:</span> <span class="s">${MOVIES_DB_CLUSTER_SERVICE_PORT_POSTGRESQL}</span>
+  <span class="na">database</span><span class="pi">:</span> <span class="s2">"</span><span class="s">movies"</span>
+  <span class="na">credentials</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/etc/movies-db"</span>
+  <span class="na">read-only</span><span class="pi">:</span> <span class="no">true</span>
+  <span class="na">pool</span><span class="pi">:</span>
+    <span class="na">min-connections</span><span class="pi">:</span> <span class="m">1</span>
+    <span class="na">max-connections</span><span class="pi">:</span> <span class="m">3</span>
+<span class="na">logging</span><span class="pi">:</span>
+  <span class="na">level</span><span class="pi">:</span>
+    <span class="na">ROOT</span><span class="pi">:</span> <span class="s">ERROR</span>
+<span class="na">spring</span><span class="pi">:</span>
+  <span class="na">main</span><span class="pi">:</span>
+    <span class="na">banner-mode</span><span class="pi">:</span> <span class="s">off</span>
+  <span class="na">jmx</span><span class="pi">:</span>
+    <span class="na">enabled</span><span class="pi">:</span> <span class="no">false</span></code></pre></figure>
+
+<p><strong>Configuring our deployment</strong></p>
+
+<p>First we will copy our Dockerfile, deployment.yml, JMeter scripts and bash scripts for our previous example and rename <code class="highlighter-rouge">movies-spring-web</code> to <code class="highlighter-rouge">movies-spring-webflux</code> on them.</p>
+
+<p>Them we will modify our deployment.yml</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">apiVersion</span><span class="pi">:</span> <span class="s">apps/v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Deployment</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+  <span class="na">labels</span><span class="pi">:</span>
+    <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-webflux</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">movies-spring-webflux</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">replicas</span><span class="pi">:</span> <span class="m">1</span>
+  <span class="na">selector</span><span class="pi">:</span>
+    <span class="na">matchLabels</span><span class="pi">:</span>
+      <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-webflux</span>
+  <span class="na">strategy</span><span class="pi">:</span> <span class="pi">{}</span>
+  <span class="na">template</span><span class="pi">:</span>
+    <span class="na">metadata</span><span class="pi">:</span>
+      <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+      <span class="na">labels</span><span class="pi">:</span>
+        <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-webflux</span>
+    <span class="na">spec</span><span class="pi">:</span>
+      <span class="na">containers</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">image</span><span class="pi">:</span> <span class="s">localhost:32000/movies-spring-webflux:0.0.1</span>
+          <span class="na">imagePullPolicy</span><span class="pi">:</span> <span class="s">Always</span>
+          <span class="na">name</span><span class="pi">:</span> <span class="s">movies-spring-webflux</span>
+          <span class="na">resources</span><span class="pi">:</span> <span class="pi">{}</span>
+          <span class="na">env</span><span class="pi">:</span>
+            <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s2">"</span><span class="s">JAVA_OPTS"</span>
+              <span class="na">value</span><span class="pi">:</span> <span class="pi">&gt;-</span>
+                <span class="s">-XX:+UseParallelGC</span>
+                <span class="s">-Xms100m</span>
+                <span class="s">-Xmx325m</span>
+                <span class="s">--add-opens java.base/jdk.internal.misc=ALL-UNNAMED</span>
+                <span class="s">--add-opens java.base/java.nio=ALL-UNNAMED</span>
+                <span class="s">--add-exports java.base/jdk.internal.misc=ALL-UNNAMED</span>
+                <span class="s">-Dio.netty.tryReflectionSetAccessible=true</span>
+          <span class="na">readinessProbe</span><span class="pi">:</span>
+            <span class="na">httpGet</span><span class="pi">:</span>
+              <span class="na">path</span><span class="pi">:</span> <span class="s">/actuator/health</span>
+              <span class="na">port</span><span class="pi">:</span> <span class="m">8080</span>
+          <span class="na">livenessProbe</span><span class="pi">:</span>
+            <span class="na">httpGet</span><span class="pi">:</span>
+              <span class="na">path</span><span class="pi">:</span> <span class="s">/actuator/info</span>
+              <span class="na">port</span><span class="pi">:</span> <span class="m">8080</span>
+          <span class="na">volumeMounts</span><span class="pi">:</span>
+            <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">db-credentials</span>
+              <span class="na">mountPath</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/etc/movies-db"</span>
+              <span class="na">readOnly</span><span class="pi">:</span> <span class="no">true</span>
+            <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">tmp</span>
+              <span class="na">mountPath</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/tmp"</span>
+              <span class="na">readOnly</span><span class="pi">:</span> <span class="no">false</span>
+      <span class="na">volumes</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">db-credentials</span>
+          <span class="na">secret</span><span class="pi">:</span>
+            <span class="na">secretName</span><span class="pi">:</span> <span class="s">moviesuser.movies-db-cluster.credentials</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">tmp</span>
+          <span class="na">emptyDir</span><span class="pi">:</span> <span class="pi">{}</span>
+<span class="na">status</span><span class="pi">:</span> <span class="pi">{}</span>
+<span class="nn">---</span>
+<span class="na">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Service</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+  <span class="na">labels</span><span class="pi">:</span>
+    <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-webflux</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">movies-spring-webflux</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">ports</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">8080-8080</span>
+      <span class="na">port</span><span class="pi">:</span> <span class="m">8080</span>
+      <span class="na">protocol</span><span class="pi">:</span> <span class="s">TCP</span>
+      <span class="na">targetPort</span><span class="pi">:</span> <span class="m">8080</span>
+  <span class="na">selector</span><span class="pi">:</span>
+    <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-webflux</span>
+  <span class="na">type</span><span class="pi">:</span> <span class="s">ClusterIP</span>
+<span class="na">status</span><span class="pi">:</span>
+  <span class="na">loadBalancer</span><span class="pi">:</span> <span class="pi">{}</span></code></pre></figure>
+
+<p>We are setting up additional JAVA_OPTS that are require to use native buffers in Netty on Java 9+.</p>
+
+<p>Them we will edit our jlink.sh script to include an additional module :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/bin/sh -</span>
+
+<span class="nb">set</span> <span class="nt">-o</span> errexit
+
+<span class="nv">BASE_DIR</span><span class="o">=</span><span class="s2">"</span><span class="si">$(</span>
+  <span class="nb">cd</span> <span class="s2">"</span><span class="si">$(</span><span class="nb">dirname</span> <span class="s2">"</span><span class="nv">$0</span><span class="s2">"</span><span class="si">)</span><span class="s2">"</span>
+  <span class="nb">pwd</span> <span class="nt">-P</span>
+<span class="si">)</span><span class="s2">"</span>
+
+<span class="nv">DEPS_DIR</span><span class="o">=</span><span class="s2">"</span><span class="nv">$BASE_DIR</span><span class="s2">/deps"</span>
+
+<span class="nb">mkdir</span> <span class="nt">-p</span> <span class="s2">"</span><span class="nv">$DEPS_DIR</span><span class="s2">"</span>
+
+<span class="nb">echo</span> <span class="s2">"extracting jar"</span>
+<span class="nb">cd</span> <span class="s2">"</span><span class="nv">$DEPS_DIR</span><span class="s2">"</span>
+jar <span class="nt">-xf</span> ../<span class="k">*</span>.jar
+<span class="nb">echo</span> <span class="s2">"jar extracted"</span>
+
+<span class="nb">echo</span> <span class="s2">"generate JVM modules list"</span>
+<span class="nv">EX_JVM_DEPS</span><span class="o">=</span><span class="s2">"jdk.crypto.ec,jdk.unsupported"</span>
+<span class="nv">JVM_DEPS</span><span class="o">=</span><span class="si">$(</span>jdeps <span class="nt">-s</span> <span class="nt">--multi-release</span> 11 <span class="nt">-recursive</span> <span class="nt">-cp</span> BOOT-INF/lib/<span class="k">*</span>.jar BOOT-INF/classes | <span class="se">\</span>
+  <span class="nb">grep</span> <span class="nt">-Po</span> <span class="s1">'(java|jdk)\..*'</span> | <span class="se">\</span>
+  <span class="nb">sort</span> <span class="nt">-u</span> | <span class="se">\</span>
+  <span class="nb">tr</span> <span class="s1">'\n'</span> <span class="s1">','</span><span class="si">)</span>
+<span class="nv">MODULES</span><span class="o">=</span><span class="s2">"</span><span class="nv">$JVM_DEPS$EX_JVM_DEPS</span><span class="s2">"</span>
+<span class="nb">echo</span> <span class="s2">"</span><span class="nv">$MODULES</span><span class="s2">"</span>
+<span class="nb">echo</span> <span class="s2">"JVM modules list generated"</span>
+
+<span class="nb">echo</span> <span class="s2">"doing jlink"</span>
+jlink <span class="se">\</span>
+    <span class="nt">--verbose</span> <span class="se">\</span>
+    <span class="nt">--module-path</span> <span class="s2">"</span><span class="nv">$JAVA_HOME</span><span class="s2">/jmods"</span>, <span class="se">\</span>
+    <span class="nt">--add-modules</span> <span class="s2">"</span><span class="nv">$MODULES</span><span class="s2">"</span> <span class="se">\</span>
+    <span class="nt">--compress</span> 2 <span class="se">\</span>
+    <span class="nt">--no-header-files</span> <span class="se">\</span>
+    <span class="nt">--no-man-pages</span> <span class="se">\</span>
+    <span class="nt">--strip-debug</span> <span class="se">\</span>
+    <span class="nt">--output</span> <span class="s2">"</span><span class="nv">$DEPS_DIR</span><span class="s2">/jre-jlink"</span>
+
+<span class="nb">echo</span> <span class="s2">"jlink done"</span>
+
+<span class="nb">cd</span> <span class="s2">"</span><span class="nv">$BASE_DIR</span><span class="s2">"</span></code></pre></figure>
+
+<p>Finally we could build and deploy our application :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>./build.sh
+<span class="nv">$ </span>./deploy.sh</code></pre></figure>
+
+<p><strong>Running the complete set</strong></p>
+
+<p>With this we are ready to run our final test following the procedure that we stablish in the <a href="/2020/01/11/optimizing-k8s-sv-01/" target="_blank">first part</a> of the series, and we will get this numbers :</p>
+
+<table class="display data-table compact cell-border">
+    <thead>
+      <tr>
+        
+        <th>C. Users</th>
+        
+        <th>Pods</th>
+        
+        <th>ART</th>
+        
+        <th>TPS</th>
+        
+        <th>Max CPU</th>
+        
+        <th>Max MEM</th>
+        
+        <th>Service</th>
+        
+      </tr>
+    </thead>
+    <tbody> 
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">39.16</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">25.49</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">403</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">474</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">01 Base</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">34.61</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">28.85</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">209</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">252</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">02 Spring Web</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">31.21</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">31.99</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">335</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">310</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">03 Spring WebFlux</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">570.47</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">16.73</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">916</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">487</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">01 Base</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">111.61</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">85.53</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">350</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">626</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">02 Spring Web</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">10</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">100.93</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">94.59</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1036</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">355</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">03 Spring WebFlux</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">25</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">3</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1615.82</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">14.72</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1049</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1454</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">01 Base</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">25</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">266.03</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">89.44</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">686</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">369</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">02 Spring Web</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">25</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">368.0</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">76.33</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1046</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">511</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">03 Spring WebFlux</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">50</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">5</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">3190.98</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">14.89</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1351</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">2499</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">01 Base</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">50</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">3</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1982.03</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">23.95</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">774</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1060</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">02 Spring Web</td>
+            
+        
+                
+      </tr>
+      
+      <tr>
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">50</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">631.65</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">75.24</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">1063</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-right">515</td>
+            
+        
+        
+
+                        
+            
+            
+                   
+
+            
+            <td class="dt-body-left">03 Spring WebFlux</td>
+            
+        
+                
+      </tr>
+      
+    </tbody>
+  </table>
+<p>01 Base = Java 8 - Spring Boot 2.2.2 - Spring Web - Spring Data JDBC default settings, unoptimized <br />02 Spring Web = Java 11 - Spring Boot 2.2.2 - Spring Web - Spring Data JDBC optimized <br />03 Spring WebFlux = Java 11 - Spring Boot 2.2.4 - Spring WebFlux - Spring Data R2DBC optimized</p>
+
+<p><strong>Conclusions</strong></p>
+
+<p>As we could see the performance of the reactive solution is great, we could even handle 50 concurrent users with just one Pod, and that is because we are not so bound to threads in this implementation.</p>
+
+<p>However we could see that with 25 concurrent users we are not doing so great, and that is probably because we setup very a very small heap and the GC is cleaning more often that it should, but I’ve setup this to minimize memory consumption, we could increase a bit the heap this will cause less GC runs, better ART but more MEM usage, and this is key in our overall optimization strategy, if we care more about ART of use of MEM.</p>
+
+<p>Finally, Spring Data R2DBC still on experimental stage, numbers will change with future relases.</p>
+
+<p><em>Note: The full code of this service is available at this <a href="https://github.com/LearningByExample/movies-spring-webflux/" target="_blank">repository</a>.</em></p>
+
+<p><strong>Resources</strong></p>
+
+<ul>
+  <li><a href="https://www.postgresql.org/docs/current/runtime-config-client.html" target="_blank">https://www.postgresql.org/docs/current/runtime-config-client.html</a></li>
+  <li><a href="https://github.com/r2dbc/r2dbc-postgresql" target="_blank">https://github.com/r2dbc/r2dbc-postgresql</a></li>
+  <li><a href="https://github.com/netty/netty/issues/7838" target="_blank">https://github.com/netty/netty/issues/7838</a></li>
+</ul>
+
+    
+
+    <div id="disqus_thread"></div>
+    <script>
+
+    /**
+    *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+    *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+
+    var disqus_config = function () {
+    this.page.url = "https://juan-medina.com/2020/01/29/optimizing-k8s-sv-03/";
+    this.page.identifier = "/2020/01/29/optimizing-k8s-sv-03/"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    this.page.title = "Optimizing Kubernetes Services - Part 3 &#58 Spring WebFlux";
+    };
+
+    (function() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = '//juan-medina-com.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+    
+
+    </div>
+  </section>
+
+  <section class="profile">
+    <div class="profile__card">
+      <div class="profile__img">
+        <figure class="absolute-bg" style="background-image: url('/assets/img/pp.jpg');"></figure>
+      </div>
+      <div class="profile__container">
+        <p><b>About Juan Medina</b><br/> I'm just a normal geek that code all kind of stuff, from complex corporate applications to games.<br/> <br/> Games, music, movies and traveling are my escape pods.</p>
+        
+          <ul class="profile__social">
+            
+              <li><a class="fa fa-lg fa-envelope-o" href="mailto:mail@juan-medina.com"></a></li>
+            
+            
+              <li><a class="fa fa-lg fa-address-card" href="https://juan-medina.com/cv" target="_blank"></a></li>
+            
+              <li><a class="fa fa-lg fa-github" href="https://github.com/juan-medina" target="_blank"></a></li>
+            
+              <li><a class="fa fa-lg fa-twitter" href="https://twitter.com/JuanMedinaCode" target="_blank"></a></li>
+            
+              <li><a class="fa fa-lg fa-stack-overflow" href="http://stackoverflow.com/users/7910403/juan-medina" target="_blank"></a></li>
+            
+          </ul>
+        
+      </div>
+    </div>
+  </section>
+
+</article>
+
+
+  <section class="next">
+    <a class="next__link" href="/2020/01/22/optimizing-k8s-sv-02/" style="background-image: url('/assets/img/graph.jpg');">
+      <div class="next__container">
+        <span>Read Next</span>
+        <h2>Optimizing Kubernetes Services - Part 2 &#58 Spring Web</h2>
+      </div>
+    </a>
+  </section>
+
+
+    </main>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/rellax/1.0.0/rellax.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+<script type="text/javascript" src="/assets/js/app.js"></script>
+
+
+  </body>
+
+</html>
