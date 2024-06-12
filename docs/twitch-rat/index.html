@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<script src="js/tmi.min.js"></script>
+<script src="js/chat.js"></script>
+<script src="js/settings.js"></script>
+<script src="wasm_exec.js"></script>
+
+<style>
+    body {
+        overflow: hidden;
+        /* Hide vertical scrollbar */
+    }
+</style>
+
+<script>
+    // Polyfill
+    if (!WebAssembly.instantiateStreaming) {
+        WebAssembly.instantiateStreaming = async (resp, importObject) => {
+            const source = await (await resp).arrayBuffer();
+            return await WebAssembly.instantiate(source, importObject);
+        };
+    }
+
+    const go = new Go();
+    WebAssembly.instantiateStreaming(fetch("twitch_rat.wasm"), go.importObject).then(result => {
+        go.run(result.instance);
+    });
+</script>
