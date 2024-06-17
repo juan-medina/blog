@@ -29,7 +29,8 @@ function startChat(channel) {
     client.connect();
     client.on('message', (channel, tags, message, self) => {
         let username = tags['display-name'];
-        chatMessage(username, message);
+        let color = tags['color'];
+        chatMessage(username, message, color);
     });
     client.on('join', (channel, username, self) => {
         if (self) {
