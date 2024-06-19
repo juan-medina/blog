@@ -1,22 +1,47 @@
+<!--
+ Copyright (c) 2024 Juan Medina
+
+ All rights reserved. This software and related documentation are proprietary to Juan Medina.
+
+ This source code is for internal use only and may not be copied, modified, or distributed 
+ without the express written permission of Juan Medina. Any use of this software for any 
+ purpose other than its intended use is strictly prohibited and may result in severe civil 
+ and criminal penalties.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
+ INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR 
+ PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
+ FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+ DEALINGS IN THE SOFTWARE.
+-->
 <!DOCTYPE html>
-<script src="js/tmi.min.js"></script>
-<script src="js/navigate.js"></script>
-<script src="js/chat.js"></script>
-<script src="js/settings.js"></script>
-<script src="wasm_exec.js"></script>
+<html lang="en">
 
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-<link rel="manifest" href="site.webmanifest">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <title>Twitch Rat</title>
 
-<style>
-    body {
-        overflow: hidden;
-        /* Hide vertical scrollbar */
-    }
-</style>
+    <script src="js/tmi.min.js"></script>
+    <script src="js/navigate.js"></script>
+    <script src="js/chat.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/clipboard.js"></script>
+    <script src="wasm_exec.js"></script>
 
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
+
+    <style>
+        body {
+            overflow: hidden;
+        }
+    </style>
+    <link rel="stylesheet" href="css/style.css">
+</head>
 <script>
     // Polyfill
     if (!WebAssembly.instantiateStreaming) {
@@ -31,3 +56,5 @@
         go.run(result.instance);
     });
 </script>
+
+</html>
