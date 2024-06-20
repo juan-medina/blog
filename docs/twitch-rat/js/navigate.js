@@ -16,6 +16,10 @@
  *  DEALINGS IN THE SOFTWARE.
  */
 
-function navigateTo(url) {
+function navigateTo(url, newTab = false) {
+    if (newTab) {
+        window.open(url, '_blank');
+        return;
+    }
     window.location.href = url;
 }
