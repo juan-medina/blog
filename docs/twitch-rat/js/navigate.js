@@ -43,11 +43,18 @@ async function handleHardReload(url) {
             'Cache-Control': 'no-cache',
         },
     });
-    window.location.href = url;
+    window.location.href = newUrl;
     // This is to ensure reload with url's having '#'
     window.location.reload();
 }
 
 function refresh() {
     handleHardReload(window.location.href);
+}
+
+function fetchFromUrl(url) {
+    fetch(urlWithRndQueryParam(url))
+        .then(response => response.text())
+        .then(text => onFetchComplete(text))
+        .catch(error => console.error(error));
 }
