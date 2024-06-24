@@ -17,15 +17,15 @@
  */
 
 function getSettings(application) {
-    var data = localStorage.getItem(application);
+	var data = localStorage.getItem(application);
 
-    if (data == null) {
-        return "";
-    }
+	if (data == null) {
+		return "";
+	}
 
-    return data;
+	return data;
 }
 
 function setSettings(application, data) {
-    localStorage.setItem(application, data);
+	localStorage.setItem(application, data);
 }

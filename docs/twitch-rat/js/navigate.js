@@ -17,44 +17,44 @@
  */
 
 function navigateTo(url, newTab = false) {
-    if (newTab) {
-        window.open(url, '_blank');
-        return;
-    }
-    window.location.href = url;
+	if (newTab) {
+		window.open(url, "_blank");
+		return;
+	}
+	window.location.href = url;
 }
 
 function urlWithRndQueryParam(url, paramName) {
-    const ulrArr = url.split('#');
-    const urlQry = ulrArr[0].split('?');
-    const usp = new URLSearchParams(urlQry[1] || '');
-    usp.set(paramName || '_z', `${Date.now()}`);
-    urlQry[1] = usp.toString();
-    ulrArr[0] = urlQry.join('?');
-    return ulrArr.join('#');
+	const ulrArr = url.split("#");
+	const urlQry = ulrArr[0].split("?");
+	const usp = new URLSearchParams(urlQry[1] || "");
+	usp.set(paramName || "_z", `${Date.now()}`);
+	urlQry[1] = usp.toString();
+	ulrArr[0] = urlQry.join("?");
+	return ulrArr.join("#");
 }
 
 async function handleHardReload(url) {
-    const newUrl = urlWithRndQueryParam(url);
-    await fetch(newUrl, {
-        headers: {
-            Pragma: 'no-cache',
-            Expires: '-1',
-            'Cache-Control': 'no-cache',
-        },
-    });
-    window.location.href = newUrl;
-    // This is to ensure reload with url's having '#'
-    window.location.reload();
+	const newUrl = urlWithRndQueryParam(url);
+	await fetch(newUrl, {
+		headers: {
+			Pragma: "no-cache",
+			Expires: "-1",
+			"Cache-Control": "no-cache",
+		},
+	});
+	window.location.href = newUrl;
+	// This is to ensure reload with url's having '#'
+	window.location.reload();
 }
 
 function refresh() {
-    handleHardReload(window.location.href);
+	handleHardReload(window.location.href);
 }
 
 function fetchFromUrl(url) {
-    fetch(urlWithRndQueryParam(url))
-        .then(response => response.text())
-        .then(text => onFetchComplete(text))
-        .catch(error => console.error(error));
+	fetch(urlWithRndQueryParam(url))
+		.then((response) => response.text())
+		.then((text) => onFetchComplete(text))
+		.catch((error) => console.error(error));
 }

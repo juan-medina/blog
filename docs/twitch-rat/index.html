@@ -17,39 +17,57 @@
 -->
 <!DOCTYPE html>
 <html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"
+		/>
+		<title>Twitch Rat</title>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
-    <title>Twitch Rat</title>
+		<script src="js/tmi.min.js"></script>
+		<script src="js/navigate.js"></script>
+		<script src="js/chat.js"></script>
+		<script src="js/settings.js"></script>
+		<script src="js/clipboard.js"></script>
+		<script src="wasm_exec.js"></script>
 
-    <script src="js/tmi.min.js"></script>
-    <script src="js/navigate.js"></script>
-    <script src="js/chat.js"></script>
-    <script src="js/settings.js"></script>
-    <script src="js/clipboard.js"></script>
-    <script src="wasm_exec.js"></script>
+		<link
+			rel="apple-touch-icon"
+			sizes="180x180"
+			href="apple-touch-icon.png"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="32x32"
+			href="favicon-32x32.png"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="16x16"
+			href="favicon-16x16.png"
+		/>
+		<link rel="manifest" href="site.webmanifest" />
 
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-    <link rel="manifest" href="site.webmanifest">
+		<link rel="stylesheet" href="css/style.css" />
+	</head>
+	<script>
+		// Polyfill
+		if (!WebAssembly.instantiateStreaming) {
+			WebAssembly.instantiateStreaming = async (resp, importObject) => {
+				const source = await (await resp).arrayBuffer();
+				return await WebAssembly.instantiate(source, importObject);
+			};
+		}
 
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<script>
-    // Polyfill
-    if (!WebAssembly.instantiateStreaming) {
-        WebAssembly.instantiateStreaming = async (resp, importObject) => {
-            const source = await (await resp).arrayBuffer();
-            return await WebAssembly.instantiate(source, importObject);
-        };
-    }
-
-    const go = new Go();
-    WebAssembly.instantiateStreaming(fetch("twitch_rat.wasm"), go.importObject).then(result => {
-        go.run(result.instance);
-    });
-</script>
-
+		const go = new Go();
+		WebAssembly.instantiateStreaming(
+			fetch("twitch_rat.wasm"),
+			go.importObject
+		).then((result) => {
+			go.run(result.instance);
+		});
+	</script>
 </html>

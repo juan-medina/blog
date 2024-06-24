@@ -17,19 +17,22 @@
  */
 
 async function requestClipboard(id) {
-    try {
-        const permissionStatus = await navigator.permissions.query({ name: "clipboard-read" });
+	try {
+		const permissionStatus = await navigator.permissions.query({
+			name: "clipboard-read",
+		});
 
-        if (permissionStatus.state === "granted" || permissionStatus.state === "prompt") {
-            navigator.clipboard.readText().then(
-                clipText => {
-                    onClipboardReady(id, clipText);
-                }
-            );
-        } else {
-            console.error('Permission to read clipboard was denied');
-        }
-    } catch (err) {
-        console.error('Failed to request clipboard read permission: ', err);
-    }
+		if (
+			permissionStatus.state === "granted" ||
+			permissionStatus.state === "prompt"
+		) {
+			navigator.clipboard.readText().then((clipText) => {
+				onClipboardReady(id, clipText);
+			});
+		} else {
+			console.error("Permission to read clipboard was denied");
+		}
+	} catch (err) {
+		console.error("Failed to request clipboard read permission: ", err);
+	}
 }

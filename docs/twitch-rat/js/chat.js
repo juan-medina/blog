@@ -19,23 +19,23 @@
 var client = null;
 
 function startChat(channel) {
-    client = new tmi.Client({
-        channels: [channel]
-    });
-    client.connect();
-    client.on('message', (channel, tags, message, self) => {
-        let username = tags['display-name'];
-        let color = tags['color'];
-        chatMessage(username, message, color);
-    });
-    client.on('join', (channel, username, self) => {
-        if (self) {
-            onSelfJoinMessage();
-        }
-    });
+	client = new tmi.Client({
+		channels: [channel],
+	});
+	client.connect();
+	client.on("message", (channel, tags, message, self) => {
+		let username = tags["display-name"];
+		let color = tags["color"];
+		chatMessage(username, message, color);
+	});
+	client.on("join", (channel, username, self) => {
+		if (self) {
+			onSelfJoinMessage();
+		}
+	});
 }
 
 function stopChat() {
-    client.disconnect();
-    client = null;
+	client.disconnect();
+	client = null;
 }
