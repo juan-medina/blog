@@ -68,7 +68,15 @@ layout: default
               <li><a class="fa fa-lg fa-envelope-o" href="mailto:{{ site.email }}"></a></li>
             {% endif %}
             {% for social in site.social %}
-              <li><a class="fa fa-lg fa-{{ social[0] }}" href="{{ social[1] }}" target="_blank"></a></li>
+              {% if social[0] == "bluesky" %}
+                <li><a href="{{ social[1] }}" target="_blank" style="display:inline-flex;align-items:center;">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="1.25em" height="1.25em" fill="currentColor">
+                    <path d="M111.8 62.2C170.2 105.9 233 194.7 256 242.4c23-47.6 85.8-136.4 144.2-180.2c42.1-31.6 110.3-56 110.3 21.8c0 15.5-8.9 130.5-14.1 149.2C478.2 298 412 314.6 353.1 304.5c102.9 18.1 129 87.8 72.5 157.5c-107.4 146.2-154.9-36.7-166.5-83.5c-3.9-15.4-5.6-22.7-5.6-16.6c0-6.1-1.7 1.2-5.6 16.6c-11.6 46.8-59.1 229.7-166.5 83.5C-9 392.3 17.1 322.6 120 304.5C61.1 314.6-5.1 298 7.1 233.1C1.9 214.4-7 99.4-7 83.9c0-77.8 68.2-53.4 110.3-21.8h8.5z"/>
+                  </svg>
+                </a></li>
+              {% else %}
+                <li><a class="fa fa-lg fa-{{ social[0] }}" href="{{ social[1] }}" target="_blank"></a></li>
+              {% endif %}
             {% endfor %}
           </ul>
         {% endif %}

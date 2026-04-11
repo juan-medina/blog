@@ -13,15 +13,6 @@
   <meta property="og:image" content="{% if page.image %}{{ page.image | prepend: site.baseurl | prepend: site.url }}{% else %}{{ site.default_img | prepend: site.baseurl | prepend: site.url }}{% endif %}">
   <meta property="og:type" content="blog">
 
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:description" content="{% if page.description %}{{ page.description | escape }}{% else %}{{ site.description }}{% endif %}">
-  <meta name="twitter:title" content="{% if page.title %}{{ page.title | escape }} | {{ site.title }}{% else %}{{ site.title | escape }}{% endif %}">
-  <meta name="twitter:url" content="{{ page.url | prepend: site.baseurl | prepend: site.url }}">
-  <meta name="twitter:site" content="{{ site.title }}">
-  <meta name="twitter:creator" content="@{{ site.twitter_username }}">
-  <meta name="twitter:domain" content="{{ site.url }}">
-  <meta property="twitter:image" content="{% if page.image %}{{ page.image | prepend: site.baseurl | prepend: site.url }}{% else %}{{ site.default_img | prepend: site.baseurl | prepend: site.url }}{% endif %}">
-
   <!-- ****** faviconit.com favicons ****** -->
   <link rel="shortcut icon" href="/favicon/favicon.ico">
   <link rel="icon" sizes="16x16 32x32 64x64" href="/favicon/favicon.ico">
@@ -58,9 +49,8 @@
   <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ '/feed.xml' | prepend: site.baseurl | prepend: site.url }}">
   <link rel="canonical" href="{{ page.url | replace: 'index.html', '' | prepend: site.baseurl | prepend: site.url }}">
 
-
   <script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
-	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
   <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
 
   {% if site.google_analytics %}
