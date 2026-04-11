@@ -254,7 +254,7 @@ movies-&gt; LIMIT 10<span class="p">;</span>
 
 <p>First we will create a Plain Old Java Object, POJO, class that represents our Movie JSON Object, we will place it in <em>src/main/java/org/learning/by/example/movies/baseservice/model/Movie.java</em> :</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">baseservice</span><span class="o">.</span><span class="na">model</span><span class="o">;</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">org.learning.by.example.movies.baseservice.model</span><span class="o">;</span>
 
 <span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
 
@@ -290,7 +290,7 @@ movies-&gt; LIMIT 10<span class="p">;</span>
 
 <p>This class when deserialize will be just as our designed JSON, now we need we will create our repository that will query database on <em>src/main/java/org/learning/by/example/movies/baseservice/repositories/MoviesRepository.java</em> :</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">baseservice</span><span class="o">.</span><span class="na">repositories</span><span class="o">;</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">org.learning.by.example.movies.baseservice.repositories</span><span class="o">;</span>
 
 <span class="kn">import</span> <span class="nn">org.learning.by.example.movies.baseservice.model.Movie</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.springframework.data.jdbc.repository.query.Query</span><span class="o">;</span>
@@ -313,7 +313,7 @@ movies-&gt; LIMIT 10<span class="p">;</span>
 
 <p>But the output of this query does not mach our <em>Movie Classs</em> so we need to create a mapper that will convert a row from our database, we will place on     src/main/java/org/learning/by/example/movies/baseservice/mapper/MovieMapper.java :</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">baseservice</span><span class="o">.</span><span class="na">mapper</span><span class="o">;</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">org.learning.by.example.movies.baseservice.mapper</span><span class="o">;</span>
 
 <span class="kn">import</span> <span class="nn">org.learning.by.example.movies.baseservice.model.Movie</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.springframework.jdbc.core.RowMapper</span><span class="o">;</span>
@@ -370,7 +370,7 @@ movies-&gt; LIMIT 10<span class="p">;</span>
 
 <p>This simple <em>RowMapper</em> will first use a regular expression to get our movie title and year, if it is available, parse the genres and produce a Movie object, however is not enough to have a mapper we need to tell Spring Data JDBC to use it when query for our Movies so we will set this in a new configuration class on src/main/java/org/learning/by/example/movies/baseservice/repositories/MappingConfiguration.java :</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">baseservice</span><span class="o">.</span><span class="na">repositories</span><span class="o">;</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">org.learning.by.example.movies.baseservice.repositories</span><span class="o">;</span>
 
 <span class="kn">import</span> <span class="nn">org.learning.by.example.movies.baseservice.mapper.MovieMapper</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.learning.by.example.movies.baseservice.model.Movie</span><span class="o">;</span>
@@ -390,7 +390,7 @@ bean for our <em>MovieMapper</em>.</p>
 
 <p>We will create now a service that will provide movies to who ever request them, to been able to change the implementation of our repository if needed and we will place it on <em>src/main/java/org/learning/by/example/movies/baseservice/service/MovieService.java</em> :</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">baseservice</span><span class="o">.</span><span class="na">service</span><span class="o">;</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">org.learning.by.example.movies.baseservice.service</span><span class="o">;</span>
 
 <span class="kn">import</span> <span class="nn">org.learning.by.example.movies.baseservice.model.Movie</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.learning.by.example.movies.baseservice.repositories.MoviesRepository</span><span class="o">;</span>
@@ -415,7 +415,7 @@ bean for our <em>MovieMapper</em>.</p>
 
 <p>Now we will create our api using a <em>RestController</em> and we will place it on src/main/java/org/learning/by/example/movies/baseservice/controller/MoviesController.java :</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">baseservice</span><span class="o">.</span><span class="na">controller</span><span class="o">;</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">org.learning.by.example.movies.baseservice.controller</span><span class="o">;</span>
 
 <span class="kn">import</span> <span class="nn">org.learning.by.example.movies.baseservice.model.Movie</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.learning.by.example.movies.baseservice.service.MovieService</span><span class="o">;</span>
@@ -452,7 +452,7 @@ bean for our <em>MovieMapper</em>.</p>
 
 <p>Let’s get those values using a <em>ConfigurationProperties</em> that will be on src/main/java/org/learning/by/example/movies/baseservice/datasource/DataSourceProperties.java :</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">baseservice</span><span class="o">.</span><span class="na">datasource</span><span class="o">;</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">org.learning.by.example.movies.baseservice.datasource</span><span class="o">;</span>
 
 <span class="kn">import</span> <span class="nn">org.springframework.boot.context.properties.ConfigurationProperties</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.springframework.stereotype.Component</span><span class="o">;</span>
@@ -491,7 +491,7 @@ bean for our <em>MovieMapper</em>.</p>
 
 <p>Now that we have our <em>DataSourceProperties</em> we could create a <em>DataSource</em> for our connection on src/main/java/org/learning/by/example/movies/baseservice/datasource/MoviesDataSource.java :</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">baseservice</span><span class="o">.</span><span class="na">datasource</span><span class="o">;</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">org.learning.by.example.movies.baseservice.datasource</span><span class="o">;</span>
 
 <span class="kn">import</span> <span class="nn">org.apache.commons.logging.Log</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.apache.commons.logging.LogFactory</span><span class="o">;</span>
@@ -529,7 +529,7 @@ bean for our <em>MovieMapper</em>.</p>
 
 <p>Finally we will modify our application on src/main/java/org/learning/by/example/movies/baseservice/BaseServiceApplication.java :</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">baseservice</span><span class="o">;</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">org.learning.by.example.movies.baseservice</span><span class="o">;</span>
 
 <span class="kn">import</span> <span class="nn">org.springframework.boot.SpringApplication</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.springframework.boot.autoconfigure.SpringBootApplication</span><span class="o">;</span>
@@ -671,7 +671,7 @@ docker push localhost:32000/movies-base-service
 <figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">apiVersion</span><span class="pi">:</span> <span class="s">apps/v1</span>
 <span class="na">kind</span><span class="pi">:</span> <span class="s">Deployment</span>
 <span class="na">metadata</span><span class="pi">:</span>
-  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="kc">null</span>
   <span class="na">labels</span><span class="pi">:</span>
     <span class="na">app</span><span class="pi">:</span> <span class="s">movies-base-service</span>
   <span class="na">name</span><span class="pi">:</span> <span class="s">movies-base-service</span>
@@ -683,7 +683,7 @@ docker push localhost:32000/movies-base-service
   <span class="na">strategy</span><span class="pi">:</span> <span class="pi">{}</span>
   <span class="na">template</span><span class="pi">:</span>
     <span class="na">metadata</span><span class="pi">:</span>
-      <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+      <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="kc">null</span>
       <span class="na">labels</span><span class="pi">:</span>
         <span class="na">app</span><span class="pi">:</span> <span class="s">movies-base-service</span>
     <span class="na">spec</span><span class="pi">:</span>
@@ -703,10 +703,10 @@ docker push localhost:32000/movies-base-service
           <span class="na">volumeMounts</span><span class="pi">:</span>
             <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">db-credentials</span>
               <span class="na">mountPath</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/etc/movies-db"</span>
-              <span class="na">readOnly</span><span class="pi">:</span> <span class="no">true</span>
+              <span class="na">readOnly</span><span class="pi">:</span> <span class="kc">true</span>
             <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">tmp</span>
               <span class="na">mountPath</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/tmp"</span>
-              <span class="na">readOnly</span><span class="pi">:</span> <span class="no">false</span>
+              <span class="na">readOnly</span><span class="pi">:</span> <span class="kc">false</span>
       <span class="na">volumes</span><span class="pi">:</span>
         <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">db-credentials</span>
           <span class="na">secret</span><span class="pi">:</span>
@@ -718,7 +718,7 @@ docker push localhost:32000/movies-base-service
 <span class="na">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
 <span class="na">kind</span><span class="pi">:</span> <span class="s">Service</span>
 <span class="na">metadata</span><span class="pi">:</span>
-  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="kc">null</span>
   <span class="na">labels</span><span class="pi">:</span>
     <span class="na">app</span><span class="pi">:</span> <span class="s">movies-base-service</span>
   <span class="na">name</span><span class="pi">:</span> <span class="s">movies-base-service</span>

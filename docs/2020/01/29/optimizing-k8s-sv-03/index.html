@@ -820,7 +820,7 @@
 
 <p>First we will create our POJO that we will use to retrive a movie.</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">springwebflux</span><span class="o">.</span><span class="na">model</span><span class="o">;</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">org.learning.by.example.movies.springwebflux.model</span><span class="o">;</span>
 
 <span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.util.Objects</span><span class="o">;</span>
@@ -859,7 +859,7 @@
 
 <p>Now we will create our reactive repository.</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">springwebflux</span><span class="o">.</span><span class="na">repositories</span><span class="o">;</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">org.learning.by.example.movies.springwebflux.repositories</span><span class="o">;</span>
 
 <span class="kn">import</span> <span class="nn">org.learning.by.example.movies.springwebflux.model.Movie</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.springframework.data.r2dbc.repository.Query</span><span class="o">;</span>
@@ -881,7 +881,7 @@
 
 <p>Now we need to create a converter.</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">springwebflux</span><span class="o">.</span><span class="na">converter</span><span class="o">;</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">org.learning.by.example.movies.springwebflux.converter</span><span class="o">;</span>
 
 <span class="kn">import</span> <span class="nn">io.r2dbc.spi.Row</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.learning.by.example.movies.springwebflux.model.Movie</span><span class="o">;</span>
@@ -942,7 +942,7 @@
 
 <p>Next we will need to create a <em>ConfigurationProperties</em> to have our database configuration.</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">springwebflux</span><span class="o">.</span><span class="na">datasource</span><span class="o">;</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">org.learning.by.example.movies.springwebflux.datasource</span><span class="o">;</span>
 
 <span class="kn">import</span> <span class="nn">org.springframework.boot.context.properties.ConfigurationProperties</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.springframework.stereotype.Component</span><span class="o">;</span>
@@ -1040,7 +1040,7 @@
 
 <p>Finally we will setup our data base configuration.</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">springwebflux</span><span class="o">.</span><span class="na">datasource</span><span class="o">;</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">org.learning.by.example.movies.springwebflux.datasource</span><span class="o">;</span>
 
 <span class="kn">import</span> <span class="nn">io.r2dbc.spi.ConnectionFactories</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">io.r2dbc.spi.ConnectionFactory</span><span class="o">;</span>
@@ -1129,7 +1129,7 @@
 
 <p>We wil continue creating our router</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">springwebflux</span><span class="o">.</span><span class="na">router</span><span class="o">;</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">org.learning.by.example.movies.springwebflux.router</span><span class="o">;</span>
 
 <span class="kn">import</span> <span class="nn">org.learning.by.example.movies.springwebflux.handler.MovieHandler</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.springframework.context.annotation.Bean</span><span class="o">;</span>
@@ -1162,7 +1162,7 @@
 
 <p>Next will be the handler.</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">springwebflux</span><span class="o">.</span><span class="na">handler</span><span class="o">;</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">org.learning.by.example.movies.springwebflux.handler</span><span class="o">;</span>
 
 <span class="kn">import</span> <span class="nn">org.learning.by.example.movies.springwebflux.model.Movie</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.learning.by.example.movies.springwebflux.repositories.MoviesRepository</span><span class="o">;</span>
@@ -1197,7 +1197,7 @@
   <span class="na">port</span><span class="pi">:</span> <span class="s">${MOVIES_DB_CLUSTER_SERVICE_PORT_POSTGRESQL}</span>
   <span class="na">database</span><span class="pi">:</span> <span class="s2">"</span><span class="s">movies"</span>
   <span class="na">credentials</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/etc/movies-db"</span>
-  <span class="na">read-only</span><span class="pi">:</span> <span class="no">true</span>
+  <span class="na">read-only</span><span class="pi">:</span> <span class="kc">true</span>
   <span class="na">pool</span><span class="pi">:</span>
     <span class="na">min-connections</span><span class="pi">:</span> <span class="m">1</span>
     <span class="na">max-connections</span><span class="pi">:</span> <span class="m">3</span>
@@ -1208,18 +1208,18 @@
   <span class="na">main</span><span class="pi">:</span>
     <span class="na">banner-mode</span><span class="pi">:</span> <span class="s">off</span>
   <span class="na">jmx</span><span class="pi">:</span>
-    <span class="na">enabled</span><span class="pi">:</span> <span class="no">false</span></code></pre></figure>
+    <span class="na">enabled</span><span class="pi">:</span> <span class="kc">false</span></code></pre></figure>
 
 <p><strong>Configuring our deployment</strong></p>
 
-<p>First we will copy our Dockerfile, deployment.yml, JMeter scripts and bash scripts for our previous example and rename <code class="highlighter-rouge">movies-spring-web</code> to <code class="highlighter-rouge">movies-spring-webflux</code> on them.</p>
+<p>First we will copy our Dockerfile, deployment.yml, JMeter scripts and bash scripts for our previous example and rename <code class="language-plaintext highlighter-rouge">movies-spring-web</code> to <code class="language-plaintext highlighter-rouge">movies-spring-webflux</code> on them.</p>
 
 <p>Them we will modify our deployment.yml</p>
 
 <figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">apiVersion</span><span class="pi">:</span> <span class="s">apps/v1</span>
 <span class="na">kind</span><span class="pi">:</span> <span class="s">Deployment</span>
 <span class="na">metadata</span><span class="pi">:</span>
-  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="kc">null</span>
   <span class="na">labels</span><span class="pi">:</span>
     <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-webflux</span>
   <span class="na">name</span><span class="pi">:</span> <span class="s">movies-spring-webflux</span>
@@ -1231,7 +1231,7 @@
   <span class="na">strategy</span><span class="pi">:</span> <span class="pi">{}</span>
   <span class="na">template</span><span class="pi">:</span>
     <span class="na">metadata</span><span class="pi">:</span>
-      <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+      <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="kc">null</span>
       <span class="na">labels</span><span class="pi">:</span>
         <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-webflux</span>
     <span class="na">spec</span><span class="pi">:</span>
@@ -1261,10 +1261,10 @@
           <span class="na">volumeMounts</span><span class="pi">:</span>
             <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">db-credentials</span>
               <span class="na">mountPath</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/etc/movies-db"</span>
-              <span class="na">readOnly</span><span class="pi">:</span> <span class="no">true</span>
+              <span class="na">readOnly</span><span class="pi">:</span> <span class="kc">true</span>
             <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">tmp</span>
               <span class="na">mountPath</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/tmp"</span>
-              <span class="na">readOnly</span><span class="pi">:</span> <span class="no">false</span>
+              <span class="na">readOnly</span><span class="pi">:</span> <span class="kc">false</span>
       <span class="na">volumes</span><span class="pi">:</span>
         <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">db-credentials</span>
           <span class="na">secret</span><span class="pi">:</span>
@@ -1276,7 +1276,7 @@
 <span class="na">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
 <span class="na">kind</span><span class="pi">:</span> <span class="s">Service</span>
 <span class="na">metadata</span><span class="pi">:</span>
-  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="kc">null</span>
   <span class="na">labels</span><span class="pi">:</span>
     <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-webflux</span>
   <span class="na">name</span><span class="pi">:</span> <span class="s">movies-spring-webflux</span>

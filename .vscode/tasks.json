@@ -6,7 +6,7 @@
         {
             "label": "Jekyll Serve",
             "type": "shell",
-            "command": "bash serve.sh",
+            "command": "powershell -File serve.ps1",
             "problemMatcher": [],
             "group": {
                 "kind": "test",
@@ -16,16 +16,11 @@
         {
             "label": "Jekyll Build",
             "type": "shell",
-            "command": "bash build.sh",
+            "command": "powershell -File build.ps1",
             "group": {
                 "kind": "build",
                 "isDefault": true
             }
-        },
-        {
-            "label": "Update CV",
-            "type": "shell",
-            "command": "bash cv.sh",
         }
     ]
 }

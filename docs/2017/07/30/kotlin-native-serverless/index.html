@@ -189,19 +189,19 @@
 
 <p>We need as well to specify where is kotlin-native installed using the gradle.properties:</p>
 
-<figure class="highlight"><pre><code class="language-ini" data-lang="ini">  <span class="py">konan.home</span><span class="p">=</span><span class="s">/kotlin-native/dist</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-ini" data-lang="ini"><span class="w">  </span><span class="py">konan.home</span><span class="p">=</span><span class="s">/kotlin-native/dist</span></code></pre></figure>
 
 <p>now lets just create one simple main in the folder src/main.kt</p>
 
 <figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">fun</span> <span class="nf">fibonacci</span><span class="p">(</span><span class="n">numbers</span><span class="p">:</span> <span class="nc">Long</span><span class="p">):</span> <span class="nc">Array</span><span class="p">&lt;</span><span class="nc">Long</span><span class="p">&gt;</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">numbers</span> <span class="p">==</span> <span class="m">0L</span><span class="p">)</span> <span class="k">return</span> <span class="nf">arrayOf</span><span class="p">(</span><span class="m">0L</span><span class="p">)</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">numbers</span> <span class="p">==</span> <span class="m">1L</span><span class="p">)</span> <span class="k">return</span> <span class="nf">arrayOf</span><span class="p">(</span><span class="m">1L</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">numbers</span> <span class="p">==</span> <span class="mi">0L</span><span class="p">)</span> <span class="k">return</span> <span class="nf">arrayOf</span><span class="p">(</span><span class="mi">0L</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">numbers</span> <span class="p">==</span> <span class="mi">1L</span><span class="p">)</span> <span class="k">return</span> <span class="nf">arrayOf</span><span class="p">(</span><span class="mi">1L</span><span class="p">)</span>
 
-    <span class="kd">var</span> <span class="py">previous</span> <span class="p">=</span> <span class="m">1L</span>
-    <span class="kd">var</span> <span class="py">current</span> <span class="p">=</span> <span class="m">1L</span>
+    <span class="kd">var</span> <span class="py">previous</span> <span class="p">=</span> <span class="mi">1L</span>
+    <span class="kd">var</span> <span class="py">current</span> <span class="p">=</span> <span class="mi">1L</span>
     <span class="kd">var</span> <span class="py">temp</span><span class="p">:</span> <span class="nc">Long</span>
 
-    <span class="k">return</span> <span class="nf">arrayOf</span><span class="p">(</span><span class="m">1L</span><span class="p">,</span> <span class="m">1L</span><span class="p">)</span> <span class="p">+</span> <span class="p">(</span><span class="m">1</span><span class="o">..</span><span class="p">(</span><span class="n">numbers</span> <span class="p">-</span> <span class="m">2</span><span class="p">)).</span><span class="nf">map</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nf">arrayOf</span><span class="p">(</span><span class="mi">1L</span><span class="p">,</span> <span class="mi">1L</span><span class="p">)</span> <span class="p">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">..</span><span class="p">(</span><span class="n">numbers</span> <span class="p">-</span> <span class="mi">2</span><span class="p">)).</span><span class="nf">map</span> <span class="p">{</span>
       <span class="n">temp</span> <span class="p">=</span> <span class="n">current</span> <span class="p">+</span> <span class="n">previous</span>
       <span class="n">previous</span> <span class="p">=</span> <span class="n">current</span>
       <span class="n">current</span> <span class="p">=</span> <span class="n">temp</span>
@@ -209,7 +209,7 @@
     <span class="p">}.</span><span class="nf">toList</span><span class="p">().</span><span class="nf">toTypedArray</span><span class="p">()</span>
   <span class="p">}</span>
 
-  <span class="k">fun</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="nc">Array</span><span class="p">&lt;</span><span class="nc">String</span><span class="p">&gt;)</span> <span class="p">=</span> <span class="nf">fibonacci</span><span class="p">(</span><span class="m">5</span><span class="p">).</span><span class="nf">forEach</span><span class="p">(</span><span class="o">::</span><span class="n">println</span><span class="p">)</span></code></pre></figure>
+  <span class="k">fun</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="nc">Array</span><span class="p">&lt;</span><span class="nc">String</span><span class="p">&gt;)</span> <span class="p">=</span> <span class="nf">fibonacci</span><span class="p">(</span><span class="mi">5</span><span class="p">).</span><span class="nf">forEach</span><span class="p">(</span><span class="o">::</span><span class="n">println</span><span class="p">)</span></code></pre></figure>
 
 <p>Now to compile simple :</p>
 
@@ -302,8 +302,8 @@
 
 <p>The file should be place in src/c_interop/Parson.def :</p>
 
-<figure class="highlight"><pre><code class="language-ini" data-lang="ini">  <span class="py">headers</span> <span class="p">=</span> <span class="s">parson.h</span>
-  <span class="py">headerFilter</span> <span class="p">=</span> <span class="s">parson.h</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-ini" data-lang="ini"><span class="w">  </span><span class="py">headers</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">parson.h</span>
+<span class="w">  </span><span class="py">headerFilter</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">parson.h</span></code></pre></figure>
 
 <p>Now we could just build as before to check that everything is ok:</p>
 

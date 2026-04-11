@@ -177,8 +177,8 @@
 
 <p>Lets create a small test python program in /python-app/test.py:</p>
 
-<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">"hello from a python docker"</span><span class="p">)</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="sh">'</span><span class="s">__main__</span><span class="sh">'</span><span class="p">:</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">hello from a python docker</span><span class="sh">"</span><span class="p">)</span></code></pre></figure>
 
 <p>Modify the Dockerfile to call our python program:</p>
 
@@ -209,15 +209,15 @@ CMD <span class="o">[</span><span class="s2">"/usr/bin/python"</span>,<span clas
 
 <p>Now we could modify our test program /python-app/test.py:</p>
 
-<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">nltk</span> <span class="kn">import</span> <span class="n">word_tokenize</span>
-<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
-    <span class="n">s</span> <span class="o">=</span> <span class="s">"hello from a python docker, now with tokens using nltk"</span>
-    <span class="n">t</span> <span class="o">=</span> <span class="n">word_tokenize</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="p">)</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="n">nltk</span> <span class="kn">import</span> <span class="n">word_tokenize</span>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="sh">'</span><span class="s">__main__</span><span class="sh">'</span><span class="p">:</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="sh">"</span><span class="s">hello from a python docker, now with tokens using nltk</span><span class="sh">"</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="nf">word_tokenize</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">t</span><span class="p">)</span></code></pre></figure>
 
 <p>And this will be the output:</p>
 
-<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="p">[</span><span class="s">'hello'</span><span class="p">,</span> <span class="s">'from'</span><span class="p">,</span> <span class="s">'a'</span><span class="p">,</span> <span class="s">'python'</span><span class="p">,</span> <span class="s">'docker'</span><span class="p">,</span> <span class="s">','</span><span class="p">,</span> <span class="s">'now'</span><span class="p">,</span> <span class="s">'with'</span><span class="p">,</span> <span class="s">'tokens'</span><span class="p">,</span> <span class="s">'using'</span><span class="p">,</span> <span class="s">'nltk'</span><span class="p">]</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="p">[</span><span class="sh">'</span><span class="s">hello</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">from</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">a</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">python</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">docker</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">,</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">now</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">with</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">tokens</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">using</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">nltk</span><span class="sh">'</span><span class="p">]</span></code></pre></figure>
 
 <p>Is time to do a simple sentiment analysis using TextBlob
 Now we are going to create a folder for our configuration:</p>
@@ -249,15 +249,15 @@ CMD <span class="o">[</span><span class="s2">"/usr/bin/python"</span>,<span clas
 
 <p>So lets add some sentiment analysis to our test program:</p>
 
-<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">textblob</span> <span class="kn">import</span> <span class="n">TextBlob</span>
-<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
-    <span class="n">s</span> <span class="o">=</span> <span class="s">"Python is great"</span>
-    <span class="n">b</span> <span class="o">=</span> <span class="n">TextBlob</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">sentiment</span><span class="p">)</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="n">textblob</span> <span class="kn">import</span> <span class="n">TextBlob</span>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="sh">'</span><span class="s">__main__</span><span class="sh">'</span><span class="p">:</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="sh">"</span><span class="s">Python is great</span><span class="sh">"</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="nc">TextBlob</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="nf">print</span><span class="p">(</span><span class="n">b</span><span class="p">.</span><span class="n">sentiment</span><span class="p">)</span></code></pre></figure>
 
 <p>This will be the output:</p>
 
-<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">Sentiment</span><span class="p">(</span><span class="n">polarity</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">subjectivity</span><span class="o">=</span><span class="mf">0.75</span><span class="p">)</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="nc">Sentiment</span><span class="p">(</span><span class="n">polarity</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">subjectivity</span><span class="o">=</span><span class="mf">0.75</span><span class="p">)</span></code></pre></figure>
 
 <p>Now lets configure the flask web app.</p>
 
@@ -290,19 +290,19 @@ CMD <span class="o">[</span><span class="s2">"/usr/bin/python"</span>,<span clas
 
 <p>And finally lets sketch a simple test service in python-app/flask-web.py:</p>
 
-<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
-<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">jsonify</span>
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="n">os</span>
+<span class="kn">from</span> <span class="n">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
+<span class="kn">from</span> <span class="n">flask</span> <span class="kn">import</span> <span class="n">jsonify</span>
 
-<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+<span class="n">app</span> <span class="o">=</span> <span class="nc">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
 
-<span class="o">@</span><span class="n">app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s">'/api/test'</span><span class="p">)</span>
+<span class="nd">@app.route</span><span class="p">(</span><span class="sh">'</span><span class="s">/api/test</span><span class="sh">'</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">test</span><span class="p">():</span>
-    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">result</span> <span class="o">=</span> <span class="s">"ok"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nf">jsonify</span><span class="p">(</span><span class="n">result</span> <span class="o">=</span> <span class="sh">"</span><span class="s">ok</span><span class="sh">"</span><span class="p">)</span>
 
-<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
-    <span class="n">port</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">'FLASK_PORT'</span><span class="p">]</span>
-    <span class="p">;</span><span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s">'0.0.0.0'</span><span class="p">,</span><span class="n">port</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">port</span><span class="p">))</span></code></pre></figure>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="sh">'</span><span class="s">__main__</span><span class="sh">'</span><span class="p">:</span>
+    <span class="n">port</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">[</span><span class="sh">'</span><span class="s">FLASK_PORT</span><span class="sh">'</span><span class="p">]</span>
+    <span class="p">;</span><span class="n">app</span><span class="p">.</span><span class="nf">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="sh">'</span><span class="s">0.0.0.0</span><span class="sh">'</span><span class="p">,</span><span class="n">port</span><span class="o">=</span><span class="nf">int</span><span class="p">(</span><span class="n">port</span><span class="p">))</span></code></pre></figure>
 
 <p>Now to run our docker in daemon and map the expose port to port 80:</p>
 
@@ -335,50 +335,50 @@ CMD <span class="o">[</span><span class="s2">"/usr/bin/python"</span>,<span clas
 
 <p>Now lets create a basic REST service that return the sentiment from an string, we will add some basic error handling to our flask service, just edit /python-app/flask-web.py:</p>
 
-<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
-<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">jsonify</span>
-<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">request</span>
-<span class="kn">from</span> <span class="nn">textblob</span> <span class="kn">import</span> <span class="n">TextBlob</span>
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="n">sys</span>
+<span class="kn">import</span> <span class="n">os</span>
+<span class="kn">import</span> <span class="n">logging</span>
+<span class="kn">from</span> <span class="n">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
+<span class="kn">from</span> <span class="n">flask</span> <span class="kn">import</span> <span class="n">jsonify</span>
+<span class="kn">from</span> <span class="n">flask</span> <span class="kn">import</span> <span class="n">request</span>
+<span class="kn">from</span> <span class="n">textblob</span> <span class="kn">import</span> <span class="n">TextBlob</span>
 
-<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+<span class="n">app</span> <span class="o">=</span> <span class="nc">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
 
-<span class="o">@</span><span class="n">app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s">'/api/sentiment/query'</span><span class="p">,</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">'POST'</span><span class="p">,</span><span class="s">'GET'</span><span class="p">])</span>
+<span class="nd">@app.route</span><span class="p">(</span><span class="sh">'</span><span class="s">/api/sentiment/query</span><span class="sh">'</span><span class="p">,</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="sh">'</span><span class="s">POST</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">GET</span><span class="sh">'</span><span class="p">])</span>
 <span class="k">def</span> <span class="nf">query_sentiment</span><span class="p">():</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">req_json</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+        <span class="n">req_json</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="nf">get_json</span><span class="p">()</span>
 
             <span class="k">if</span> <span class="n">req_json</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
 
-                <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span> <span class="n">error</span> <span class="o">=</span> <span class="s">'this service require A JSON request'</span> <span class="p">)</span>
+                <span class="k">return</span> <span class="nf">jsonify</span><span class="p">(</span> <span class="n">error</span> <span class="o">=</span> <span class="sh">'</span><span class="s">this service require A JSON request</span><span class="sh">'</span> <span class="p">)</span>
 
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="s">'text'</span> <span class="ow">in</span> <span class="n">req_json</span><span class="p">):</span>
-                    <span class="k">raise</span> <span class="nb">Exception</span><span class="p">(</span><span class="s">'Missing mandatory paramater "text"'</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="sh">'</span><span class="s">text</span><span class="sh">'</span> <span class="ow">in</span> <span class="n">req_json</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="nc">Exception</span><span class="p">(</span><span class="sh">'</span><span class="s">Missing mandatory paramater </span><span class="sh">"</span><span class="s">text</span><span class="sh">"'</span><span class="p">)</span>
 
-            <span class="n">text</span> <span class="o">=</span> <span class="n">req_json</span><span class="p">[</span><span class="s">'text'</span><span class="p">]</span>
-            <span class="n">blob</span> <span class="o">=</span> <span class="n">TextBlob</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-            <span class="n">sentiment</span> <span class="o">=</span> <span class="n">blob</span><span class="o">.</span><span class="n">sentiment</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">req_json</span><span class="p">[</span><span class="sh">'</span><span class="s">text</span><span class="sh">'</span><span class="p">]</span>
+            <span class="n">blob</span> <span class="o">=</span> <span class="nc">TextBlob</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+            <span class="n">sentiment</span> <span class="o">=</span> <span class="n">blob</span><span class="p">.</span><span class="n">sentiment</span>
 
-            <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">polarity</span> <span class="o">=</span> <span class="n">sentiment</span><span class="o">.</span><span class="n">polarity</span><span class="p">,</span> <span class="n">subjectivity</span> <span class="o">=</span> <span class="n">sentiment</span><span class="o">.</span><span class="n">subjectivity</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nf">jsonify</span><span class="p">(</span><span class="n">polarity</span> <span class="o">=</span> <span class="n">sentiment</span><span class="p">.</span><span class="n">polarity</span><span class="p">,</span> <span class="n">subjectivity</span> <span class="o">=</span> <span class="n">sentiment</span><span class="p">.</span><span class="n">subjectivity</span><span class="p">)</span>
 
     <span class="k">except</span> <span class="nb">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
-       <span class="n">app</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">ex</span><span class="p">))</span>
-       <span class="n">app</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">ex</span><span class="o">.</span><span class="n">args</span><span class="p">)</span>
-       <span class="n">app</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
-       <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">error</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">))</span>
+       <span class="n">app</span><span class="p">.</span><span class="n">log</span><span class="p">.</span><span class="nf">error</span><span class="p">(</span><span class="nf">type</span><span class="p">(</span><span class="n">ex</span><span class="p">))</span>
+       <span class="n">app</span><span class="p">.</span><span class="n">log</span><span class="p">.</span><span class="nf">error</span><span class="p">(</span><span class="n">ex</span><span class="p">.</span><span class="n">args</span><span class="p">)</span>
+       <span class="n">app</span><span class="p">.</span><span class="n">log</span><span class="p">.</span><span class="nf">error</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
+       <span class="k">return</span> <span class="nf">jsonify</span><span class="p">(</span><span class="n">error</span> <span class="o">=</span> <span class="nf">str</span><span class="p">(</span><span class="n">ex</span><span class="p">))</span>
 
-<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="sh">'</span><span class="s">__main__</span><span class="sh">'</span><span class="p">:</span>
 
-    <span class="n">LOG_FORMAT</span> <span class="o">=</span> <span class="s">"'</span><span class="si">%(asctime)</span><span class="s">s - </span><span class="si">%(name)</span><span class="s">s - </span><span class="si">%(levelname)</span><span class="s">s - </span><span class="si">%(message)</span><span class="s">s'"</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="n">LOG_FORMAT</span><span class="p">)</span>
-    <span class="n">app</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+    <span class="n">LOG_FORMAT</span> <span class="o">=</span> <span class="sh">"'</span><span class="s">%(asctime)s - %(name)s - %(levelname)s - %(message)s</span><span class="sh">'"</span>
+    <span class="n">logging</span><span class="p">.</span><span class="nf">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="p">.</span><span class="n">DEBUG</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="n">LOG_FORMAT</span><span class="p">)</span>
+    <span class="n">app</span><span class="p">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="p">.</span><span class="nf">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
 
-    <span class="n">port</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">'FLASK_PORT'</span><span class="p">]</span>
-    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s">'0.0.0.0'</span><span class="p">,</span><span class="n">port</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">port</span><span class="p">),</span><span class="n">debug</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span></code></pre></figure>
+    <span class="n">port</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">[</span><span class="sh">'</span><span class="s">FLASK_PORT</span><span class="sh">'</span><span class="p">]</span>
+    <span class="n">app</span><span class="p">.</span><span class="nf">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="sh">'</span><span class="s">0.0.0.0</span><span class="sh">'</span><span class="p">,</span><span class="n">port</span><span class="o">=</span><span class="nf">int</span><span class="p">(</span><span class="n">port</span><span class="p">),</span><span class="n">debug</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span></code></pre></figure>
 
 <p>Them we could test our service:</p>
 

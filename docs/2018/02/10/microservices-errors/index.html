@@ -116,27 +116,27 @@
 
   <section class="section-padding bg-grey" itemprop="articleBody">
     <div class="post">
-      <p>Some days ago I was discusing with my colleage <a href="https://twitter.com/juanantoniobm">Juan Antonio Breña</a> how you could end breaking your control flow when handling errors in a Microservice, specially relaying in mechanism such <a href="https://docs.spring.io/spring/docs/4.3.15.BUILD-SNAPSHOT/javadoc-api/org/springframework/web/bind/annotation/ControllerAdvice.html" target="_blank"><code class="highlighter-rouge">ControllerAdvice</code></a> and <a href="https://docs.spring.io/spring/docs/4.3.15.BUILD-SNAPSHOT/javadoc-api/org/springframework/web/bind/annotation/ExceptionHandler.html" target="_blank"><code class="highlighter-rouge">ExceptionHandler</code></a> when create Spring Boot Microservices in Java.</p>
+      <p>Some days ago I was discusing with my colleage <a href="https://twitter.com/juanantoniobm">Juan Antonio Breña</a> how you could end breaking your control flow when handling errors in a Microservice, specially relaying in mechanism such <a href="https://docs.spring.io/spring/docs/4.3.15.BUILD-SNAPSHOT/javadoc-api/org/springframework/web/bind/annotation/ControllerAdvice.html" target="_blank"><code class="language-plaintext highlighter-rouge">ControllerAdvice</code></a> and <a href="https://docs.spring.io/spring/docs/4.3.15.BUILD-SNAPSHOT/javadoc-api/org/springframework/web/bind/annotation/ExceptionHandler.html" target="_blank"><code class="language-plaintext highlighter-rouge">ExceptionHandler</code></a> when create Spring Boot Microservices in Java.</p>
 
 <p>I told Juan that we may need to handle this probllem differently, so I decide to create a new project in our <a href="https://github.com/LearningByExample" target="_blank">Learning By Example</a> GitHub meta group: <a href="https://github.com/LearningByExample/MicroservicesErrorHandling" target="_blank">Microservices Error Handling</a></p>
 
-<p>The idea behind that project is to check how we could avoid to use <a href="https://docs.spring.io/spring/docs/4.3.15.BUILD-SNAPSHOT/javadoc-api/org/springframework/web/bind/annotation/ControllerAdvice.html"><code class="highlighter-rouge">ControllerAdvice</code></a> and <a href="https://docs.spring.io/spring/docs/4.3.15.BUILD-SNAPSHOT/javadoc-api/org/springframework/web/bind/annotation/ExceptionHandler.html"><code class="highlighter-rouge">ExceptionHandler</code></a>, and even checked exceptions when handling errors in our Microservices.</p>
+<p>The idea behind that project is to check how we could avoid to use <a href="https://docs.spring.io/spring/docs/4.3.15.BUILD-SNAPSHOT/javadoc-api/org/springframework/web/bind/annotation/ControllerAdvice.html"><code class="language-plaintext highlighter-rouge">ControllerAdvice</code></a> and <a href="https://docs.spring.io/spring/docs/4.3.15.BUILD-SNAPSHOT/javadoc-api/org/springframework/web/bind/annotation/ExceptionHandler.html"><code class="language-plaintext highlighter-rouge">ExceptionHandler</code></a>, and even checked exceptions when handling errors in our Microservices.</p>
 
 <p>Checked exceptions some times could leak the implementation details of our components, and they could even break our control flow.</p>
 
-<p>Spring <a href="https://docs.spring.io/spring/docs/4.3.15.BUILD-SNAPSHOT/javadoc-api/org/springframework/web/bind/annotation/ControllerAdvice.html"><code class="highlighter-rouge">ControllerAdvice</code></a> or <a href="https://docs.spring.io/spring/docs/4.3.15.BUILD-SNAPSHOT/javadoc-api/org/springframework/web/bind/annotation/ExceptionHandler.html"><code class="highlighter-rouge">ExceptionHandler</code></a> could become the ultimate GOTOs, that some people my use to get errors and sent back to the consumers of the Microservice, jumping out on the execution of our business logic.</p>
+<p>Spring <a href="https://docs.spring.io/spring/docs/4.3.15.BUILD-SNAPSHOT/javadoc-api/org/springframework/web/bind/annotation/ControllerAdvice.html"><code class="language-plaintext highlighter-rouge">ControllerAdvice</code></a> or <a href="https://docs.spring.io/spring/docs/4.3.15.BUILD-SNAPSHOT/javadoc-api/org/springframework/web/bind/annotation/ExceptionHandler.html"><code class="language-plaintext highlighter-rouge">ExceptionHandler</code></a> could become the ultimate GOTOs, that some people my use to get errors and sent back to the consumers of the Microservice, jumping out on the execution of our business logic.</p>
 
 <p>The approach described in the example is to handle errors as part of our business logic, avoiding unnecessary lost of our control flow.</p>
 
-<p>This example is not about stop using <a href="https://docs.spring.io/spring/docs/4.3.15.BUILD-SNAPSHOT/javadoc-api/org/springframework/web/bind/annotation/ControllerAdvice.html"><code class="highlighter-rouge">ControllerAdvice</code></a>, we may need to still using it to handle unexpected Runtime Exceptions, however relaying on it for handling our business errors isn’t ideal.</p>
+<p>This example is not about stop using <a href="https://docs.spring.io/spring/docs/4.3.15.BUILD-SNAPSHOT/javadoc-api/org/springframework/web/bind/annotation/ControllerAdvice.html"><code class="language-plaintext highlighter-rouge">ControllerAdvice</code></a>, we may need to still using it to handle unexpected Runtime Exceptions, however relaying on it for handling our business errors isn’t ideal.</p>
 
 <p>Approach like the one in this example may become a better way to do it, however this is not the unique, neither definitive, solution.</p>
 
-<p>We have created one wrapper class to support this concept named <code class="highlighter-rouge">Result&lt;type&gt;</code>, this class has two creation methods.</p>
+<p>We have created one wrapper class to support this concept named <code class="language-plaintext highlighter-rouge">Result&lt;type&gt;</code>, this class has two creation methods.</p>
 
 <ul>
-  <li><code class="highlighter-rouge">Result.create(object)</code> : That will create a wrapper containing the data to be returned.</li>
-  <li><code class="highlighter-rouge">Result.error(object)</code> : That will create a wrapper containing an error.</li>
+  <li><code class="language-plaintext highlighter-rouge">Result.create(object)</code> : That will create a wrapper containing the data to be returned.</li>
+  <li><code class="language-plaintext highlighter-rouge">Result.error(object)</code> : That will create a wrapper containing an error.</li>
 </ul>
 
 <p>How to use this class is simple, for example:</p>
@@ -149,9 +149,9 @@
       <span class="k">return</span> <span class="nc">Result</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="k">new</span> <span class="nc">NotFound</span><span class="o">(</span><span class="s">"customer not found"</span><span class="o">));</span>
   <span class="o">}</span></code></pre></figure>
 
-<p><code class="highlighter-rouge">BadParameters</code> and <code class="highlighter-rouge">NotFound</code> are entities for our business logic that contain the desired information for handling these responses.</p>
+<p><code class="language-plaintext highlighter-rouge">BadParameters</code> and <code class="language-plaintext highlighter-rouge">NotFound</code> are entities for our business logic that contain the desired information for handling these responses.</p>
 
-<p>For handling the result we could just use the methods <code class="highlighter-rouge">isError()</code> and <code class="highlighter-rouge">getData()</code>.</p>
+<p>For handling the result we could just use the methods <code class="language-plaintext highlighter-rouge">isError()</code> and <code class="language-plaintext highlighter-rouge">getData()</code>.</p>
 
 <figure class="highlight"><pre><code class="language-java" data-lang="java">  <span class="nc">Result</span> <span class="n">result</span> <span class="o">=</span> <span class="n">operation</span><span class="o">();</span>
 

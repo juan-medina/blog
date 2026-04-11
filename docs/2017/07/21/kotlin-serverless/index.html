@@ -153,14 +153,14 @@
 <p>Now let’s create a simple Kotlin function:</p>
 
 <figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">fun</span> <span class="nf">fibonacci</span><span class="p">(</span><span class="n">numbers</span><span class="p">:</span> <span class="nc">Long</span><span class="p">):</span> <span class="nc">Array</span><span class="p">&lt;</span><span class="nc">Long</span><span class="p">&gt;</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">numbers</span> <span class="p">==</span> <span class="m">0L</span><span class="p">)</span> <span class="k">return</span> <span class="nf">arrayOf</span><span class="p">(</span><span class="m">0L</span><span class="p">)</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">numbers</span> <span class="p">==</span> <span class="m">1L</span><span class="p">)</span> <span class="k">return</span> <span class="nf">arrayOf</span><span class="p">(</span><span class="m">1L</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">numbers</span> <span class="p">==</span> <span class="mi">0L</span><span class="p">)</span> <span class="k">return</span> <span class="nf">arrayOf</span><span class="p">(</span><span class="mi">0L</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">numbers</span> <span class="p">==</span> <span class="mi">1L</span><span class="p">)</span> <span class="k">return</span> <span class="nf">arrayOf</span><span class="p">(</span><span class="mi">1L</span><span class="p">)</span>
 
-    <span class="kd">var</span> <span class="py">previous</span> <span class="p">=</span> <span class="m">1L</span>
-    <span class="kd">var</span> <span class="py">current</span> <span class="p">=</span> <span class="m">1L</span>
+    <span class="kd">var</span> <span class="py">previous</span> <span class="p">=</span> <span class="mi">1L</span>
+    <span class="kd">var</span> <span class="py">current</span> <span class="p">=</span> <span class="mi">1L</span>
     <span class="kd">var</span> <span class="py">temp</span><span class="p">:</span> <span class="nc">Long</span>
 
-    <span class="k">return</span> <span class="nf">arrayOf</span><span class="p">(</span><span class="m">1L</span><span class="p">,</span> <span class="m">1L</span><span class="p">)</span> <span class="p">+</span> <span class="p">(</span><span class="m">1</span><span class="o">..</span><span class="p">(</span><span class="n">numbers</span> <span class="p">-</span> <span class="m">2</span><span class="p">)).</span><span class="nf">map</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nf">arrayOf</span><span class="p">(</span><span class="mi">1L</span><span class="p">,</span> <span class="mi">1L</span><span class="p">)</span> <span class="p">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">..</span><span class="p">(</span><span class="n">numbers</span> <span class="p">-</span> <span class="mi">2</span><span class="p">)).</span><span class="nf">map</span> <span class="p">{</span>
       <span class="n">temp</span> <span class="p">=</span> <span class="n">current</span> <span class="p">+</span> <span class="n">previous</span>
       <span class="n">previous</span> <span class="p">=</span> <span class="n">current</span>
       <span class="n">current</span> <span class="p">=</span> <span class="n">temp</span>
@@ -170,15 +170,15 @@
 
 <p>This function just calculate a set of Fibonacci numbers, let try it out:</p>
 
-<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">fun</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="nc">Array</span><span class="p">&lt;</span><span class="nc">String</span><span class="p">&gt;)</span> <span class="p">=</span> <span class="nf">fibonacci</span><span class="p">(</span><span class="m">5</span><span class="p">).</span><span class="nf">forEach</span><span class="p">(</span><span class="o">::</span><span class="n">println</span><span class="p">)</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">fun</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="nc">Array</span><span class="p">&lt;</span><span class="nc">String</span><span class="p">&gt;)</span> <span class="p">=</span> <span class="nf">fibonacci</span><span class="p">(</span><span class="mi">5</span><span class="p">).</span><span class="nf">forEach</span><span class="p">(</span><span class="o">::</span><span class="n">println</span><span class="p">)</span></code></pre></figure>
 
 <p>This should output:</p>
 
-<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="m">1</span>
-  <span class="m">1</span>
-  <span class="m">2</span>
-  <span class="m">3</span>
-  <span class="m">5</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="mi">1</span>
+  <span class="mi">1</span>
+  <span class="mi">2</span>
+  <span class="mi">3</span>
+  <span class="mi">5</span></code></pre></figure>
 
 <p>But how we could convert this into a Serverless function?</p>
 
@@ -200,14 +200,14 @@
 <p>So now in our main function we could do something like :</p>
 
 <figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">fun</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="nc">JsonObject</span><span class="p">)</span> <span class="p">:</span> <span class="nc">JsonObject</span> <span class="p">{</span>
-    <span class="kd">val</span> <span class="py">numbers</span> <span class="p">=</span> <span class="n">args</span><span class="p">.</span><span class="nf">paramOrElse</span><span class="p">(</span><span class="s">"numbers"</span><span class="p">,</span> <span class="m">10L</span><span class="p">)</span>
+    <span class="kd">val</span> <span class="py">numbers</span> <span class="p">=</span> <span class="n">args</span><span class="p">.</span><span class="nf">paramOrElse</span><span class="p">(</span><span class="s">"numbers"</span><span class="p">,</span> <span class="mi">10L</span><span class="p">)</span>
     <span class="kd">val</span> <span class="py">results</span> <span class="p">=</span> <span class="nf">fibonacci</span><span class="p">(</span><span class="n">numbers</span><span class="p">)</span>
   <span class="p">}</span></code></pre></figure>
 
 <p>All so now we need to get a result so we could do something like:</p>
 
 <figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">fun</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="nc">JsonObject</span><span class="p">)</span> <span class="p">:</span> <span class="nc">JsonObject</span> <span class="p">{</span>
-    <span class="kd">val</span> <span class="py">numbers</span> <span class="p">=</span> <span class="n">args</span><span class="p">.</span><span class="nf">paramOrElse</span><span class="p">(</span><span class="s">"numbers"</span><span class="p">,</span> <span class="m">10L</span><span class="p">)</span>
+    <span class="kd">val</span> <span class="py">numbers</span> <span class="p">=</span> <span class="n">args</span><span class="p">.</span><span class="nf">paramOrElse</span><span class="p">(</span><span class="s">"numbers"</span><span class="p">,</span> <span class="mi">10L</span><span class="p">)</span>
     <span class="kd">val</span> <span class="py">results</span> <span class="p">=</span> <span class="nf">fibonacci</span><span class="p">(</span><span class="n">numbers</span><span class="p">)</span>
     <span class="kd">val</span> <span class="py">response</span> <span class="p">=</span> <span class="nc">JsonObject</span><span class="p">()</span>
     <span class="kd">val</span> <span class="py">elements</span> <span class="p">=</span> <span class="nc">JsonArray</span><span class="p">()</span>
@@ -228,7 +228,7 @@
 
 <p>With this our main could become just:</p>
 
-<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">fun</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="nc">JsonObject</span><span class="p">)</span> <span class="p">=</span> <span class="n">args</span><span class="p">.</span><span class="nf">paramOrElse</span><span class="p">(</span><span class="s">"numbers"</span><span class="p">,</span> <span class="m">10L</span><span class="p">).</span><span class="nf">throughFunction</span><span class="p">(</span><span class="o">::</span><span class="n">fibonacci</span><span class="p">)</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-kotlin" data-lang="kotlin">  <span class="k">fun</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="nc">JsonObject</span><span class="p">)</span> <span class="p">=</span> <span class="n">args</span><span class="p">.</span><span class="nf">paramOrElse</span><span class="p">(</span><span class="s">"numbers"</span><span class="p">,</span> <span class="mi">10L</span><span class="p">).</span><span class="nf">throughFunction</span><span class="p">(</span><span class="o">::</span><span class="n">fibonacci</span><span class="p">)</span></code></pre></figure>
 
 <p>Let put all the parts together :</p>
 
@@ -238,14 +238,14 @@
   <span class="k">import</span> <span class="nn">com.google.gson.JsonObject</span>
 
   <span class="k">fun</span> <span class="nf">fibonacci</span><span class="p">(</span><span class="n">numbers</span><span class="p">:</span> <span class="nc">Long</span><span class="p">):</span> <span class="nc">Array</span><span class="p">&lt;</span><span class="nc">Long</span><span class="p">&gt;</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">numbers</span> <span class="p">==</span> <span class="m">0L</span><span class="p">)</span> <span class="k">return</span> <span class="nf">arrayOf</span><span class="p">(</span><span class="m">0L</span><span class="p">)</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">numbers</span> <span class="p">==</span> <span class="m">1L</span><span class="p">)</span> <span class="k">return</span> <span class="nf">arrayOf</span><span class="p">(</span><span class="m">1L</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">numbers</span> <span class="p">==</span> <span class="mi">0L</span><span class="p">)</span> <span class="k">return</span> <span class="nf">arrayOf</span><span class="p">(</span><span class="mi">0L</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">numbers</span> <span class="p">==</span> <span class="mi">1L</span><span class="p">)</span> <span class="k">return</span> <span class="nf">arrayOf</span><span class="p">(</span><span class="mi">1L</span><span class="p">)</span>
 
-    <span class="kd">var</span> <span class="py">previous</span> <span class="p">=</span> <span class="m">1L</span>
-    <span class="kd">var</span> <span class="py">current</span> <span class="p">=</span> <span class="m">1L</span>
+    <span class="kd">var</span> <span class="py">previous</span> <span class="p">=</span> <span class="mi">1L</span>
+    <span class="kd">var</span> <span class="py">current</span> <span class="p">=</span> <span class="mi">1L</span>
     <span class="kd">var</span> <span class="py">temp</span><span class="p">:</span> <span class="nc">Long</span>
 
-    <span class="k">return</span> <span class="nf">arrayOf</span><span class="p">(</span><span class="m">1L</span><span class="p">,</span> <span class="m">1L</span><span class="p">)</span> <span class="p">+</span> <span class="p">(</span><span class="m">1</span><span class="o">..</span><span class="p">(</span><span class="n">numbers</span> <span class="p">-</span> <span class="m">2</span><span class="p">)).</span><span class="nf">map</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nf">arrayOf</span><span class="p">(</span><span class="mi">1L</span><span class="p">,</span> <span class="mi">1L</span><span class="p">)</span> <span class="p">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">..</span><span class="p">(</span><span class="n">numbers</span> <span class="p">-</span> <span class="mi">2</span><span class="p">)).</span><span class="nf">map</span> <span class="p">{</span>
       <span class="n">temp</span> <span class="p">=</span> <span class="n">current</span> <span class="p">+</span> <span class="n">previous</span>
       <span class="n">previous</span> <span class="p">=</span> <span class="n">current</span>
       <span class="n">current</span> <span class="p">=</span> <span class="n">temp</span>
@@ -264,7 +264,7 @@
     <span class="k">return</span> <span class="n">result</span>
   <span class="p">}</span>
 
-  <span class="k">fun</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="nc">JsonObject</span><span class="p">)</span> <span class="p">=</span> <span class="n">args</span><span class="p">.</span><span class="nf">paramOrElse</span><span class="p">(</span><span class="s">"numbers"</span><span class="p">,</span> <span class="m">10L</span><span class="p">).</span><span class="nf">throughFunction</span><span class="p">(</span><span class="o">::</span><span class="n">fibonacci</span><span class="p">)</span></code></pre></figure>
+  <span class="k">fun</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="nc">JsonObject</span><span class="p">)</span> <span class="p">=</span> <span class="n">args</span><span class="p">.</span><span class="nf">paramOrElse</span><span class="p">(</span><span class="s">"numbers"</span><span class="p">,</span> <span class="mi">10L</span><span class="p">).</span><span class="nf">throughFunction</span><span class="p">(</span><span class="o">::</span><span class="n">fibonacci</span><span class="p">)</span></code></pre></figure>
 
 <p>With this prototype we could create many functions, in fact with a couple of generics could get even better but let’s do that another day.</p>
 

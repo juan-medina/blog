@@ -141,7 +141,7 @@
 
 <p><strong>The initial project structure</strong></p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  /lib
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  /lib
     /src
     /include
     /test
@@ -155,8 +155,8 @@
 
 <p><strong>The simple program</strong></p>
 
-<figure class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="cp">#include "calc.h"
-#include "logger.h"
+<figure class="highlight"><pre><code class="language-c--" data-lang="c++"><span class="cp">#include</span> <span class="cpf">"calc.h"</span><span class="cp">
+#include</span> <span class="cpf">"logger.h"</span><span class="cp">
 </span>
 <span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
   <span class="k">using</span> <span class="k">namespace</span> <span class="n">ModernCppCI</span><span class="p">;</span>
@@ -172,7 +172,7 @@
 
 <p>This program will output when run:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[2017-07-01 11:09:22.766] [console] [info] [main] doing some calculation
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[2017-07-01 11:09:22.766] [console] [info] [main] doing some calculation
 [2017-07-01 11:09:22.768] [console] [info] [main] 1 + 2 * 5 - 3 / 4 = 3
 </code></pre></div></div>
 <p>This example use a couple of classes defined in the library, <em>Calc</em> and <em>Logger</em> to display a simple calculation.</p>
@@ -447,7 +447,7 @@
 <p>No that we have our project ready we could building in travis for Linux and OSX. We will add this .travis.yml to our project:</p>
 
 <figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">language</span><span class="pi">:</span> <span class="s">cpp</span>
-<span class="na">sudo</span><span class="pi">:</span> <span class="no">true</span>
+<span class="na">sudo</span><span class="pi">:</span> <span class="kc">true</span>
 
 <span class="na">matrix</span><span class="pi">:</span>
   <span class="na">include</span><span class="pi">:</span>
@@ -554,7 +554,7 @@
 <span class="c1"># build with MSBuild</span>
 <span class="na">build</span><span class="pi">:</span>
   <span class="na">project</span><span class="pi">:</span> <span class="s">Build\ModernCppCI.sln</span>        <span class="c1"># path to Visual Studio solution or project</span>
-  <span class="na">parallel</span><span class="pi">:</span> <span class="no">true</span>                        <span class="c1"># enable MSBuild parallel builds</span>
+  <span class="na">parallel</span><span class="pi">:</span> <span class="kc">true</span>                        <span class="c1"># enable MSBuild parallel builds</span>
   <span class="na">verbosity</span><span class="pi">:</span> <span class="s">normal</span>                     <span class="c1"># MSBuild verbosity level {quiet|minimal|normal|detailed}</span>
 
 <span class="na">test_script</span><span class="pi">:</span>

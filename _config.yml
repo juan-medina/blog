@@ -4,7 +4,7 @@ plugins:
   - jekyll-feed
   - jekyll-paginate
   - jekyll-sitemap
-  - octopress-autoprefixer
+
 
 # Site settings
 encoding: utf-8
@@ -37,10 +37,16 @@ social:
 
 # Build settings
 include: ["_categories"]
-exclude: ["_screenshots", "Gemfile", "Gemfile.lock", "LICENSE.txt", "README.md", ".gitlab-ci.yml", "docs", "build.sh", "serve.sh", "cv.sh"]
+exclude: ["_screenshots", "Gemfile", "Gemfile.lock", "LICENSE.txt", "README.md", ".gitlab-ci.yml", "docs", "build.sh", "serve.sh", "cv.sh", "build.ps1", "serve.ps1", ".vscode"]
 markdown: kramdown
 permalink: /:year/:month/:day/:title/
 
 # Sass
 sass:
   style: compressed
+
+sass:
+  quiet_deps: true
+  silence_deprecations:
+    - import
+    - slash-div

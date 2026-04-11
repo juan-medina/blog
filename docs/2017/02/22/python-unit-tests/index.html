@@ -128,30 +128,30 @@
 
 <figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">Calc</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">a</span><span class="o">+</span><span class="n">b</span>
 
-    <span class="k">def</span> <span class="nf">sub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">sub</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">a</span><span class="o">-</span><span class="n">b</span></code></pre></figure>
 
 <p>And here our first test in a file named: <em>test_calc.py</em></p>
 
-<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
-<span class="kn">from</span> <span class="nn">hamcrest</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">calc</span> <span class="kn">import</span> <span class="n">Calc</span>
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="n">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+<span class="kn">from</span> <span class="n">hamcrest</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="n">calc</span> <span class="kn">import</span> <span class="n">Calc</span>
 
 
 <span class="k">class</span> <span class="nc">TestCal</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">test_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">calculator</span> <span class="o">=</span> <span class="n">Calc</span><span class="p">()</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">calculator</span><span class="o">.</span><span class="nb">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">assert_that</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">is_</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">test_sum</span><span class="p">(</span><span class="n">self</span><span class="p">):</span>
+        <span class="n">calculator</span> <span class="o">=</span> <span class="nc">Calc</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">calculator</span><span class="p">.</span><span class="nf">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="nf">assert_that</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nf">is_</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">test_sub</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">calculator</span> <span class="o">=</span> <span class="n">Calc</span><span class="p">()</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">calculator</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">assert_that</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">is_</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span></code></pre></figure>
+    <span class="k">def</span> <span class="nf">test_sub</span><span class="p">(</span><span class="n">self</span><span class="p">):</span>
+        <span class="n">calculator</span> <span class="o">=</span> <span class="nc">Calc</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">calculator</span><span class="p">.</span><span class="nf">sub</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="nf">assert_that</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nf">is_</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span></code></pre></figure>
 
 <p>To run the test just this in the same directory that both files are place:</p>
 
@@ -170,210 +170,210 @@ OK</code></pre></figure>
 <figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">Calc</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">_last_result</span> <span class="o">=</span> <span class="bp">None</span>
 
-    <span class="k">def</span> <span class="nf">operation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_last_result</span> <span class="o">=</span> <span class="n">result</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_result</span>
+    <span class="k">def</span> <span class="nf">operation</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">_last_result</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="n">self</span><span class="p">.</span><span class="n">_last_result</span>
 
-    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">operation</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">self</span><span class="p">.</span><span class="nf">operation</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">sub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">operation</span><span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">sub</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">self</span><span class="p">.</span><span class="nf">operation</span><span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">result</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_result</span></code></pre></figure>
+    <span class="k">def</span> <span class="nf">result</span><span class="p">(</span><span class="n">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">self</span><span class="p">.</span><span class="n">_last_result</span></code></pre></figure>
 
 <p>With the new test we could add some more bits, like concatenating expressions</p>
 
-<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
-<span class="kn">from</span> <span class="nn">hamcrest</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">calc</span> <span class="kn">import</span> <span class="n">Calc</span>
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="n">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+<span class="kn">from</span> <span class="n">hamcrest</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="n">calc</span> <span class="kn">import</span> <span class="n">Calc</span>
 
 
 <span class="k">class</span> <span class="nc">TestCal</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">test_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">calculator</span> <span class="o">=</span> <span class="n">Calc</span><span class="p">()</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">calculator</span><span class="o">.</span><span class="nb">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">assert_that</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">is_</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">test_sum</span><span class="p">(</span><span class="n">self</span><span class="p">):</span>
+        <span class="n">calculator</span> <span class="o">=</span> <span class="nc">Calc</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">calculator</span><span class="p">.</span><span class="nf">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="nf">assert_that</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nf">is_</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">test_sub</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">calculator</span> <span class="o">=</span> <span class="n">Calc</span><span class="p">()</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">calculator</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">assert_that</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">is_</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">test_sub</span><span class="p">(</span><span class="n">self</span><span class="p">):</span>
+        <span class="n">calculator</span> <span class="o">=</span> <span class="nc">Calc</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">calculator</span><span class="p">.</span><span class="nf">sub</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="nf">assert_that</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nf">is_</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">test_result</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">calc</span> <span class="o">=</span> <span class="n">Calc</span><span class="p">()</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="nb">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">assert_that</span><span class="p">(</span><span class="n">calc</span><span class="o">.</span><span class="n">result</span><span class="p">(),</span> <span class="n">is_</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">is_</span><span class="p">(</span><span class="n">result</span><span class="p">))</span></code></pre></figure>
+    <span class="k">def</span> <span class="nf">test_result</span><span class="p">(</span><span class="n">self</span><span class="p">):</span>
+        <span class="n">calc</span> <span class="o">=</span> <span class="nc">Calc</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">calc</span><span class="p">.</span><span class="nf">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="nf">assert_that</span><span class="p">(</span><span class="n">calc</span><span class="p">.</span><span class="nf">result</span><span class="p">(),</span> <span class="nf">is_</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="nf">is_</span><span class="p">(</span><span class="n">result</span><span class="p">))</span></code></pre></figure>
 
 <p>Now to go really crazy lets make our class to been able to repeat operation using some lambdas:</p>
 
 <figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">Calc</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">_last_result</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="n">_last_operation</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="n">_sum</span> <span class="o">=</span> <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
-    <span class="n">_sub</span> <span class="o">=</span> <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span> <span class="o">-</span> <span class="n">b</span>
+    <span class="n">_sum</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+    <span class="n">_sub</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span> <span class="o">-</span> <span class="n">b</span>
 
-    <span class="k">def</span> <span class="nf">operation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_last_result</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_last_operation</span> <span class="o">=</span> <span class="n">function</span>
+    <span class="k">def</span> <span class="nf">operation</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">_last_result</span> <span class="o">=</span> <span class="nf">function</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">_last_operation</span> <span class="o">=</span> <span class="n">function</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_result</span>
+        <span class="k">return</span> <span class="n">self</span><span class="p">.</span><span class="n">_last_result</span>
 
-    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">operation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sum</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">self</span><span class="p">.</span><span class="nf">operation</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">_sum</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">sub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">operation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sub</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">sub</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">self</span><span class="p">.</span><span class="nf">operation</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">_sub</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">result</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_result</span>
+    <span class="k">def</span> <span class="nf">result</span><span class="p">(</span><span class="n">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">self</span><span class="p">.</span><span class="n">_last_result</span>
 
-    <span class="k">def</span> <span class="nf">repeat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">operation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_last_operation</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span></code></pre></figure>
+    <span class="k">def</span> <span class="nf">repeat</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">self</span><span class="p">.</span><span class="nf">operation</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">_last_operation</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span></code></pre></figure>
 
 <p>Now for test we could test that this new method work, even creating a new lambda for it:</p>
 
-<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">om</span> <span class="n">unittest</span> <span class="kn">import</span> <span class="nn">TestCase</span>
-<span class="kn">from</span> <span class="nn">hamcrest</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="o">*</span>
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">om</span> <span class="n">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+<span class="kn">from</span> <span class="n">hamcrest</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="n">types</span> <span class="kn">import</span> <span class="o">*</span>
 
-<span class="kn">from</span> <span class="nn">calc</span> <span class="kn">import</span> <span class="n">Calc</span>
+<span class="kn">from</span> <span class="n">calc</span> <span class="kn">import</span> <span class="n">Calc</span>
 
 
 <span class="k">class</span> <span class="nc">TestCal</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">test_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">calculator</span> <span class="o">=</span> <span class="n">Calc</span><span class="p">()</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">calculator</span><span class="o">.</span><span class="nb">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">assert_that</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">is_</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">test_sum</span><span class="p">(</span><span class="n">self</span><span class="p">):</span>
+        <span class="n">calculator</span> <span class="o">=</span> <span class="nc">Calc</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">calculator</span><span class="p">.</span><span class="nf">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="nf">assert_that</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nf">is_</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">test_sub</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">calculator</span> <span class="o">=</span> <span class="n">Calc</span><span class="p">()</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">calculator</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">assert_that</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">is_</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">test_sub</span><span class="p">(</span><span class="n">self</span><span class="p">):</span>
+        <span class="n">calculator</span> <span class="o">=</span> <span class="nc">Calc</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">calculator</span><span class="p">.</span><span class="nf">sub</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="nf">assert_that</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nf">is_</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">test_result</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">calc</span> <span class="o">=</span> <span class="n">Calc</span><span class="p">()</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="nb">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">assert_that</span><span class="p">(</span><span class="n">calc</span><span class="o">.</span><span class="n">result</span><span class="p">(),</span> <span class="n">is_</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">is_</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">test_result</span><span class="p">(</span><span class="n">self</span><span class="p">):</span>
+        <span class="n">calc</span> <span class="o">=</span> <span class="nc">Calc</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">calc</span><span class="p">.</span><span class="nf">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="nf">assert_that</span><span class="p">(</span><span class="n">calc</span><span class="p">.</span><span class="nf">result</span><span class="p">(),</span> <span class="nf">is_</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="nf">is_</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">test_operation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">calc</span> <span class="o">=</span> <span class="n">Calc</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">test_operation</span><span class="p">(</span><span class="n">self</span><span class="p">):</span>
+        <span class="n">calc</span> <span class="o">=</span> <span class="nc">Calc</span><span class="p">()</span>
 
         <span class="n">mult</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">operation</span><span class="p">(</span><span class="n">mult</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">calc</span><span class="p">.</span><span class="nf">operation</span><span class="p">(</span><span class="n">mult</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
 
-        <span class="n">assert_that</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">is_</span><span class="p">(</span><span class="mi">25</span><span class="p">))</span>
-        <span class="n">assert_that</span><span class="p">(</span><span class="n">calc</span><span class="o">.</span><span class="n">_last_operation</span><span class="p">,</span> <span class="n">is_</span><span class="p">(</span><span class="n">mult</span><span class="p">),</span> <span class="n">is_</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">LambdaType</span><span class="p">)))</span>
+        <span class="nf">assert_that</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nf">is_</span><span class="p">(</span><span class="mi">25</span><span class="p">))</span>
+        <span class="nf">assert_that</span><span class="p">(</span><span class="n">calc</span><span class="p">.</span><span class="n">_last_operation</span><span class="p">,</span> <span class="nf">is_</span><span class="p">(</span><span class="n">mult</span><span class="p">),</span> <span class="nf">is_</span><span class="p">(</span><span class="nf">type</span><span class="p">(</span><span class="n">LambdaType</span><span class="p">)))</span>
 
-    <span class="k">def</span> <span class="nf">test_repeat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">calc</span> <span class="o">=</span> <span class="n">Calc</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">test_repeat</span><span class="p">(</span><span class="n">self</span><span class="p">):</span>
+        <span class="n">calc</span> <span class="o">=</span> <span class="nc">Calc</span><span class="p">()</span>
 
-        <span class="n">result</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="nb">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">assert_that</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">is_</span><span class="p">(</span><span class="n">calc</span><span class="o">.</span><span class="n">result</span><span class="p">()))</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">calc</span><span class="p">.</span><span class="nf">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="nf">assert_that</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nf">is_</span><span class="p">(</span><span class="n">calc</span><span class="p">.</span><span class="nf">result</span><span class="p">()))</span>
 
-        <span class="n">result</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">assert_that</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">is_</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span></code></pre></figure>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">calc</span><span class="p">.</span><span class="nf">repeat</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="nf">assert_that</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nf">is_</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span></code></pre></figure>
 
 <p>Now for modification of our class lets create some validation of parameters raising exceptions</p>
 
-<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="o">*</span>
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="n">types</span> <span class="kn">import</span> <span class="o">*</span>
 
 
 <span class="k">class</span> <span class="nc">Calc</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">_last_result</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="n">_last_operation</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="n">_sum</span> <span class="o">=</span> <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
-    <span class="n">_sub</span> <span class="o">=</span> <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span> <span class="o">-</span> <span class="n">b</span>
+    <span class="n">_sum</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+    <span class="n">_sub</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span> <span class="o">-</span> <span class="n">b</span>
 
-    <span class="k">def</span> <span class="nf">operation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="ow">is</span> <span class="n">IntType</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="nb">TypeError</span><span class="p">(</span><span class="s">"a is not a number"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="ow">is</span> <span class="n">IntType</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="nb">TypeError</span><span class="p">(</span><span class="s">"b is not a number"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="nb">type</span><span class="p">(</span><span class="n">function</span><span class="p">)</span> <span class="ow">is</span> <span class="n">MethodType</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">function</span><span class="p">)</span> <span class="ow">is</span> <span class="n">FunctionType</span><span class="p">)):</span>
-            <span class="k">raise</span> <span class="nb">TypeError</span><span class="p">(</span><span class="s">"function is not a function"</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">operation</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nf">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="ow">is</span> <span class="n">IntType</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="nc">TypeError</span><span class="p">(</span><span class="sh">"</span><span class="s">a is not a number</span><span class="sh">"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nf">type</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="ow">is</span> <span class="n">IntType</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="nc">TypeError</span><span class="p">(</span><span class="sh">"</span><span class="s">b is not a number</span><span class="sh">"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="nf">type</span><span class="p">(</span><span class="n">function</span><span class="p">)</span> <span class="ow">is</span> <span class="n">MethodType</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nf">type</span><span class="p">(</span><span class="n">function</span><span class="p">)</span> <span class="ow">is</span> <span class="n">FunctionType</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="nc">TypeError</span><span class="p">(</span><span class="sh">"</span><span class="s">function is not a function</span><span class="sh">"</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_last_result</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_last_operation</span> <span class="o">=</span> <span class="n">function</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">_last_result</span> <span class="o">=</span> <span class="nf">function</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">_last_operation</span> <span class="o">=</span> <span class="n">function</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_result</span>
+        <span class="k">return</span> <span class="n">self</span><span class="p">.</span><span class="n">_last_result</span>
 
-    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">operation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sum</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">self</span><span class="p">.</span><span class="nf">operation</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">_sum</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">sub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">operation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sub</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">sub</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">self</span><span class="p">.</span><span class="nf">operation</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">_sub</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">result</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_result</span>
+    <span class="k">def</span> <span class="nf">result</span><span class="p">(</span><span class="n">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">self</span><span class="p">.</span><span class="n">_last_result</span>
 
-    <span class="k">def</span> <span class="nf">repeat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">operation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_last_operation</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span></code></pre></figure>
+    <span class="k">def</span> <span class="nf">repeat</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">self</span><span class="p">.</span><span class="nf">operation</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">_last_operation</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span></code></pre></figure>
 
 <p>and in our test will add checking that the exceptions are raise when they should:</p>
 
-<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
-<span class="kn">from</span> <span class="nn">hamcrest</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="o">*</span>
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="n">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+<span class="kn">from</span> <span class="n">hamcrest</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="n">types</span> <span class="kn">import</span> <span class="o">*</span>
 
-<span class="kn">from</span> <span class="nn">calc</span> <span class="kn">import</span> <span class="n">Calc</span>
+<span class="kn">from</span> <span class="n">calc</span> <span class="kn">import</span> <span class="n">Calc</span>
 
 
 <span class="k">class</span> <span class="nc">TestCal</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">test_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">calculator</span> <span class="o">=</span> <span class="n">Calc</span><span class="p">()</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">calculator</span><span class="o">.</span><span class="nb">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">assert_that</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">is_</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">test_sum</span><span class="p">(</span><span class="n">self</span><span class="p">):</span>
+        <span class="n">calculator</span> <span class="o">=</span> <span class="nc">Calc</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">calculator</span><span class="p">.</span><span class="nf">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="nf">assert_that</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nf">is_</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">test_sub</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">calculator</span> <span class="o">=</span> <span class="n">Calc</span><span class="p">()</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">calculator</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">assert_that</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">is_</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">test_sub</span><span class="p">(</span><span class="n">self</span><span class="p">):</span>
+        <span class="n">calculator</span> <span class="o">=</span> <span class="nc">Calc</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">calculator</span><span class="p">.</span><span class="nf">sub</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="nf">assert_that</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nf">is_</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">test_result</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">calc</span> <span class="o">=</span> <span class="n">Calc</span><span class="p">()</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="nb">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">assert_that</span><span class="p">(</span><span class="n">calc</span><span class="o">.</span><span class="n">result</span><span class="p">(),</span> <span class="n">is_</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">is_</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">test_result</span><span class="p">(</span><span class="n">self</span><span class="p">):</span>
+        <span class="n">calc</span> <span class="o">=</span> <span class="nc">Calc</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">calc</span><span class="p">.</span><span class="nf">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="nf">assert_that</span><span class="p">(</span><span class="n">calc</span><span class="p">.</span><span class="nf">result</span><span class="p">(),</span> <span class="nf">is_</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="nf">is_</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">test_operation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">calc</span> <span class="o">=</span> <span class="n">Calc</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">test_operation</span><span class="p">(</span><span class="n">self</span><span class="p">):</span>
+        <span class="n">calc</span> <span class="o">=</span> <span class="nc">Calc</span><span class="p">()</span>
 
         <span class="n">mult</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">operation</span><span class="p">(</span><span class="n">mult</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">calc</span><span class="p">.</span><span class="nf">operation</span><span class="p">(</span><span class="n">mult</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
 
-        <span class="n">assert_that</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">is_</span><span class="p">(</span><span class="mi">25</span><span class="p">))</span>
-        <span class="n">assert_that</span><span class="p">(</span><span class="n">calc</span><span class="o">.</span><span class="n">_last_operation</span><span class="p">,</span> <span class="n">is_</span><span class="p">(</span><span class="n">mult</span><span class="p">),</span> <span class="n">is_</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">LambdaType</span><span class="p">)))</span>
+        <span class="nf">assert_that</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nf">is_</span><span class="p">(</span><span class="mi">25</span><span class="p">))</span>
+        <span class="nf">assert_that</span><span class="p">(</span><span class="n">calc</span><span class="p">.</span><span class="n">_last_operation</span><span class="p">,</span> <span class="nf">is_</span><span class="p">(</span><span class="n">mult</span><span class="p">),</span> <span class="nf">is_</span><span class="p">(</span><span class="nf">type</span><span class="p">(</span><span class="n">LambdaType</span><span class="p">)))</span>
 
-    <span class="k">def</span> <span class="nf">test_repeat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">calc</span> <span class="o">=</span> <span class="n">Calc</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">test_repeat</span><span class="p">(</span><span class="n">self</span><span class="p">):</span>
+        <span class="n">calc</span> <span class="o">=</span> <span class="nc">Calc</span><span class="p">()</span>
 
-        <span class="n">result</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="nb">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">assert_that</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">is_</span><span class="p">(</span><span class="n">calc</span><span class="o">.</span><span class="n">result</span><span class="p">()))</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">calc</span><span class="p">.</span><span class="nf">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="nf">assert_that</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nf">is_</span><span class="p">(</span><span class="n">calc</span><span class="p">.</span><span class="nf">result</span><span class="p">()))</span>
 
-        <span class="n">result</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">assert_that</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">is_</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">calc</span><span class="p">.</span><span class="nf">repeat</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="nf">assert_that</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nf">is_</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">test_operations_with_invalid_function</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">calc</span> <span class="o">=</span> <span class="n">Calc</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">test_operations_with_invalid_function</span><span class="p">(</span><span class="n">self</span><span class="p">):</span>
+        <span class="n">calc</span> <span class="o">=</span> <span class="nc">Calc</span><span class="p">()</span>
 
-        <span class="n">assert_that</span><span class="p">(</span><span class="n">calling</span><span class="p">(</span><span class="n">calc</span><span class="o">.</span><span class="n">operation</span><span class="p">)</span><span class="o">.</span><span class="n">with_args</span><span class="p">(</span><span class="s">"function"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
-                    <span class="n">raises</span><span class="p">(</span><span class="nb">TypeError</span><span class="p">,</span> <span class="s">"function is not a function"</span><span class="p">))</span>
+        <span class="nf">assert_that</span><span class="p">(</span><span class="nf">calling</span><span class="p">(</span><span class="n">calc</span><span class="p">.</span><span class="n">operation</span><span class="p">).</span><span class="nf">with_args</span><span class="p">(</span><span class="sh">"</span><span class="s">function</span><span class="sh">"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+                    <span class="nf">raises</span><span class="p">(</span><span class="nb">TypeError</span><span class="p">,</span> <span class="sh">"</span><span class="s">function is not a function</span><span class="sh">"</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">test_with_invalid_a_or_b</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">calc</span> <span class="o">=</span> <span class="n">Calc</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">test_with_invalid_a_or_b</span><span class="p">(</span><span class="n">self</span><span class="p">):</span>
+        <span class="n">calc</span> <span class="o">=</span> <span class="nc">Calc</span><span class="p">()</span>
 
-        <span class="k">for</span> <span class="n">function</span> <span class="ow">in</span> <span class="n">calc</span><span class="o">.</span><span class="nb">sum</span><span class="p">,</span> <span class="n">calc</span><span class="o">.</span><span class="n">sub</span><span class="p">:</span>
-            <span class="n">assert_that</span><span class="p">(</span><span class="n">calling</span><span class="p">(</span><span class="n">function</span><span class="p">)</span><span class="o">.</span><span class="n">with_args</span><span class="p">(</span><span class="s">"a"</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
-                        <span class="n">raises</span><span class="p">(</span><span class="nb">TypeError</span><span class="p">,</span> <span class="s">"a is not a number"</span><span class="p">))</span>
-            <span class="n">assert_that</span><span class="p">(</span><span class="n">calling</span><span class="p">(</span><span class="n">function</span><span class="p">)</span><span class="o">.</span><span class="n">with_args</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">"b"</span><span class="p">),</span>
-                        <span class="n">raises</span><span class="p">(</span><span class="nb">TypeError</span><span class="p">,</span> <span class="s">"b is not a number"</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">function</span> <span class="ow">in</span> <span class="n">calc</span><span class="p">.</span><span class="nb">sum</span><span class="p">,</span> <span class="n">calc</span><span class="p">.</span><span class="n">sub</span><span class="p">:</span>
+            <span class="nf">assert_that</span><span class="p">(</span><span class="nf">calling</span><span class="p">(</span><span class="n">function</span><span class="p">).</span><span class="nf">with_args</span><span class="p">(</span><span class="sh">"</span><span class="s">a</span><span class="sh">"</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+                        <span class="nf">raises</span><span class="p">(</span><span class="nb">TypeError</span><span class="p">,</span> <span class="sh">"</span><span class="s">a is not a number</span><span class="sh">"</span><span class="p">))</span>
+            <span class="nf">assert_that</span><span class="p">(</span><span class="nf">calling</span><span class="p">(</span><span class="n">function</span><span class="p">).</span><span class="nf">with_args</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="sh">"</span><span class="s">b</span><span class="sh">"</span><span class="p">),</span>
+                        <span class="nf">raises</span><span class="p">(</span><span class="nb">TypeError</span><span class="p">,</span> <span class="sh">"</span><span class="s">b is not a number</span><span class="sh">"</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">test_with_no_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">calc</span> <span class="o">=</span> <span class="n">Calc</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">test_with_no_parameters</span><span class="p">(</span><span class="n">self</span><span class="p">):</span>
+        <span class="n">calc</span> <span class="o">=</span> <span class="nc">Calc</span><span class="p">()</span>
 
-        <span class="k">for</span> <span class="n">function</span> <span class="ow">in</span> <span class="n">calc</span><span class="o">.</span><span class="nb">sum</span><span class="p">,</span> <span class="n">calc</span><span class="o">.</span><span class="n">sub</span><span class="p">,</span> <span class="n">calc</span><span class="o">.</span><span class="n">operation</span><span class="p">:</span>
-            <span class="n">assert_that</span><span class="p">(</span><span class="n">calling</span><span class="p">(</span><span class="n">function</span><span class="p">)</span><span class="o">.</span><span class="n">with_args</span><span class="p">(),</span> <span class="n">raises</span><span class="p">(</span><span class="nb">TypeError</span><span class="p">))</span></code></pre></figure>
+        <span class="k">for</span> <span class="n">function</span> <span class="ow">in</span> <span class="n">calc</span><span class="p">.</span><span class="nb">sum</span><span class="p">,</span> <span class="n">calc</span><span class="p">.</span><span class="n">sub</span><span class="p">,</span> <span class="n">calc</span><span class="p">.</span><span class="n">operation</span><span class="p">:</span>
+            <span class="nf">assert_that</span><span class="p">(</span><span class="nf">calling</span><span class="p">(</span><span class="n">function</span><span class="p">).</span><span class="nf">with_args</span><span class="p">(),</span> <span class="nf">raises</span><span class="p">(</span><span class="nb">TypeError</span><span class="p">))</span></code></pre></figure>
 
 <p>I think this if enough for today, next day maybe a different language.</p>
 

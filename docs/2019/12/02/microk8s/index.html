@@ -163,7 +163,7 @@ microk8s v1.16.3 from Canonical✓ installed</code></pre></figure>
 <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>microk8s.status
 microk8s is running</code></pre></figure>
 
-<p>If we want to stop or start our cluster we could do it using <code class="highlighter-rouge">microk8s.stop</code> or <code class="highlighter-rouge">microk8s.start</code> whenever we need.</p>
+<p>If we want to stop or start our cluster we could do it using <code class="language-plaintext highlighter-rouge">microk8s.stop</code> or <code class="language-plaintext highlighter-rouge">microk8s.start</code> whenever we need.</p>
 
 <p>MicroK8s provide several commands to manage our cluster, but embed within the installation for example if we want
 to see what is running in our cluster using <a href="https://kubernetes.io/docs/reference/kubectl/overview/" target="_blank">kubectl</a> we need to do:</p>
@@ -284,11 +284,11 @@ admin user and password.</p>
 
 <p><a href="/assets/img/captures/kibana_main.jpg" target="_blank"><img src="/assets/img/captures/kibana_main.jpg" alt="d" style="width:80%; display:block; margin-left:auto; margin-right:auto;" /></a></p>
 
-<p>However if we like to browse the data when clicking on Discover we will get redirect to create an index, the pattern will be <code class="highlighter-rouge">logstash*</code>:</p>
+<p>However if we like to browse the data when clicking on Discover we will get redirect to create an index, the pattern will be <code class="language-plaintext highlighter-rouge">logstash*</code>:</p>
 
 <p><a href="/assets/img/captures/kibana_index.jpg" target="_blank"><img src="/assets/img/captures/kibana_index.jpg" alt="d" style="width:80%; display:block; margin-left:auto; margin-right:auto;" /></a></p>
 
-<p>And finally we will set our <em>Time Filter field name</em> to be <code class="highlighter-rouge">@timestamp</code>:</p>
+<p>And finally we will set our <em>Time Filter field name</em> to be <code class="language-plaintext highlighter-rouge">@timestamp</code>:</p>
 
 <p><a href="/assets/img/captures/kibana_index_2.jpg" target="_blank"><img src="/assets/img/captures/kibana_index_2.jpg" alt="d" style="width:80%; display:block; margin-left:auto; margin-right:auto;" /></a></p>
 
@@ -333,7 +333,7 @@ replicaset.apps/random-generator-7b6c47d877   2         2         2       54</co
 <span class="o">{</span><span class="s2">"name"</span>: <span class="s2">"Xaerlulth, The Warm"</span><span class="o">}</span>
 <span class="o">{</span><span class="s2">"name"</span>: <span class="s2">"Gorsolun, Warmheart"</span><span class="o">}</span></code></pre></figure>
 
-<p>Now back into Kibana we could just do a simple filter <code class="highlighter-rouge">kubernetes.container_name: random-generator</code> and select the <code class="highlighter-rouge">docker</code> and <code class="highlighter-rouge">log</code> fields to view the logs
+<p>Now back into Kibana we could just do a simple filter <code class="language-plaintext highlighter-rouge">kubernetes.container_name: random-generator</code> and select the <code class="language-plaintext highlighter-rouge">docker</code> and <code class="language-plaintext highlighter-rouge">log</code> fields to view the logs
 of this application.</p>
 
 <p><a href="/assets/img/captures/kibana_search.jpg" target="_blank"><img src="/assets/img/captures/kibana_search.jpg" alt="d" style="width:80%; display:block; margin-left:auto; margin-right:auto;" /></a></p>

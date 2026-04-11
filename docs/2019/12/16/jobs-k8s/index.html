@@ -524,7 +524,7 @@ job.batch/movies-load-run-9qrfd created
         <span class="na">volumeMounts</span><span class="pi">:</span>
           <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">db-credentials</span>
             <span class="na">mountPath</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/etc/db-credentials"</span>
-            <span class="na">readOnly</span><span class="pi">:</span> <span class="no">true</span>
+            <span class="na">readOnly</span><span class="pi">:</span> <span class="kc">true</span>
       <span class="na">restartPolicy</span><span class="pi">:</span> <span class="s">Never</span>
       <span class="na">volumes</span><span class="pi">:</span>
         <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">db-credentials</span>
@@ -653,10 +653,10 @@ first let’s modify our <em>database-load.yml</em> to have a volume to temporar
         <span class="na">volumeMounts</span><span class="pi">:</span>
           <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">db-credentials</span>
             <span class="na">mountPath</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/etc/db-credentials"</span>
-            <span class="na">readOnly</span><span class="pi">:</span> <span class="no">true</span>
+            <span class="na">readOnly</span><span class="pi">:</span> <span class="kc">true</span>
           <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">download</span>
             <span class="na">mountPath</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/tmp/download"</span>
-            <span class="na">readOnly</span><span class="pi">:</span> <span class="no">false</span>            
+            <span class="na">readOnly</span><span class="pi">:</span> <span class="kc">false</span>            
       <span class="na">restartPolicy</span><span class="pi">:</span> <span class="s">Never</span>
       <span class="na">volumes</span><span class="pi">:</span>
         <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">db-credentials</span>

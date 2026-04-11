@@ -759,7 +759,7 @@ jlink <span class="se">\</span>
 
 <p>Now we will modify our Dockerfile to perform a multi-stage build :</p>
 
-<figure class="highlight"><pre><code class="language-docker" data-lang="docker"><span class="k">FROM</span><span class="s"> openjdk:11 AS builder</span>
+<figure class="highlight"><pre><code class="language-docker" data-lang="docker"><span class="k">FROM</span><span class="w"> </span><span class="s">openjdk:11</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s">builder</span>
 
 <span class="k">COPY</span><span class="s"> target/*.jar /app/app.jar</span>
 <span class="k">COPY</span><span class="s"> jlink.sh /app/jlink.sh</span>
@@ -1066,7 +1066,7 @@ localhost:32000/movies-spring-web   0.0.1               3fc95b166643        10 s
 
 <p>First we will modify our Dockerfile :</p>
 
-<figure class="highlight"><pre><code class="language-docker" data-lang="docker"><span class="k">FROM</span><span class="s"> openjdk:11 AS builder</span>
+<figure class="highlight"><pre><code class="language-docker" data-lang="docker"><span class="k">FROM</span><span class="w"> </span><span class="s">openjdk:11</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s">builder</span>
 
 <span class="k">COPY</span><span class="s"> target/*.jar /app/app.jar</span>
 <span class="k">COPY</span><span class="s"> jlink.sh /app/jlink.sh</span>
@@ -1091,7 +1091,7 @@ localhost:32000/movies-spring-web   0.0.1               3fc95b166643        10 s
 <figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">apiVersion</span><span class="pi">:</span> <span class="s">apps/v1</span>
 <span class="na">kind</span><span class="pi">:</span> <span class="s">Deployment</span>
 <span class="na">metadata</span><span class="pi">:</span>
-  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="kc">null</span>
   <span class="na">labels</span><span class="pi">:</span>
     <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
   <span class="na">name</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
@@ -1103,7 +1103,7 @@ localhost:32000/movies-spring-web   0.0.1               3fc95b166643        10 s
   <span class="na">strategy</span><span class="pi">:</span> <span class="pi">{}</span>
   <span class="na">template</span><span class="pi">:</span>
     <span class="na">metadata</span><span class="pi">:</span>
-      <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+      <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="kc">null</span>
       <span class="na">labels</span><span class="pi">:</span>
         <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
     <span class="na">spec</span><span class="pi">:</span>
@@ -1130,10 +1130,10 @@ localhost:32000/movies-spring-web   0.0.1               3fc95b166643        10 s
           <span class="na">volumeMounts</span><span class="pi">:</span>
             <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">db-credentials</span>
               <span class="na">mountPath</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/etc/movies-db"</span>
-              <span class="na">readOnly</span><span class="pi">:</span> <span class="no">true</span>
+              <span class="na">readOnly</span><span class="pi">:</span> <span class="kc">true</span>
             <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">tmp</span>
               <span class="na">mountPath</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/tmp"</span>
-              <span class="na">readOnly</span><span class="pi">:</span> <span class="no">false</span>
+              <span class="na">readOnly</span><span class="pi">:</span> <span class="kc">false</span>
       <span class="na">volumes</span><span class="pi">:</span>
         <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">db-credentials</span>
           <span class="na">secret</span><span class="pi">:</span>
@@ -1145,7 +1145,7 @@ localhost:32000/movies-spring-web   0.0.1               3fc95b166643        10 s
 <span class="na">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
 <span class="na">kind</span><span class="pi">:</span> <span class="s">Service</span>
 <span class="na">metadata</span><span class="pi">:</span>
-  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="kc">null</span>
   <span class="na">labels</span><span class="pi">:</span>
     <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
   <span class="na">name</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
@@ -1252,7 +1252,7 @@ Forwarding from <span class="o">[</span>::1]:12345 -&gt; 12345</code></pre></fig
 <figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">apiVersion</span><span class="pi">:</span> <span class="s">apps/v1</span>
 <span class="na">kind</span><span class="pi">:</span> <span class="s">Deployment</span>
 <span class="na">metadata</span><span class="pi">:</span>
-  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="kc">null</span>
   <span class="na">labels</span><span class="pi">:</span>
     <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
   <span class="na">name</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
@@ -1264,7 +1264,7 @@ Forwarding from <span class="o">[</span>::1]:12345 -&gt; 12345</code></pre></fig
   <span class="na">strategy</span><span class="pi">:</span> <span class="pi">{}</span>
   <span class="na">template</span><span class="pi">:</span>
     <span class="na">metadata</span><span class="pi">:</span>
-      <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+      <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="kc">null</span>
       <span class="na">labels</span><span class="pi">:</span>
         <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
     <span class="na">spec</span><span class="pi">:</span>
@@ -1293,10 +1293,10 @@ Forwarding from <span class="o">[</span>::1]:12345 -&gt; 12345</code></pre></fig
           <span class="na">volumeMounts</span><span class="pi">:</span>
             <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">db-credentials</span>
               <span class="na">mountPath</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/etc/movies-db"</span>
-              <span class="na">readOnly</span><span class="pi">:</span> <span class="no">true</span>
+              <span class="na">readOnly</span><span class="pi">:</span> <span class="kc">true</span>
             <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">tmp</span>
               <span class="na">mountPath</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/tmp"</span>
-              <span class="na">readOnly</span><span class="pi">:</span> <span class="no">false</span>
+              <span class="na">readOnly</span><span class="pi">:</span> <span class="kc">false</span>
       <span class="na">volumes</span><span class="pi">:</span>
         <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">db-credentials</span>
           <span class="na">secret</span><span class="pi">:</span>
@@ -1308,7 +1308,7 @@ Forwarding from <span class="o">[</span>::1]:12345 -&gt; 12345</code></pre></fig
 <span class="na">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
 <span class="na">kind</span><span class="pi">:</span> <span class="s">Service</span>
 <span class="na">metadata</span><span class="pi">:</span>
-  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="kc">null</span>
   <span class="na">labels</span><span class="pi">:</span>
     <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
   <span class="na">name</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
@@ -1337,7 +1337,7 @@ Forwarding from <span class="o">[</span>::1]:12345 -&gt; 12345</code></pre></fig
 <figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">apiVersion</span><span class="pi">:</span> <span class="s">apps/v1</span>
 <span class="na">kind</span><span class="pi">:</span> <span class="s">Deployment</span>
 <span class="na">metadata</span><span class="pi">:</span>
-  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="kc">null</span>
   <span class="na">labels</span><span class="pi">:</span>
     <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
   <span class="na">name</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
@@ -1349,7 +1349,7 @@ Forwarding from <span class="o">[</span>::1]:12345 -&gt; 12345</code></pre></fig
   <span class="na">strategy</span><span class="pi">:</span> <span class="pi">{}</span>
   <span class="na">template</span><span class="pi">:</span>
     <span class="na">metadata</span><span class="pi">:</span>
-      <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+      <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="kc">null</span>
       <span class="na">labels</span><span class="pi">:</span>
         <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
     <span class="na">spec</span><span class="pi">:</span>
@@ -1374,10 +1374,10 @@ Forwarding from <span class="o">[</span>::1]:12345 -&gt; 12345</code></pre></fig
           <span class="na">volumeMounts</span><span class="pi">:</span>
             <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">db-credentials</span>
               <span class="na">mountPath</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/etc/movies-db"</span>
-              <span class="na">readOnly</span><span class="pi">:</span> <span class="no">true</span>
+              <span class="na">readOnly</span><span class="pi">:</span> <span class="kc">true</span>
             <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">tmp</span>
               <span class="na">mountPath</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/tmp"</span>
-              <span class="na">readOnly</span><span class="pi">:</span> <span class="no">false</span>
+              <span class="na">readOnly</span><span class="pi">:</span> <span class="kc">false</span>
       <span class="na">volumes</span><span class="pi">:</span>
         <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">db-credentials</span>
           <span class="na">secret</span><span class="pi">:</span>
@@ -1389,7 +1389,7 @@ Forwarding from <span class="o">[</span>::1]:12345 -&gt; 12345</code></pre></fig
 <span class="na">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
 <span class="na">kind</span><span class="pi">:</span> <span class="s">Service</span>
 <span class="na">metadata</span><span class="pi">:</span>
-  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="kc">null</span>
   <span class="na">labels</span><span class="pi">:</span>
     <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
   <span class="na">name</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
@@ -1816,7 +1816,7 @@ jlink <span class="se">\</span>
 <figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">apiVersion</span><span class="pi">:</span> <span class="s">apps/v1</span>
 <span class="na">kind</span><span class="pi">:</span> <span class="s">Deployment</span>
 <span class="na">metadata</span><span class="pi">:</span>
-  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="kc">null</span>
   <span class="na">labels</span><span class="pi">:</span>
     <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
   <span class="na">name</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
@@ -1828,7 +1828,7 @@ jlink <span class="se">\</span>
   <span class="na">strategy</span><span class="pi">:</span> <span class="pi">{}</span>
   <span class="na">template</span><span class="pi">:</span>
     <span class="na">metadata</span><span class="pi">:</span>
-      <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+      <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="kc">null</span>
       <span class="na">labels</span><span class="pi">:</span>
         <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
     <span class="na">spec</span><span class="pi">:</span>
@@ -1854,10 +1854,10 @@ jlink <span class="se">\</span>
           <span class="na">volumeMounts</span><span class="pi">:</span>
             <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">db-credentials</span>
               <span class="na">mountPath</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/etc/movies-db"</span>
-              <span class="na">readOnly</span><span class="pi">:</span> <span class="no">true</span>
+              <span class="na">readOnly</span><span class="pi">:</span> <span class="kc">true</span>
             <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">tmp</span>
               <span class="na">mountPath</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/tmp"</span>
-              <span class="na">readOnly</span><span class="pi">:</span> <span class="no">false</span>
+              <span class="na">readOnly</span><span class="pi">:</span> <span class="kc">false</span>
       <span class="na">volumes</span><span class="pi">:</span>
         <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">db-credentials</span>
           <span class="na">secret</span><span class="pi">:</span>
@@ -1869,7 +1869,7 @@ jlink <span class="se">\</span>
 <span class="na">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
 <span class="na">kind</span><span class="pi">:</span> <span class="s">Service</span>
 <span class="na">metadata</span><span class="pi">:</span>
-  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="no">null</span>
+  <span class="na">creationTimestamp</span><span class="pi">:</span> <span class="kc">null</span>
   <span class="na">labels</span><span class="pi">:</span>
     <span class="na">app</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
   <span class="na">name</span><span class="pi">:</span> <span class="s">movies-spring-web</span>
@@ -2373,14 +2373,14 @@ Type <span class="s2">"help"</span> <span class="k">for </span>help.
 </span>    <span class="s">${MOVIES_DB_CLUSTER_SERVICE_HOST}:${MOVIES_DB_CLUSTER_SERVICE_PORT_POSTGRESQL}</span><span class="se">\
 </span>    <span class="s">/movies"</span>
   <span class="na">credentials</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/etc/movies-db"</span>
-  <span class="na">read-only </span><span class="pi">:</span> <span class="no">true</span>
+  <span class="na">read-only </span><span class="pi">:</span> <span class="kc">true</span>
   <span class="na">pool </span><span class="pi">:</span>
     <span class="na">min-connections </span><span class="pi">:</span> <span class="m">1</span>
     <span class="na">max-connections </span><span class="pi">:</span> <span class="s">3</span></code></pre></figure>
 
 <p>Now we will modify our DataSourceProperties class :</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">spring</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">datasource</span><span class="o">;</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">org.learning.by.example.movies.spring.web.datasource</span><span class="o">;</span>
 
 <span class="kn">import</span> <span class="nn">org.springframework.boot.context.properties.ConfigurationProperties</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.springframework.stereotype.Component</span><span class="o">;</span>
@@ -2459,7 +2459,7 @@ Type <span class="s2">"help"</span> <span class="k">for </span>help.
 
 <p>And finally our MoviesDataSource class</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">learning</span><span class="o">.</span><span class="na">by</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">movies</span><span class="o">.</span><span class="na">spring</span><span class="o">.</span><span class="na">web</span><span class="o">.</span><span class="na">datasource</span><span class="o">;</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">org.learning.by.example.movies.spring.web.datasource</span><span class="o">;</span>
 
 <span class="kn">import</span> <span class="nn">com.zaxxer.hikari.HikariDataSource</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.apache.commons.logging.Log</span><span class="o">;</span>
@@ -3041,7 +3041,7 @@ Type <span class="s2">"help"</span> <span class="k">for </span>help.
   <span class="na">main</span><span class="pi">:</span>
     <span class="na">banner-mode</span><span class="pi">:</span> <span class="s">off</span>
   <span class="na">jmx</span><span class="pi">:</span>
-    <span class="na">enabled</span><span class="pi">:</span> <span class="no">false</span></code></pre></figure>
+    <span class="na">enabled</span><span class="pi">:</span> <span class="kc">false</span></code></pre></figure>
 
 <p>Now let’s run a new run with our final changes :</p>
 
